@@ -2,118 +2,118 @@
 
 
 //!ORIGINAL CODE, DIGANTI KARENA PADA CONFIG TIDAK BOLEH MEMANGGIL MODEL
-// use App\Models\SystemMenu;
+use App\Models\SystemMenu;
 
-// $menu           = SystemMenu::select('*')->where('type', 'file')->get();
-// $menu_array     = array();
-// foreach($menu as $key => $val){
-//     $menu_array[$val['id']] = array(
-//         'title'       => $val['text'],
-//         'description' => '',
-//         'view'        => $val['id'],
-//         'layout'      => array(
-//             'page-title' => array(
-//                 'description' => false,
-//                 'breadcrumb'  => false,
-//             ),
-//         ),
-//         'assets' => array(
-//             'custom' => array(
-//                 'css' => array(
-//                     'plugins/custom/datatables/datatables.bundle.css',
-//                 ),
-//                 'js'  => array(
-//                     'plugins/custom/datatables/datatables.bundle.js',
-//                 ),
-//             ),
-//         ),
-//     );
-// }
+$menu           = SystemMenu::select('*')->where('type', 'file')->get();
+$menu_array     = array();
+foreach($menu as $key => $val){
+    $menu_array[$val['id']] = array(
+        'title'       => $val['text'],
+        'description' => '',
+        'view'        => $val['id'],
+        'layout'      => array(
+            'page-title' => array(
+                'description' => false,
+                'breadcrumb'  => false,
+            ),
+        ),
+        'assets' => array(
+            'custom' => array(
+                'css' => array(
+                    'plugins/custom/datatables/datatables.bundle.css',
+                ),
+                'js'  => array(
+                    'plugins/custom/datatables/datatables.bundle.js',
+                ),
+            ),
+        ),
+    );
+}
 
-// $menu_array['login'] = array(
-//     'title'  => 'Login',
-//     'assets' => array(
-//         'custom' => array(
-//             'js' => array(
-//                 'js/custom/authentication/sign-in/general.js',
-//             ),
-//         ),
-//     ),
-//     'layout' => array(
-//         'main' => array(
-//             'type' => 'blank', // Set blank layout
-//             'body' => array(
-//                 'class' => theme()->isDarkMode() ? '' : 'bg-body',
-//             ),
-//         ),
-//     ),
-// );
-// $menu_array['register'] = array(
-//     'title'  => 'Register',
-//     'assets' => array(
-//         'custom' => array(
-//             'js' => array(
-//                 'js/custom/authentication/sign-up/general.js',
-//             ),
-//         ),
-//     ),
-//     'layout' => array(
-//         'main' => array(
-//             'type' => 'blank', // Set blank layout
-//             'body' => array(
-//                 'class' => theme()->isDarkMode() ? '' : 'bg-body',
-//             ),
-//         ),
-//     ),
-// );
-// $menu_array['forgot-password'] = array(
-//     'title'  => 'Forgot Password',
-//     'assets' => array(
-//         'custom' => array(
-//             'js' => array(
-//                 'js/custom/authentication/password-reset/password-reset.js',
-//             ),
-//         ),
-//     ),
-//     'layout' => array(
-//         'main' => array(
-//             'type' => 'blank', // Set blank layout
-//             'body' => array(
-//                 'class' => theme()->isDarkMode() ? '' : 'bg-body',
-//             ),
-//         ),
-//     ),
-// );
-// $menu_array['log'] = array(
-//     'audit'  => array(
-//         'title'  => 'Audit Log',
-//         'assets' => array(
-//             'custom' => array(
-//                 'css' => array(
-//                     'plugins/custom/datatables/datatables.bundle.css',
-//                 ),
-//                 'js'  => array(
-//                     'plugins/custom/datatables/datatables.bundle.js',
-//                 ),
-//             ),
-//         ),
-//     ),
-//     'system' => array(
-//         'title'  => 'System Log',
-//         'assets' => array(
-//             'custom' => array(
-//                 'css' => array(
-//                     'plugins/custom/datatables/datatables.bundle.css',
-//                 ),
-//                 'js'  => array(
-//                     'plugins/custom/datatables/datatables.bundle.js',
-//                 ),
-//             ),
-//         ),
-//     ),
-// );
+$menu_array['login'] = array(
+    'title'  => 'Login',
+    'assets' => array(
+        'custom' => array(
+            'js' => array(
+                'js/custom/authentication/sign-in/general.js',
+            ),
+        ),
+    ),
+    'layout' => array(
+        'main' => array(
+            'type' => 'blank', // Set blank layout
+            'body' => array(
+                'class' => theme()->isDarkMode() ? '' : 'bg-body',
+            ),
+        ),
+    ),
+);
+$menu_array['register'] = array(
+    'title'  => 'Register',
+    'assets' => array(
+        'custom' => array(
+            'js' => array(
+                'js/custom/authentication/sign-up/general.js',
+            ),
+        ),
+    ),
+    'layout' => array(
+        'main' => array(
+            'type' => 'blank', // Set blank layout
+            'body' => array(
+                'class' => theme()->isDarkMode() ? '' : 'bg-body',
+            ),
+        ),
+    ),
+);
+$menu_array['forgot-password'] = array(
+    'title'  => 'Forgot Password',
+    'assets' => array(
+        'custom' => array(
+            'js' => array(
+                'js/custom/authentication/password-reset/password-reset.js',
+            ),
+        ),
+    ),
+    'layout' => array(
+        'main' => array(
+            'type' => 'blank', // Set blank layout
+            'body' => array(
+                'class' => theme()->isDarkMode() ? '' : 'bg-body',
+            ),
+        ),
+    ),
+);
+$menu_array['log'] = array(
+    'audit'  => array(
+        'title'  => 'Audit Log',
+        'assets' => array(
+            'custom' => array(
+                'css' => array(
+                    'plugins/custom/datatables/datatables.bundle.css',
+                ),
+                'js'  => array(
+                    'plugins/custom/datatables/datatables.bundle.js',
+                ),
+            ),
+        ),
+    ),
+    'system' => array(
+        'title'  => 'System Log',
+        'assets' => array(
+            'custom' => array(
+                'css' => array(
+                    'plugins/custom/datatables/datatables.bundle.css',
+                ),
+                'js'  => array(
+                    'plugins/custom/datatables/datatables.bundle.js',
+                ),
+            ),
+        ),
+    ),
+);
 
-// return $menu_array;
+return $menu_array;
 
 
 

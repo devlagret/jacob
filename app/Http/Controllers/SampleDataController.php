@@ -105,27 +105,27 @@ class SampleDataController extends Controller
 
         return $month;
     }
+    protected static function getIsOnlineUser($user_id)
+    {
+        $data = SystemLogUser::where('user_id', $user_id)
+        ->whereDate('log_time', date('Y-m-d'))
+        ->orderBy('user_log_id','DESC')
+        ->first();
+
+        if (!empty($data)) {
+            if ($data->remark == 'Logout System') {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
 
     public static function getDataUser()
     {
-        function getIsOnlineUser($user_id)
-        {
-            $data = SystemLogUser::where('user_id', $user_id)
-            ->whereDate('log_time', date('Y-m-d'))
-            ->orderBy('user_log_id','DESC')
-            ->first();
-
-            if (!empty($data)) {
-                if ($data->remark == 'Logout System') {
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }
-
+        
         $user = User::select('system_user_group.user_group_name','system_user.username','system_user.avatar','system_user.user_id')
         ->join('system_user_group','system_user_group.user_group_id','=','system_user.user_group_id')
         ->where('system_user.user_group_id','!=',1)
@@ -138,7 +138,7 @@ class SampleDataController extends Controller
                 "user_group_name"   => $val['user_group_name'],
                 "username"          => $val['username'],
                 "avatar"            => $val['avatar'],
-                "isOnline"          => getIsOnlineUser($val['user_id']),
+                "isOnline"          => self::getIsOnlineUser($val['user_id']),
             );
         }
 

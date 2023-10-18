@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Storage;
 class UserInfo extends Model
 {
     use SpatieLogsActivity;
-
     /**
      * Prepare proper error handling for url attribute
      *
@@ -40,7 +39,7 @@ class UserInfo extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id','user_id');
     }
 
     /**
