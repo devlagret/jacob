@@ -1,0 +1,3 @@
+<td class="text-center">
+    <input type="number" min="0" max="100" name="data[{{$model->income_id}}][income_percentage]" id="income_percentage" class="form-control form-control-solid form-select-lg" placeholder="Masukan Nama Pendapatan" value="{{ old('income_percentage', $sessiondata['income_percentage'] ?? $model->income_percentage) }}" onchange="function_elements_add(this.name, this.value)" />
+</td>
