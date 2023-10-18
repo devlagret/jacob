@@ -1,6 +1,6 @@
 {
-    "short_name": "Artha Bima",
-    "name": "Koperasi Artha Bima Sentosa",
+    "short_name": "JJM",
+    "name": "Koperasi Jacob Jaya Mandiri",
     "orientation": "any",
     "icons": [
       {
@@ -60,6 +60,6 @@
         ]
       }
     ],
-    "description": "Aplikasi Koperasi Arhabima",
+    "description": "Aplikasi Koperasi Jacob Jaya Mandiri",
     "screenshots": []
   }

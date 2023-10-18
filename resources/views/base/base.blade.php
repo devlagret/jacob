@@ -21,10 +21,10 @@ License: {{ theme()->getOption('product', 'license') }}
     <link rel="canonical" href="{{ ucfirst(theme()->getOption('meta', 'canonical')) }}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     {{-- <link rel="shortcut icon" href="{{ asset(theme()->getDemo() . '/' .theme()->getOption('assets', 'favicon')) }}"/> --}}
-    <link rel="shortcut icon" href="{{ asset('img/logo/logokoperasiindonesia.png')}}"/>
-    {{-- <link rel="manifest" href="{{asset('manifest.json')}}" /> --}}
+    <link rel="shortcut icon" href="{{ asset('img/logo/logo-v1-250x250.png')}}"/>
+    <link rel="manifest" href="{{asset('manifest.json')}}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('img/logo/logokoperasiindonesia.png')}}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('img/logo/logo-v1-250x250.png')}}" />
     <link rel="stylesheet" type="text/css" href="{{ asset(theme()->getDemo().'/plugins/custom/datatables/datatables.bundle.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     {{-- begin::Fonts --}}

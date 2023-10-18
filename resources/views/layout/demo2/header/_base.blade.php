@@ -29,8 +29,8 @@ data-kt-sticky="true"
         <div class="header-logo me-5 me-md-10 flex-grow-1 flex-lg-grow-0">
             <a href="{{ theme()->getPageUrl('index') }}">
                 {{-- <img alt="Logo" src="{{ asset(theme()->getMediaUrlPath() . 'logos/logo-4.png') }}" class="logo-default h-25px"/> --}}
-                <img alt="Logo" src="{{ asset('img/' . AuthenticatedSessionController::getLogoIconGray()) }}" class="logo-default h-40px"/>
-                <img alt="Logo" src="{{ asset('img/' . AuthenticatedSessionController::getLogoIcon()) }}" class="logo-sticky h-40px"/>
+                <img alt="Logo" src="{{ asset('img/' . AuthenticatedSessionController::getLogoIconGray()) }}" class="logo-default h-50px"/>
+                <img alt="Logo" src="{{ asset('img/' . AuthenticatedSessionController::getLogoIcon()) }}" class="logo-sticky h-50px"/>
             </a>
         </div>
         <!--end::Header Logo-->
