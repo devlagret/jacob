@@ -7,6 +7,7 @@ use App\Http\Controllers\Documentation\ReferencesController;
 use App\Http\Controllers\Logs\AuditLogsController;
 use App\Http\Controllers\Logs\SystemLogsController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AcctAccountBlockirController;
 use App\Http\Controllers\AcctBankAccountController;
 use App\Http\Controllers\AcctCreditsAccountController;
 use App\Http\Controllers\AcctCreditsAccountPaidOffReportController;
@@ -142,6 +143,22 @@ Route::middleware('auth')->group(function () {
         Route::put('/process-edit', [AccountController::class, 'processEdit'])->name('process-edit');
         Route::get('/delete/{account_id}', [AccountController::class, 'delete'])->name('delete');
         Route::get('/export', [AccountController::class, 'export'])->name('export');
+         //AcctAccountBlockir & Unblockir pages
+        Route::controller(AcctAccountBlockirController::class)->group(function () {
+            Route::prefix('deposito')->name('deposito.')->group(function () {
+                Route::get('block',  'index')->name('block');
+                Route::get('block/add',  'index')->name('block');
+                Route::get('block',  'account')->name('account');
+                Route::post('block/process-add',  'paymentViewport')->name('p-viewport');
+                Route::post('block/process-unblock',  'accountViewport')->name('a-viewport');
+            });
+            Route::prefix('saving')->name('saving.')->group(function () {
+                Route::get('payment',  'payment')->name('payment');
+                Route::get('account',  'account')->name('account');
+                Route::post('payment/viewport',  'paymentViewport')->name('p-viewport');
+                Route::post('account/viewport',  'accountViewport')->name('a-viewport');
+            });
+        });
     });
 
     // AcctBankAccount pages
@@ -917,10 +934,12 @@ Route::middleware('auth')->group(function () {
     //CreditsDailyMutation pages
     Route::prefix('credits-daily-mutation')->controller(AcctCreditsDailyMutationController::class)->name('crd-daily-mutation.')->group(function () {
         Route::get('/payment',  'payment')->name('payment');
+        Route::get('/ao', 'getOffice')->name('get-ao');
         Route::get('/account',  'account')->name('account');
         Route::post('/payment/viewport',  'paymentViewport')->name('p-viewport');
         Route::post('/account/viewport',  'accountViewport')->name('a-viewport');
     });
+   
     //Whatsapp pages
     // Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
     //     Route::get('/', [WhatsappController::class, 'index'])->name('index');
