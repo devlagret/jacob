@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\NotDeletedScope;
 use Illuminate\Database\Eloquent\Model;
 
 class CoreOffice extends Model
@@ -29,5 +30,8 @@ class CoreOffice extends Model
      */
     protected $hidden = [
     ];
-
+    protected static function booted()
+    {
+        static::addGlobalScope(new NotDeletedScope);
+    }
 }
