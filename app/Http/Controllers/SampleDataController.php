@@ -261,7 +261,7 @@ class SampleDataController extends Controller
                 $interval    = $date1->diff($date2);
                 $tunggakan2  = $interval->days;
             }
-                $tunggakan = $tunggakan2;
+                $tunggakan = $tunggakan2??'';
 
             foreach ($creditsaccount as $key => $val) {
 
