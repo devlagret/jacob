@@ -25,7 +25,7 @@
                             <select name="branch_id" id="branch_id" aria-label="{{ __('Cabang') }}" data-control="select2" data-placeholder="{{ __('Pilih cabang..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg">
                                 <option value="">{{ __('Pilih cabang..') }}</option>
                                 @foreach($corebranch as $key => $value)
-                                    <option data-kt-flag="{{ $value['branch_id'] }}" value="{{ $value['branch_id'] }}" {{ $value['branch_id'] === old('branch_id', '' ?? '') ? 'selected' :'' }}>{{ $value['branch_name'] }}</option>
+                                    <option data-kt-flag="{{ $value['branch_id'] }}" value="{{ $value['branch_id'] }}" {{ $value['branch_id'] === old('branch_id', '' ?? '')|$corebranch->count() == 1 ? 'selected' :'' }}>{{ $value['branch_name'] }}</option>
                                 @endforeach
                             </select>
                         </div>
