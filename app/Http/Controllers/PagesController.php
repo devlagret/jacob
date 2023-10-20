@@ -15,12 +15,12 @@ class PagesController extends Controller
     {
         // dd('foo');
         // Get view file location from menu config
-        // $view = theme()->getOption('page', 'view');
+        $view = theme()->getOption('page', 'view');
 
-        // // Check if the page view file exist
-        // if (view()->exists('pages.'.$view)) {
-        //     return view('pages.'.$view);
-        // }
+        // Check if the page view file exist
+        if (view()->exists('pages.'.$view)) {
+            return view('pages.'.$view);
+        }
 
         // Get the default inner page
         // return view('inner');
