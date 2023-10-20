@@ -36,8 +36,8 @@ class AcctCreditsPayment extends Model
     public function account() {
         return $this->belongsTo(AcctCreditsAccount::class,'credits_account_id','credits_account_id');
     }
-    protected static function booted()
-    {
-        static::addGlobalScope(new NotDeletedScope);
-    }
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope(new NotDeletedScope);
+    // }
 }
