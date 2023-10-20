@@ -2,33 +2,33 @@
 
 
 //!ORIGINAL CODE, DIGANTI KARENA PADA CONFIG TIDAK BOLEH MEMANGGIL MODEL
-use App\Models\SystemMenu;
+// use App\Models\SystemMenu;
 
-$menu           = SystemMenu::select('*')->where('type', 'file')->get();
-$menu_array     = array();
-foreach($menu as $key => $val){
-    $menu_array[$val['id']] = array(
-        'title'       => $val['text'],
-        'description' => '',
-        'view'        => $val['id'],
-        'layout'      => array(
-            'page-title' => array(
-                'description' => false,
-                'breadcrumb'  => false,
-            ),
-        ),
-        'assets' => array(
-            'custom' => array(
-                'css' => array(
-                    'plugins/custom/datatables/datatables.bundle.css',
-                ),
-                'js'  => array(
-                    'plugins/custom/datatables/datatables.bundle.js',
-                ),
-            ),
-        ),
-    );
-}
+// $menu           = SystemMenu::select('*')->where('type', 'file')->get();
+// $menu_array     = array();
+// foreach($menu as $key => $val){
+//     $menu_array[$val['id']] = array(
+//         'title'       => $val['text'],
+//         'description' => '',
+//         'view'        => $val['id'],
+//         'layout'      => array(
+//             'page-title' => array(
+//                 'description' => false,
+//                 'breadcrumb'  => false,
+//             ),
+//         ),
+//         'assets' => array(
+//             'custom' => array(
+//                 'css' => array(
+//                     'plugins/custom/datatables/datatables.bundle.css',
+//                 ),
+//                 'js'  => array(
+//                     'plugins/custom/datatables/datatables.bundle.js',
+//                 ),
+//             ),
+//         ),
+//     );
+// }
 
 $menu_array['login'] = array(
     'title'  => 'Login',
