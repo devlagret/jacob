@@ -129,6 +129,9 @@ License: {{ theme()->getOption('product', 'license') }}
         color: #5E6278 !important;
         font-weight: 500;
     }
+    .shadow{
+        box-shadow: 3px 2px 3px 1px rgba(0,0,0,0.2),0 2px 10px 0 rgba(0,0,0,0.19) !important;
+    }
 </style>
 <script>
     @if (Session::has('pesan'))

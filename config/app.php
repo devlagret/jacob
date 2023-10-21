@@ -233,5 +233,5 @@ return [
         'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
 
     ],
-
+    'db' =>env('DB_DATABASE'),
 ];
