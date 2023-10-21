@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\NotDeletedScope;
 use Illuminate\Database\Eloquent\Model;
 
 class AcctCreditsPayment extends Model
@@ -29,5 +30,14 @@ class AcctCreditsPayment extends Model
      */
     protected $hidden = [
     ];
-
+    public function member() {
+        return $this->belongsTo(CoreMember::class,'member_id','member_id');
+    }
+    public function account() {
+        return $this->belongsTo(AcctCreditsAccount::class,'credits_account_id','credits_account_id');
+    }
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope(new NotDeletedScope);
+    // }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Documentation\ReferencesController;
 use App\Http\Controllers\Logs\AuditLogsController;
 use App\Http\Controllers\Logs\SystemLogsController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AcctAccountBlockirController;
 use App\Http\Controllers\AcctBankAccountController;
 use App\Http\Controllers\AcctCreditsAccountController;
 use App\Http\Controllers\AcctCreditsAccountPaidOffReportController;
@@ -80,6 +81,7 @@ use App\Http\Controllers\PPOBSettingController;
 use App\Http\Controllers\PPOBTopUpController;
 use App\Http\Controllers\PreferenceCollectibilityController;
 use App\Http\Controllers\PreferenceIncomeController;
+use App\Http\Controllers\RestoreDataController;
 use App\Http\Controllers\SampleDataController;
 use App\Http\Controllers\SavingsDailyTransferMutationController;
 use App\Http\Controllers\SavingsMandatoryHasntPaidReportController;
@@ -917,10 +919,20 @@ Route::middleware('auth')->group(function () {
     //CreditsDailyMutation pages
     Route::prefix('credits-daily-mutation')->controller(AcctCreditsDailyMutationController::class)->name('crd-daily-mutation.')->group(function () {
         Route::get('/payment',  'payment')->name('payment');
+        Route::get('/ao', 'getOffice')->name('get-ao');
         Route::get('/account',  'account')->name('account');
         Route::post('/payment/viewport',  'paymentViewport')->name('p-viewport');
         Route::post('/account/viewport',  'accountViewport')->name('a-viewport');
     });
+    //Restore pages
+    Route::prefix('restore')->controller(RestoreDataController::class)->name('restore.')->group(function () {
+        Route::get('/',  'index')->name('index');
+        Route::get('/{table}', 'table')->name('table');
+        Route::get('/account',  'account')->name('account');
+        Route::get('/{table}/{col}/{id}', 'restore')->name('data');
+        Route::get('/force/{table}/{col}/{id}','forceDelete')->name('force-delete');
+    });
+   
     //Whatsapp pages
     // Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
     //     Route::get('/', [WhatsappController::class, 'index'])->name('index');

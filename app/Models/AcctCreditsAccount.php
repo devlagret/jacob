@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\NotDeletedScope;
 use Illuminate\Database\Eloquent\Model;
 
 class AcctCreditsAccount extends Model
@@ -35,4 +36,8 @@ class AcctCreditsAccount extends Model
     public function office() {
         return $this->belongsTo(CoreOffice::class,'office_id','office_id');
     }
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope(new NotDeletedScope);
+    // }
 }

@@ -13,6 +13,7 @@ class PagesController extends Controller
      */
     public function index()
     {
+        // dd('foo');
         // Get view file location from menu config
         $view = theme()->getOption('page', 'view');
 
@@ -22,7 +23,8 @@ class PagesController extends Controller
         }
 
         // Get the default inner page
-        return view('inner');
+        // return view('inner');
+        return view('pages.index');
     }
 
     /**

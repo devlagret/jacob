@@ -18,12 +18,6 @@ use Spatie\Permission\Traits\HasRoles;
 class Menu extends \App\Core\Menu
 {
     public function __construct($items, $path = 'index') {
-        // default $items come from menu.php config file
-        $items = array();
-       
-        // you can override the menu $items variable here
-        // get the data from the database and pass it into $items below.
-        // but the format must be the same as the menu.php config.
         $items =  array(
             array(
                 'title'   => 'Beranda',
@@ -162,126 +156,6 @@ class Menu extends \App\Core\Menu
                 ),
             ),
         );
-        // $path   = "index";
-
-
-        // $items  = array();
-        // $menus  = SystemMenu::select('*')
-        // ->where('parent', '#')
-        // ->where('type', '!=', 'function')
-        // ->get();
-        // foreach($menus as $key => $val){
-        //     if(strlen($val['id_menu']) == 1){
-        //         //*ROLE MENU 1
-        //         $role           = array();
-        //         $menu_mapping   = SystemMenuMapping::select('system_user_group.user_group_name')
-        //         ->join('system_user_group', 'system_user_group.user_group_level', 'system_menu_mapping.user_group_level')
-        //         ->where('system_menu_mapping.id_menu', $val['id_menu'])
-        //         ->get();
-        //         foreach($menu_mapping as $role_key => $role_val){
-        //             array_push($role, $role_val['user_group_name']);
-        //         }
-
-        //         //*MENU 2
-        //         $sub            = array();
-        //         $childmenus     = SystemMenu::select('*')
-        //         ->where('parent', $val['id_menu'])
-        //         ->where('type', '!=', 'function')
-        //         ->get();
-        //         foreach($childmenus as $keyy => $vall){
-        //             //*ROLE MENU 2
-        //             $rolesub        = array();
-        //             $menu_mapping   = SystemMenuMapping::select('system_user_group.user_group_name')
-        //             ->join('system_user_group', 'system_user_group.user_group_level', 'system_menu_mapping.user_group_level')
-        //             ->where('system_menu_mapping.id_menu', $vall['id_menu'])
-        //             ->get();
-                    
-        //             foreach($menu_mapping as $role_key => $role_val){
-        //                 array_push($rolesub, $role_val['user_group_name']);
-        //             }
-
-        //             //*MENU 3
-        //             $subsub             = array();
-        //             $childchildmenus    = SystemMenu::select('*')
-        //             ->where('parent', $vall['id_menu'])
-        //             ->where('type', '!=', 'function')
-        //             ->get();
-        //             foreach($childchildmenus as $keyyy => $valll){
-        //                 //*ROLE MENU 3
-        //                 $rolesubsub     = array();
-        //                 $menu_mapping   = SystemMenuMapping::select('system_user_group.user_group_name')
-        //                 ->join('system_user_group', 'system_user_group.user_group_level', 'system_menu_mapping.user_group_level')
-        //                 ->where('system_menu_mapping.id_menu', $valll['id_menu'])
-        //                 ->get();
-        //                 foreach($menu_mapping as $role_key => $role_val){
-        //                     array_push($rolesubsub, $role_val['user_group_name']);
-        //                 }
-
-        //                 $new_sub = array(
-        //                     'title'   => $valll['text'],
-        //                     'bullet'  => '<span class="bullet bullet-dot"></span>',
-        //                     'path'    => $valll['id'],
-        //                     'classes' => array('item' => 'me-lg-1'),
-        //                     'role'    => $rolesub,
-        //                 );
-        //                 array_push($subsub, $new_sub);
-        //             }
-
-        //             //*ASSIGN MENU 2
-        //             if(count($subsub) == 0){
-        //                 $new_sub = array(
-        //                     'title'   => $vall['text'],
-        //                     'bullet'  => '<span class="bullet bullet-dot"></span>',
-        //                     'path'    => $vall['id'],
-        //                     'classes' => array('item' => 'me-lg-1'),
-        //                     'role'    => $rolesub,
-        //                 );
-        //             }else{
-        //                 $new_sub = array(
-        //                     'title'   => $vall['text'],
-        //                     'bullet'  => '<span class="bullet bullet-dot"></span>',
-        //                     'classes'    => array('item' => 'menu-lg-down-accordion me-lg-1', 'arrow' => 'd-lg-right'),
-        //                     'attributes' => array(
-        //                         'data-kt-menu-trigger'   => "hover",
-        //                         'data-kt-menu-placement' => "right-start",
-        //                     ),
-        //                     'role'    => $rolesub,
-        //                     'sub'     => array(
-        //                         'class' => 'menu-sub-lg-down-accordion menu-sub-lg-dropdown menu-rounded-0 py-lg-4 w-lg-225px',
-        //                         'items' => $subsub,
-        //                     ),
-        //                 );
-        //             }
-        //             array_push($sub, $new_sub);
-        //         }
-
-        //         //*ASSIGN MENU 1
-        //         if(count($sub) == 0){
-        //             $menu = array(
-        //                 'title'   => $val['text'],
-        //                 'path'    => $val['id'],
-        //                 'classes' => array('item' => 'me-lg-1'),
-        //                 'role'    => $role,
-        //             );
-        //         }else{
-        //             $menu = array(
-        //                 'title'   => $val['text'],
-        //                 'classes'    => array('item' => 'menu-lg-down-accordion me-lg-1', 'arrow' => 'd-lg-none'),
-        //                 'attributes' => array(
-        //                     'data-kt-menu-trigger'   => "hover",
-        //                     'data-kt-menu-placement' => "bottom-start",
-        //                 ),
-        //                 'role'    => $role,
-        //                 'sub'     => array(
-        //                     'class' => 'menu-sub-lg-down-accordion menu-sub-lg-dropdown menu-rounded-0 py-lg-4 w-lg-225px',
-        //                     'items' => $sub,
-        //                 ),
-        //             );
-        //         }
-        //         array_push($items, $menu);
-        //     }
-        // } 
-        // print_r($items);exit;
 
         parent::__construct($items, $path);
         return $this;
