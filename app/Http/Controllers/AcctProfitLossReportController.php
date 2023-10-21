@@ -66,8 +66,11 @@ class AcctProfitLossReportController extends Controller
         ->orderBy('report_no', 'ASC')
         ->get();
 
+
         $account_income_tax_id = PreferenceCompany::select('account_income_tax_id')
         ->first();
+
+        // dd($acctprofitlossreport_top);
 
         return view('content.AcctProfitLossReport.List.index', compact('monthlist', 'year', 'corebranch', 'profitlossreporttype', 'sessiondata', 'company_name', 'acctprofitlossreport_top', 'acctprofitlossreport_bottom', 'account_income_tax_id'));
     }
@@ -275,53 +278,53 @@ class AcctProfitLossReportController extends Controller
                                         $report_formula 	= explode('#', $valTop['report_formula']);
                                         $report_operator 	= explode('#', $valTop['report_operator']);
 
-                                        $total_account_amount	= 0;
+                                        $total_account_amount1	= 0;
                                         for($i = 0; $i < count($report_formula); $i++){
                                             if($report_operator[$i] == '-'){
-                                                if($total_account_amount == 0 ){
-                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                if($total_account_amount1 == 0 ){
+                                                    $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                                 } else {
-                                                    $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                                    $total_account_amount1 = $total_account_amount1 - $account_amount[$report_formula[$i]];
                                                 }
                                             } else if($report_operator[$i] == '+'){
-                                                if($total_account_amount == 0){
-                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                if($total_account_amount1 == 0){
+                                                    $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                                 } else {
-                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                    $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                                 }
                                             }
                                         }
                                         $export .= "
                                         <tr>
                                             <td><div style='font-weight:".$report_bold."'>".$report_tab."".$valTop['account_name']."</div></td>
-                                            <td style=\"text-align:right;\"><div style='font-weight:".$report_bold."'>".number_format($total_account_amount, 2)."</div></td>
+                                            <td style=\"text-align:right;\"><div style='font-weight:".$report_bold."'>".number_format($total_account_amount1, 2)."</div></td>
                                         </tr>";
                                     }
                                 }
 
-                                if($valTop['report_type'] == 6){
-                                    if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
-                                        $report_formula 	= explode('#', $valTop['report_formula']);
-                                        $report_operator 	= explode('#', $valTop['report_operator']);
+                                // if($valTop['report_type'] == 6){
+                                //     if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
+                                //         $report_formula 	= explode('#', $valTop['report_formula']);
+                                //         $report_operator 	= explode('#', $valTop['report_operator']);
 
-                                        $grand_total_account_amount1	= 0;
-                                        for($i = 0; $i < count($report_formula); $i++){
-                                            if($report_operator[$i] == '-'){
-                                                if($grand_total_account_amount1 == 0 ){
-                                                    $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                                } else {
-                                                    $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
-                                                }
-                                            } else if($report_operator[$i] == '+'){
-                                                if($grand_total_account_amount1 == 0){
-                                                    $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                                } else {
-                                                    $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                //         $grand_total_account_amount1	= 0;
+                                //         for($i = 0; $i < count($report_formula); $i++){
+                                //             if($report_operator[$i] == '-'){
+                                //                 if($grand_total_account_amount1 == 0 ){
+                                //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                //                 } else {
+                                //                     $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
+                                //                 }
+                                //             } else if($report_operator[$i] == '+'){
+                                //                 if($grand_total_account_amount1 == 0){
+                                //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                //                 } else {
+                                //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                //                 }
+                                //             }
+                                //         }
+                                //     }
+                                // }
                             }
 
 		        $export	.= "
@@ -452,7 +455,8 @@ class AcctProfitLossReportController extends Controller
             <td width=\"10%\"></td>
         </tr>";
 
-        $shu = $grand_total_account_amount1 - $grand_total_account_amount2;
+        // $shu = $total_account_amount1 - $grand_total_account_amount2;
+        $shu = $total_account_amount1 - $grand_total_account_amount2;
         
         if($sessiondata['profit_loss_report_type'] == 1){
             $income_tax 	= AcctAccountMutation::where('acct_account_mutation.account_id', $preferencecompany['account_income_tax_id'])
@@ -474,15 +478,7 @@ class AcctProfitLossReportController extends Controller
                 <td style=\"border:1px black solid;\">
                     <table id=\"items\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\">
                         <tr>
-                            <td style=\"width: 75%\"><div style=\"font-weight:bold;font-size:14px\">SHU SEBELUM PAJAK</div></td>
-                            <td style=\"width: 23%; text-align:right;\"><div style=\"font-weight:bold; font-size:14px\">".number_format($shu, 2)."</div></td>
-                        </tr>
-                        <tr>
-                            <td style=\"width: 75%\"><div style=\"font-weight:bold;font-size:14px\">PAJAK PENGHASILAN</div></td>
-                            <td style=\"width: 23%; text-align:right;\"><div style=\"font-weight:bold; font-size:14px\">".number_format($income_tax, 2)."</div></td>
-                        </tr>
-                        <tr>
-                            <td style=\"width: 75%\"><div style=\"font-weight:bold;font-size:14px\">SHU SETELAH PAJAK</div></td>
+                            <td style=\"width: 75%\"><div style=\"font-weight:bold;font-size:14px\">SISA HASIL USAHA</div></td>
                             <td style=\"width: 23%; text-align:right;\"><div style=\"font-weight:bold; font-size:14px\">".number_format($shu - $income_tax, 2)."</div></td>
                         </tr>
                     </table>
@@ -612,8 +608,9 @@ class AcctProfitLossReportController extends Controller
                     $j++;
                 }
                         
-
+                
                 if($valTop['report_type']	== 3){
+                    $account_subtotal = 0;
                     if($sessiondata['profit_loss_report_type'] == 1){
                         $account_subtotal 	= AcctAccountMutation::where('acct_account_mutation.account_id', $valTop['account_id'])
                         ->where('acct_account_mutation.branch_id', $sessiondata['branch_id'])
@@ -630,7 +627,7 @@ class AcctProfitLossReportController extends Controller
 
                     $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valTop['account_name']);
                     $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$account_subtotal);
-
+ 
                     $account_amount[$valTop['report_no']] = $account_subtotal;
                     $j++;
                 }
@@ -641,58 +638,58 @@ class AcctProfitLossReportController extends Controller
                         $report_formula 	= explode('#', $valTop['report_formula']);
                         $report_operator 	= explode('#', $valTop['report_operator']);
 
-                        $total_account_amount	= 0;
+                        $total_account_amount1	= 0;
                         for($i = 0; $i < count($report_formula); $i++){
                             if($report_operator[$i] == '-'){
-                                if($total_account_amount == 0 ){
-                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                if($total_account_amount1 == 0 ){
+                                    $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                 } else {
-                                    $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                    $total_account_amount1 = $total_account_amount1 - $account_amount[$report_formula[$i]];
                                 }
                             } else if($report_operator[$i] == '+'){
-                                if($total_account_amount == 0){
-                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                if($total_account_amount1 == 0){
+                                    $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                 } else {
-                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                    $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                 }
                             }
                         }
 
                         $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valTop['account_name']);
-                        $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$total_account_amount);
+                        $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$total_account_amount1);
 
                         $j++;
                     }
                 }
 
-                if($valTop['report_type'] == 6){
-                    if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
-                        $report_formula 	= explode('#', $valTop['report_formula']);
-                        $report_operator 	= explode('#', $valTop['report_operator']);
+                // if($valTop['report_type'] == 6){
+                //     if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
+                //         $report_formula 	= explode('#', $valTop['report_formula']);
+                //         $report_operator 	= explode('#', $valTop['report_operator']);
 
-                        $grand_total_account_amount1	= 0;
-                        for($i = 0; $i < count($report_formula); $i++){
-                            if($report_operator[$i] == '-'){
-                                if($grand_total_account_amount1 == 0 ){
-                                    $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                } else {
-                                    $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
-                                }
-                            } else if($report_operator[$i] == '+'){
-                                if($grand_total_account_amount1 == 0){
-                                    $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                } else {
-                                    $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                }
-                            }
-                        }
+                //         $grand_total_account_amount1	= 0;
+                //         for($i = 0; $i < count($report_formula); $i++){
+                //             if($report_operator[$i] == '-'){
+                //                 if($grand_total_account_amount1 == 0 ){
+                //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                //                 } else {
+                //                     $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
+                //                 }
+                //             } else if($report_operator[$i] == '+'){
+                //                 if($grand_total_account_amount1 == 0){
+                //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                //                 } else {
+                //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                //                 }
+                //             }
+                //         }
 
-                        $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valTop['account_name']);
-                        $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$grand_total_account_amount1);
+                //         $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valTop['account_name']);
+                //         $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$grand_total_account_amount1);
 
-                        $j++;
-                    }
-                }
+                //         $j++;
+                //     }
+                // }
             }
 
             $j--;
@@ -813,8 +810,10 @@ class AcctProfitLossReportController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B'.$j.':C'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle("B".($j-3).":C".$j)->getFont()->setBold(true);	
 
-            $shu = $grand_total_account_amount1 - $grand_total_account_amount2;
+            // $shu = $grand_total_account_amount1 - $grand_total_account_amount2;
+            $shu = $total_account_amount1 - $grand_total_account_amount2;
             
+            $income_tax = 0;
             if($sessiondata['profit_loss_report_type'] == 1){
                 $income_tax 	= AcctAccountMutation::where('acct_account_mutation.account_id', $preferencecompany['account_id'])
                 ->where('acct_account_mutation.branch_id', $sessiondata['branch_id'])
@@ -829,11 +828,11 @@ class AcctProfitLossReportController extends Controller
                 ->sum('last_balance');
             }
 
-            $spreadsheet->getActiveSheet()->setCellValue('B'.($j-2), "SHU SEBELUM PAJAK");
-            $spreadsheet->getActiveSheet()->setCellValue('C'.($j-2), $shu);
-            $spreadsheet->getActiveSheet()->setCellValue('B'.($j-1), "PAJAK PENGHASILAN");
-            $spreadsheet->getActiveSheet()->setCellValue('C'.($j-1), $income_tax);
-            $spreadsheet->getActiveSheet()->setCellValue('B'.$j, "SHU SETELAH PAJAK");
+            // $spreadsheet->getActiveSheet()->setCellValue('B'.($j-2), "SHU SEBELUM PAJAK");
+            // $spreadsheet->getActiveSheet()->setCellValue('C'.($j-2), $shu);
+            // $spreadsheet->getActiveSheet()->setCellValue('B'.($j-1), "PAJAK PENGHASILAN");
+            // $spreadsheet->getActiveSheet()->setCellValue('C'.($j-1), $income_tax);
+            $spreadsheet->getActiveSheet()->setCellValue('B'.$j, "SISA HASIL USAHA");
             $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $shu - $income_tax);
 
             $i = $j+2;
