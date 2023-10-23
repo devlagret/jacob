@@ -26,7 +26,7 @@ class AcctProfitLossReportController extends Controller
     public function index()
     {
         $sessiondata = session()->get('filter_profitlossreport');
-        dd($sessiondata);
+        // dd($sessiondata);
         if (empty($sessiondata)){
             $sessiondata['start_month_period']          = date('m');
             $sessiondata['end_month_period']            = date('m');
