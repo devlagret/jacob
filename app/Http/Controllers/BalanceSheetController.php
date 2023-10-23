@@ -12,7 +12,9 @@ use App\Models\AcctProfitLoss;
 use App\Models\CoreBranch;
 use App\Models\PreferenceCompany;
 use App\Helpers\Configuration;
-
+use App\Models\AcctAccount;
+use App\Models\AcctAccountBalance;
+use App\Models\AcctJournalVoucher;
 
 class BalanceSheetController extends Controller
 {
@@ -24,6 +26,8 @@ class BalanceSheetController extends Controller
         $corebranch = CoreBranch::select('branch_id','branch_name')
         ->where('data_state',0)
         ->get();
+
+        // dd($session);
         $acctbalancesheetreport_left = AcctBalanceSheetReport::select('acct_balance_sheet_report.balance_sheet_report_id', 'acct_balance_sheet_report.report_no', 'acct_balance_sheet_report.account_id1', 'acct_balance_sheet_report.account_code1', 'acct_balance_sheet_report.account_name1', 'acct_balance_sheet_report.report_formula1', 'acct_balance_sheet_report.report_operator1', 'acct_balance_sheet_report.report_type1', 'acct_balance_sheet_report.report_tab1', 'acct_balance_sheet_report.report_bold1', 'acct_balance_sheet_report.report_formula3', 'acct_balance_sheet_report.report_operator3')
         ->from('acct_balance_sheet_report')
         ->where('acct_balance_sheet_report.account_name1','!=','')
@@ -60,17 +64,56 @@ class BalanceSheetController extends Controller
 
     public static function getLastBalance($account_id, $branch_id, $month, $year)
     {
-        $data = AcctAccountOpeningBalance::where('account_id', $account_id)
-        ->where('month_period', $month)
-        ->where('year_period', $year)
-        ->where('branch_id', $branch_id)
-        ->first();
+        // $data = AcctAccountOpeningBalance::where('account_id', $account_id)
+        // ->where('month_period', $month)
+        // ->where('year_period', $year)
+        // ->where('branch_id', $branch_id)
+        // ->first();
         
-        if (empty($data)) {
-            return 0;
-        } else {
-            return $data->opening_balance;
+        // if (empty($data)) {
+        //     return 0;
+        // } else {
+        //     return $data->opening_balance;
+        // }
+
+
+        $data = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+        ->select('acct_journal_voucher_item.journal_voucher_amount', 'acct_journal_voucher_item.account_id_status')
+        ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
+        ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
+        ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
+        ->where('acct_journal_voucher.data_state', 0)
+        ->where('acct_journal_voucher.branch_id', $branch_id)
+        ->where('acct_journal_voucher_item.account_id', $account_id)
+        // ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
+        ->get();
+        $data_first = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+            ->select('acct_journal_voucher_item.account_id_status')
+            ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
+            ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
+            ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
+            ->where('acct_journal_voucher.data_state', 0)
+            ->where('acct_journal_voucher.branch_id', $branch_id)
+            // ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
+            ->where('acct_journal_voucher_item.account_id', $account_id)
+            ->first();
+
+        $amount = 0;
+        $amount1 = 0;
+        $amount2 = 0;
+        foreach ($data as $key => $val) {
+
+            if ($val['account_id_status'] == $data_first['account_id_status']) {
+                $amount1 += $val['journal_voucher_amount'];
+            } else {
+                $amount2 += $val['journal_voucher_amount'];
+            }
+            $amount = $amount1 - $amount2;
         }
+        //dd($amount);
+        return $amount;
+
+
     }
 
     public static function getSHUTahunLalu($branch_id, $month, $year)
@@ -324,12 +367,12 @@ class BalanceSheetController extends Controller
                                             }
                                         }
 
-                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $total_account_amount1;
+                                        // $grand_total_account_amount1 = $grand_total_account_amount1 + $total_account_amount1;
 
                                         $tblitem_left5 = "
                                             <tr>
                                                 <td><div style=\"font-weight:".$report_bold1."\">".$report_tab1."".$valLeft['account_name1']."</div></td>
-                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold1."\">".number_format($total_account_amount1+$total_account_amount10, 2)."</div></td>
+                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold1."\">".number_format($total_account_amount1, 2)."</div></td>
                                             </tr>";
                                     } else {
                                         $tblitem_left5 = "";
@@ -350,32 +393,32 @@ class BalanceSheetController extends Controller
                                         $report_formula1 	= explode('#', $valLeft['report_formula1']);
                                         $report_operator1 	= explode('#', $valLeft['report_operator1']);
 
-                                        $total_account_amount10	= 0;
+                                        $total_account_amount1	= 0;
                                         for($i = 0; $i < count($report_formula1); $i++){
                                             if($report_operator1[$i] == '-'){
-                                                if($total_account_amount10 == 0 ){
-                                                    $total_account_amount10 = $total_account_amount10 + $account_amount10_top[$report_formula1[$i]];
+                                                if($total_account_amount1 == 0 ){
+                                                    $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                                 } else {
-                                                    $total_account_amount10 = $total_account_amount10 - $account_amount10_top[$report_formula1[$i]];
+                                                    $total_account_amount1 = $total_account_amount1 - $account_amount1_top[$report_formula1[$i]];
                                                 }
                                             } else if($report_operator1[$i] == '+'){
-                                                if($total_account_amount10 == 0){
-                                                    $total_account_amount10 = $total_account_amount10 + $account_amount10_top[$report_formula1[$i]];
+                                                if($total_account_amount1 == 0){
+                                                    $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                                 } else {
-                                                    $total_account_amount10 = $total_account_amount10 + $account_amount10_top[$report_formula1[$i]];
+                                                    $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                                 }
                                             }
                                         }
 
-                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $total_account_amount10;
+                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $total_account_amount1;
 
-                                        $tblitem_left10 = "
+                                        $tblitem_left5 = "
                                             <tr>
                                                 <td><div style=\"font-weight:".$report_bold1."\">".$report_tab1."".$valLeft['account_name1']."</div></td>
-                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold1."\">".number_format($total_account_amount10, 2)."</div></td>
+                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold1."\">".number_format($grand_total_account_amount1, 2)."</div></td>
                                             </tr>";
                                     } else {
-                                        $tblitem_left10 = "";
+                                        $tblitem_left5 = "";
                                     }
                                 } else {
                                     $tblitem_left10 = "";
@@ -465,7 +508,7 @@ class BalanceSheetController extends Controller
                                             }
                                         }
 
-                                        $grand_total_account_amount2 = $grand_total_account_amount2 + $total_account_amount2;
+                                        // $grand_total_account_amount2 = $grand_total_account_amount2 + $total_account_amount2;
 
                                         $tblitem_right5 = "
                                             <tr>
@@ -490,34 +533,34 @@ class BalanceSheetController extends Controller
                                         $report_formula2 	= explode('#', $valRight['report_formula2']);
                                         $report_operator2 	= explode('#', $valRight['report_operator2']);
 
-                                        $total_account_amount210	= 0;
+                                        $total_account_amount2	= 0;
                                         for($i = 0; $i < count($report_formula2); $i++){
                                             if($report_operator2[$i] == '-'){
-                                                if($total_account_amount210 == 0 ){
-                                                    $total_account_amount210 = $total_account_amount210 + $account_amount210_top[$report_formula2[$i]];
+                                                if($total_account_amount2 == 0 ){
+                                                    $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
                                                 } else {
-                                                    $total_account_amount210 = $total_account_amount210 - $account_amount210_top[$report_formula2[$i]];
+                                                    $total_account_amount2 = $total_account_amount2 - $account_amount2_bottom[$report_formula2[$i]];
                                                 }
-                                            } else if($report_operator1[$i] == '+'){
-                                                if($total_account_amount210 == 0){
-                                                    $total_account_amount210 = $total_account_amount210 + $account_amount210_top[$report_formula2[$i]];
+                                            } else if($report_operator2[$i] == '+'){
+                                                if($total_account_amount2 == 0){
+                                                    $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
                                                 } else {
-                                                    $total_account_amount210 = $total_account_amount210 + $account_amount210_top[$report_formula2[$i]];
+                                                    $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
                                                 }
                                             }
                                         }
 
-                                        $grand_total_account_amount2 = $grand_total_account_amount2 + $total_account_amount210;
+                                        $grand_total_account_amount2 = $grand_total_account_amount2 + $total_account_amount2;
 
-                                        $tblitem_right10 = "
+                                        $tblitem_right5 = "
                                             <tr>
                                                 <td><div style=\"font-weight:".$report_bold2."\">".$report_tab2."".$valRight['account_name2']."</div></td>
-                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($total_account_amount210, 2)."</div></td>
+                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($grand_total_account_amount2, 2)."</div></td>
                                             </tr>";
                                     } else {
-                                        $tblitem_right10 = "";
+                                        $tblitem_right5 = "";
                                     }
-                                } else {
+                                }  else {
                                     $tblitem_right10 = "";
                                 }
 
@@ -781,27 +824,27 @@ class BalanceSheetController extends Controller
                             $report_formula1 	= explode('#', $valLeft['report_formula1']);
                             $report_operator1 	= explode('#', $valLeft['report_operator1']);
 
-                            $total_account_amount10	= 0;
+                            $total_account_amount1	= 0;
                             for($i = 0; $i < count($report_formula1); $i++){
                                 if($report_operator1[$i] == '-'){
-                                    if($total_account_amount10 == 0 ){
-                                        $total_account_amount10 = $total_account_amount10 + $account_amount10_top[$report_formula1[$i]];
+                                    if($total_account_amount1 == 0 ){
+                                        $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                     } else {
-                                        $total_account_amount10 = $total_account_amount10 - $account_amount10_top[$report_formula1[$i]];
+                                        $total_account_amount1 = $total_account_amount1 - $account_amount1_top[$report_formula1[$i]];
                                     }
                                 } else if($report_operator1[$i] == '+'){
-                                    if($total_account_amount10 == 0){
-                                        $total_account_amount10 = $total_account_amount10 + $account_amount10_top[$report_formula1[$i]];
+                                    if($total_account_amount1 == 0){
+                                        $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                     } else {
-                                        $total_account_amount10 = $total_account_amount10 + $account_amount10_top[$report_formula1[$i]];
+                                        $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                     }
                                 }
                             }
 
                             $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab1.$valLeft['account_name1']);
-                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab1.$total_account_amount10);
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab1.($total_account_amount1));
                             
-                            $grand_total_account_amount1 +=  $total_account_amount10;
+                            $grand_total_account_amount1 =  $total_account_amount1;
                         }
                     }
                 }else{
@@ -906,27 +949,28 @@ class BalanceSheetController extends Controller
                             $report_formula2 	= explode('#', $valRight['report_formula2']);
                             $report_operator2 	= explode('#', $valRight['report_operator2']);
 
-                            $total_account_amount210	= 0;
+                            $total_account_amount2	= 0;
                             for($i = 0; $i < count($report_formula2); $i++){
                                 if($report_operator2[$i] == '-'){
-                                    if($total_account_amount210 == 0 ){
-                                        $total_account_amount210 = $total_account_amount210 + $account_amount210_top[$report_formula2[$i]];
+                                    if($total_account_amount2 == 0 ){
+                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
                                     } else {
-                                        $total_account_amount210 = $total_account_amount210 - $account_amount210_top[$report_formula2[$i]];
+                                        $total_account_amount2 = $total_account_amount2 - $account_amount2_bottom[$report_formula2[$i]];
                                     }
                                 } else if($report_operator2[$i] == '+'){
-                                    if($total_account_amount210 == 0){
-                                        $total_account_amount210 = $total_account_amount210 + $account_amount210_top[$report_formula2[$i]];
+                                    if($total_account_amount2 == 0){
+                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
                                     } else {
-                                        $total_account_amount210 = $total_account_amount210 + $account_amount210_top[$report_formula2[$i]];
+                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
                                     }
                                 }
                             }
 
-                            $spreadsheet->getActiveSheet()->setCellValue('D'.$j, $report_tab1.$valRight['account_name2']);
-                            $spreadsheet->getActiveSheet()->setCellValue('E'.$j, $report_tab1.$total_account_amount210);
+                            $spreadsheet->getActiveSheet()->setCellValue('D'.$j, $report_tab2.$valRight['account_name2']);
+                            $spreadsheet->getActiveSheet()->setCellValue('E'.$j, $report_tab2.$total_account_amount2);
+
                             
-                            $grand_total_account_amount2 +=  $total_account_amount210;
+                            $grand_total_account_amount2 = $total_account_amount2;
                         }
                     }
                 }else{

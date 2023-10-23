@@ -16,6 +16,7 @@ use App\Models\PreferenceCompany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
+use App\Models\AcctJournalVoucher;
 use Elibyy\TCPDF\Facades\TCPDF;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -1245,21 +1246,63 @@ class AcctProfitLossReportController extends Controller
         return redirect('profit-loss-report')->with($message);
     }
 
-    public static function getAccountAmount($account_id, $month_start, $month_end, $year, $profit_loss_report_type, $branch_id){
-        if($profit_loss_report_type == 1){
-            $account_amount = AcctAccountMutation::where('account_id', $account_id)
-            ->where('branch_id', $branch_id)
-            ->where('month_period', '>=', $month_start)
-            ->where('month_period', '<=', $month_end)
-            ->where('year_period', $year)
-            ->sum('last_balance');
-        }else if($profit_loss_report_type == 2){
-            $account_amount = AcctAccountMutation::where('account_id', $account_id)
-            ->where('branch_id', $branch_id)
-            ->where('year_period', $year)
-            ->sum('last_balance');
-        }
+    public static function getAccountAmount($account_id, $month_start, $month_end, $year, $branch_id){
+        // if($profit_loss_report_type == 1){
+        //     $account_amount = AcctAccountMutation::where('account_id', $account_id)
+        //     ->where('branch_id', $branch_id)
+        //     ->where('month_period', '>=', $month_start)
+        //     ->where('month_period', '<=', $month_end)
+        //     ->where('year_period', $year)
+        //     ->sum('last_balance');
+        // }else if($profit_loss_report_type == 2){
+        //     $account_amount = AcctAccountMutation::where('account_id', $account_id)
+        //     ->where('branch_id', $branch_id)
+        //     ->where('year_period', $year)
+        //     ->sum('last_balance');
+        // }
         
-        return $account_amount;
+        // return $account_amount;
+
+
+        $data = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+        ->select('acct_journal_voucher_item.journal_voucher_amount', 'acct_journal_voucher_item.account_id_status')
+        ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', $month_start)
+        ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month_end)
+        ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
+        ->where('acct_journal_voucher.data_state', 0)
+        ->where('acct_journal_voucher.branch_id', $branch_id)
+        ->where('acct_journal_voucher_item.account_id', $account_id)
+        // ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
+        ->get();
+        $data_first = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+            ->select('acct_journal_voucher_item.account_id_status')
+            ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
+            ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month_end)
+            ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
+            ->where('acct_journal_voucher.data_state', 0)
+            ->where('acct_journal_voucher.branch_id', $branch_id)
+            // ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
+            ->where('acct_journal_voucher_item.account_id', $account_id)
+            ->first();
+
+        $amount = 0;
+        $amount1 = 0;
+        $amount2 = 0;
+        foreach ($data as $key => $val) {
+
+            if ($val['account_id_status'] == $data_first['account_id_status']) {
+                $amount1 += $val['journal_voucher_amount'];
+            } else {
+                $amount2 += $val['journal_voucher_amount'];
+            }
+            $amount = $amount1 - $amount2;
+        }
+        //dd($amount);
+        return $amount;
+
+
+
+
+
     }
 }
