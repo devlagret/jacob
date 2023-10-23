@@ -222,18 +222,20 @@
                                                                 $grand_total_account_name1  = $val['account_name1'];
                                                                 $report_formula1 	        = explode('#', $val['report_formula1']);
                                                                 $report_operator1 	        = explode('#', $val['report_operator1']);
-
+                                                                // $count = $account_amount1_top[$report_formula1[$i]];
                                                                 $total_account_amount1	= 0;
                                                                 for($i = 0; $i < count($report_formula1); $i++){
                                                                     if($report_operator1[$i] == '-'){
                                                                         if($total_account_amount1 == 0 ){
                                                                             $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
-                                                                        } else {
+                                                                        }
+                                                                         else {
                                                                             $total_account_amount1 = $total_account_amount1 - $account_amount1_top[$report_formula1[$i]];
                                                                         }
-                                                                    } else if($report_operator1[$i] == '+'){
+                                                                     }
+                                                                    else if($report_operator1[$i] == '+'){
                                                                         if($total_account_amount1 == 0){
-                                                                            $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
+                                                                           $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                                                         } else {
                                                                             $total_account_amount1 = $total_account_amount1 + $account_amount1_top[$report_formula1[$i]];
                                                                         }
@@ -384,7 +386,8 @@
                                                             $grand_total_account_name2  = $val['account_name2'];
                                                             $report_formula2 	        = explode('#', $val['report_formula2']);
                                                             $report_operator2 	        = explode('#', $val['report_operator2']);
-
+                                                            // $baris= count($report_formula2);
+                                                            // $report = $report_operator2[];
                                                             $total_account_amount2	= 0;
                                                             for($i = 0; $i < count($report_formula2); $i++){
                                                                 if($report_operator2[$i] == '-'){
@@ -406,7 +409,7 @@
 
                                                             echo "
                                                                 <td><div style='font-weight:".$report_bold2."'>".$report_tab2."".$val['account_name2']."</div></td>
-                                                                <td style='text-align:right'><div style='font-weight:".$report_bold2."'>".number_format($total_account_amount2+$total_account_amount210, 2)."</div></td>
+                                                                <td style='text-align:right'><div style='font-weight:".$report_bold2."'>".number_format($grand_total_account_amount2, 2)."</div></td>
                                                             ";
                                                         }	
                                                     }

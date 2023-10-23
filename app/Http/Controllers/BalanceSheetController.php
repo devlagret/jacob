@@ -34,6 +34,7 @@ class BalanceSheetController extends Controller
         ->orderBy('acct_balance_sheet_report.report_no', 'ASC')
         ->get();
 
+        // dd($acctbalancesheetreport_left,$acctbalancesheetreport_right);
         return view('content.BalanceSheet.index', compact('preferencecompany','acctbalancesheetreport_left','acctbalancesheetreport_right','monthlist','corebranch','session'));
     }
 
@@ -469,7 +470,7 @@ class BalanceSheetController extends Controller
                                         $tblitem_right5 = "
                                             <tr>
                                                 <td><div style=\"font-weight:".$report_bold2."\">".$report_tab2."".$valRight['account_name2']."</div></td>
-                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($total_account_amount2+$total_account_amount210, 2)."</div></td>
+                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($total_account_amount2, 2)."</div></td>
                                             </tr>";
                                     } else {
                                         $tblitem_right5 = "";
@@ -757,7 +758,7 @@ class BalanceSheetController extends Controller
                             }
 
                             $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab1.$valLeft['account_name1']);
-                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab1.($total_account_amount1+$total_account_amount10));
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab1.($total_account_amount1));
                             
                             $grand_total_account_amount1 +=  $total_account_amount1;
                         }
@@ -883,7 +884,7 @@ class BalanceSheetController extends Controller
                             }
 
                             $spreadsheet->getActiveSheet()->setCellValue('D'.$j, $report_tab2.$valRight['account_name2']);
-                            $spreadsheet->getActiveSheet()->setCellValue('E'.$j, $report_tab2.$total_account_amount2+$total_account_amount210);
+                            $spreadsheet->getActiveSheet()->setCellValue('E'.$j, $report_tab2.$total_account_amount2);
 
                             
                             $grand_total_account_amount2 += $total_account_amount2;
