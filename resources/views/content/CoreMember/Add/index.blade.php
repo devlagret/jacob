@@ -302,6 +302,15 @@ function changePartnerWorkingType(name = null,value = null){
         $('.partner-business').each(function(){$(this).css('display','none')});
     }
 }
+function changeMatitalStatus(name, value) {
+    console.log(value);
+    function_elements_add(name,value);
+    if(value == 2 && value != ''){
+        $('#partner-el').hide();
+    }else{
+        $('#partner-el').show();
+    }
+ }
 $(document).ready(function(){
     changeWorkingType();changePartnerWorkingType();changeProvince();
     $("#member_principal_savings_view").change(function(){
@@ -310,7 +319,11 @@ $(document).ready(function(){
         document.getElementById("member_principal_savings_view").value  = toRp(member_principal_savings);
         function_elements_add('member_principal_savings', member_principal_savings);
     });
-
+    if($('#member_marital_status').val()== 2&&$('#member_marital_status').val()!= ''){
+        $('#partner-el').hide();
+    }else{
+        $('#partner-el').show();
+    }
     $("#member_monthly_income_view").change(function(){
         var member_monthly_income                                    = $("#member_monthly_income_view").val();
         document.getElementById("member_monthly_income").value       = member_monthly_income;
@@ -435,7 +448,7 @@ $(document).ready(function(){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Status Pernikahan') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <select name="member_marital_status" id="member_marital_status" aria-label="{{ __('Pilih Status Pernikahan') }}" data-control="select2" data-placeholder="{{ __('Pilih status pernikahan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
+                                    <select name="member_marital_status" id="member_marital_status" aria-label="{{ __('Pilih Status Pernikahan') }}" data-control="select2" data-placeholder="{{ __('Pilih status pernikahan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changeMatitalStatus(this.name, this.value)">
                                         <option value="">{{ __('Pilih status pernikahan..') }}</option>
                                         @foreach($maritalstatus as $key => $value)
                                             <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('member_marital_status', (int)$sessiondata['member_marital_status'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
@@ -507,6 +520,7 @@ $(document).ready(function(){
                                     </select>
                                  </div>
                             </div>
+                            <div class="partner-el" id="partner-el">
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 ">{{ __('Nama Pasangan') }}</label>
                                 <div class="col-lg-8 fv-row">
@@ -522,8 +536,9 @@ $(document).ready(function(){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 ">{{ __('Tanggal Lahir Pasangan') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input placeholder="Tanggal Lahir Pasangan" name="member_partner_date_of_birth" id="member_partner_date_of_birth" class="date form-control form-control-solid form-select-lg"  value="{{ old('member_partner_date_of_birth', date('d-m-Y',strtotime($sessiondata['member_partner_date_of_birth']))) ?? '' }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
+                                    <input type ="date"  placeholder="Tanggal Lahir Pasangan" name="member_partner_date_of_birth" id="member_partner_date_of_birth" class="date form-control form-control-solid form-select-lg"  value="{{ old('member_partner_date_of_birth', $sessiondata['member_partner_date_of_birth'] ?? '' )}}" onchange="function_elements_add(this.name, this.value)"/>
                                </div>
+                            </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Email') }}</label>
