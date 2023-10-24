@@ -90,7 +90,8 @@ class AcctSavingsCashMutationController extends Controller
 
         $acctsavingsaccount     = array();
         if(isset($sessiondata['savings_account_id'])){
-            $acctsavingsaccount = AcctSavingsAccount::select('core_member.member_id', 'core_member.member_name', 'core_member.member_address', 'core_member.member_mother', 'core_member.member_identity_no', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'acct_savings_account.unblock_state', 'acct_savings_account.savings_account_pickup_date', 'acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_id', 'acct_savings_account.savings_account_last_balance', 'acct_savings.savings_name')
+            $acctsavingsaccount = AcctSavingsAccount::select('core_member.member_id', 'core_member.member_name', 'core_member.member_address', 'core_member.member_mother', 'core_member.member_identity_no', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'acct_savings_account.unblock_state', 'acct_savings_account.savings_account_pickup_date', 'acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_id', 
+            'acct_savings_account.savings_account_opening_balance','acct_savings_account.savings_account_last_balance', 'acct_savings.savings_name')
             ->join('acct_savings', 'acct_savings.savings_id', '=', 'acct_savings_account.savings_id')
             ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
             ->join('core_city', 'core_city.city_id', '=', 'core_member.city_id')
@@ -126,6 +127,8 @@ class AcctSavingsCashMutationController extends Controller
     {
         $preferencecompany = PreferenceCompany::first();
 
+        // dd($request->all());
+
         $fields = request()->validate([
             'savings_account_id'            => ['required'],
             'mutation_id'                   => ['required'],
@@ -142,7 +145,8 @@ class AcctSavingsCashMutationController extends Controller
                 'member_id'                             => $request->member_id,
                 'savings_id'                            => $request->savings_id,
                 'savings_cash_mutation_date'            => date('Y-m-d', strtotime($fields['savings_cash_mutation_date'])),
-                'savings_cash_mutation_opening_balance' => $request->savings_cash_mutation_opening_balance,
+                // 'savings_cash_mutation_opening_balance' => $request->savings_cash_mutation_opening_balance,
+                'savings_cash_mutation_opening_balance' => $request->savings_cash_mutation_last_balance,
                 'savings_cash_mutation_amount'          => $fields['savings_cash_mutation_amount'],
                 'savings_cash_mutation_amount_adm'      => $request->savings_cash_mutation_amount_adm,
                 'savings_cash_mutation_last_balance'    => $request->savings_cash_mutation_last_balance,
@@ -151,6 +155,7 @@ class AcctSavingsCashMutationController extends Controller
                 'operated_name'                         => auth()->user()->username,
                 'created_id'                            => auth()->user()->user_id,
             );
+            // dd($data);
             AcctSavingsCashMutation::create($data);
 
 			$transaction_module_code 		= "TTAB";
