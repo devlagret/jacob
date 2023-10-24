@@ -176,57 +176,57 @@ if (empty($sessiondata)){
                                                             $report_formula 	= explode('#', $val['report_formula']);
                                                             $report_operator 	= explode('#', $val['report_operator']);
 
-                                                            $total_account_amount	= 0;
+                                                            $total_account_amount1	= 0;
                                                             for($i = 0; $i < count($report_formula); $i++){
                                                                 if($report_operator[$i] == '-'){
-                                                                    if($total_account_amount == 0 ){
-                                                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                                    if($total_account_amount1 == 0 ){
+                                                                        $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                                                     } else {
-                                                                        $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                                                        $total_account_amount1 = $total_account_amount1 - $account_amount[$report_formula[$i]];
                                                                     }
                                                                 } else if($report_operator[$i] == '+'){
-                                                                    if($total_account_amount == 0){
-                                                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                                    if($total_account_amount1 == 0){
+                                                                        $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                                                     } else {
-                                                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                                        $total_account_amount1 = $total_account_amount1 + $account_amount[$report_formula[$i]];
                                                                     }
                                                                 }
                                                             }
 
                                                             echo "
                                                             <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
-                                                            <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($total_account_amount, 2)."</div></td>";
+                                                            <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($total_account_amount1, 2)."</div></td>";
                                                         }
                                                     }
 
                                                     echo "</tr>";
 
-                                                    if($val['report_type'] == 6){
-                                                        if(!empty($val['report_formula']) && !empty($val['report_operator'])){
-                                                            $report_formula 	= explode('#', $val['report_formula']);
-                                                            $report_operator 	= explode('#', $val['report_operator']);
+                                                    // if($val['report_type'] == 6){
+                                                    //     if(!empty($val['report_formula']) && !empty($val['report_operator'])){
+                                                    //         $report_formula 	= explode('#', $val['report_formula']);
+                                                    //         $report_operator 	= explode('#', $val['report_operator']);
                                                             
-                                                            $grand_total_account_amount1	= 0;
-                                                            for($i = 0; $i < count($report_formula); $i++){
-                                                                if($report_operator[$i] == '-'){
-                                                                    if($grand_total_account_amount1 == 0 ){
-                                                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                                                    } else {
-                                                                        $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
-                                                                    }
-                                                                } else if($report_operator[$i] == '+'){
-                                                                    if($grand_total_account_amount1 == 0){
-                                                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                                                    } else {
-                                                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
-                                                                    }
-                                                                }
-                                                            }
-                                                            echo "
-                                                            <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
-                                                            <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($grand_total_account_amount1, 2)."</div></td>";
-                                                        }
-                                                    }
+                                                    //         $grand_total_account_amount1	= 0;
+                                                    //         for($i = 0; $i < count($report_formula); $i++){
+                                                    //             if($report_operator[$i] == '-'){
+                                                    //                 if($grand_total_account_amount1 == 0 ){
+                                                    //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                                    //                 } else {
+                                                    //                     $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
+                                                    //                 }
+                                                    //             } else if($report_operator[$i] == '+'){
+                                                    //                 if($grand_total_account_amount1 == 0){
+                                                    //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                                    //                 } else {
+                                                    //                     $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                                    //                 }
+                                                    //             }
+                                                    //         }
+                                                    //         echo "
+                                                    //         <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                                    //         <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($grand_total_account_amount1, 2)."</div></td>";
+                                                    //     }
+                                                    // }
                                                 }
                                             ?>
                                         </table>
@@ -284,26 +284,26 @@ if (empty($sessiondata)){
                                                             $report_formula 	= explode('#', $val['report_formula']);
                                                             $report_operator 	= explode('#', $val['report_operator']);
 
-                                                            $total_account_amount	= 0;
+                                                            $total_account_amount2	= 0;
                                                             for($i = 0; $i < count($report_formula); $i++){
                                                                 if($report_operator[$i] == '-'){
-                                                                    if($total_account_amount == 0 ){
-                                                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                                    if($total_account_amount2 == 0 ){
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount[$report_formula[$i]];
                                                                     } else {
-                                                                        $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                                                        $total_account_amount2 = $total_account_amount2 - $account_amount[$report_formula[$i]];
                                                                     }
                                                                 } else if($report_operator[$i] == '+'){
-                                                                    if($total_account_amount == 0){
-                                                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                                    if($total_account_amount2 == 0){
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount[$report_formula[$i]];
                                                                     } else {
-                                                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount[$report_formula[$i]];
                                                                     }
                                                                 }
                                                             }
 
                                                             echo "
                                                             <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
-                                                            <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($total_account_amount, 2)."</div></td>";
+                                                            <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($total_account_amount2, 2)."</div></td>";
                                                         }
                                                     }
 
@@ -346,44 +346,13 @@ if (empty($sessiondata)){
                                             <tr>
                                                 <td style="width: 70%">
                                                     <div style='font-weight:bold; font-size:16px'>
-                                                        SHU SEBELUM PAJAK
+                                                        SISA HASIL USAHA
                                                     </div>
                                                 </td >
                                                 <td style="width: 25%; text-align:right" >
                                                     <div style='font-weight:bold; font-size:16px'>
                                                         <?php
-                                                            $shu = $grand_total_account_amount1 - $grand_total_account_amount2;
-                                                            echo number_format($shu, 2);
-                                                        ?>	
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 70%">
-                                                    <div style='font-weight:bold; font-size:16px'>
-                                                        PAJAK PENGHASILAN
-                                                    </div>
-                                                </td >
-                                                <td style="width: 25%; text-align:right" >
-                                                    <div style='font-weight:bold; font-size:16px'>
-                                                        <?php
-                                                            $income_tax 	= AcctProfitLossReportController::getAccountAmount($account_income_tax_id, $sessiondata['start_month_period'], $sessiondata['end_month_period'], $sessiondata['year_period'], $sessiondata['profit_loss_report_type'], $sessiondata['branch_id']);
-
-                                                            echo number_format($income_tax, 2);
-                                                        ?>	
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 70%">
-                                                    <div style='font-weight:bold; font-size:16px'>
-                                                        SHU SESUDAH PAJAK
-                                                    </div>
-                                                </td >
-                                                <td style="width: 25%; text-align:right" >
-                                                    <div style='font-weight:bold; font-size:16px'>
-                                                        <?php
-                                                            $shu = $grand_total_account_amount1 - $grand_total_account_amount2 - $income_tax;
+                                                            $shu = $total_account_amount1 - $grand_total_account_amount2;
                                                             echo number_format($shu, 2);
                                                         ?>	
                                                     </div>
