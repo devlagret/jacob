@@ -94,28 +94,35 @@ class MemberSavingsTransferMutationController extends Controller
         $memberses = session()->get('session_member');
         $savingsaccount = session()->get('session_savingsaccount');
 
-        $data = array(
-            'branch_id'										=> auth()->user()->branch_id,
-            'member_id'										=> $memberses['member_id'],
-            'savings_id'									=> $savingsaccount['savings_id'],
-            'savings_account_id'							=> $savingsaccount['savings_account_id'],
-            'mutation_id'									=> $request->mutation_id,
-            'member_transfer_mutation_date'					=> date('Y-m-d',strtotime($request->member_transfer_mutation_date)),
-            'member_mandatory_savings_opening_balance'		=> $request->member_mandatory_savings_last_balance,
-            'member_mandatory_savings'						=>$request->member_mandatory_savings,
-            'member_mandatory_savings_last_balance'			=> $request->member_mandatory_savings_last_balance + $request->member_mandatory_savings,
-            'operated_name'									=> auth()->user()->username,
-            'created_id'									=> auth()->user()->user_id,
-        );
-
-        $transaction_module_code = "AGTTR";
-        $transaction_module_id 	= PreferenceTransactionModule::where('transaction_module_code',$transaction_module_code)
-        ->first()
-        ->transaction_module_id;
+        
+        // dd($request->all());
 
         DB::beginTransaction();
 
         try {
+
+
+            $data = array(
+                'branch_id'										=> auth()->user()->branch_id,
+                'member_id'										=> $memberses['member_id'],
+                'savings_id'									=> $savingsaccount['savings_id'],
+                'savings_account_id'							=> $savingsaccount['savings_account_id'],
+                'mutation_id'									=> $request->mutation_id,
+                'member_transfer_mutation_date'					=> date('Y-m-d',strtotime($request->member_transfer_mutation_date)),
+                'member_mandatory_savings_opening_balance'		=> $request->member_mandatory_savings_last_balance,
+                'member_mandatory_savings'						=> $request->member_mandatory_savings,
+                'member_mandatory_savings_last_balance'			=> $request->member_mandatory_savings_last_balance + $request->member_mandatory_savings,
+                'operated_name'									=> auth()->user()->username,
+                'created_id'									=> auth()->user()->user_id,
+            );
+    
+            // dd($data);
+
+            //create jurnal
+            $transaction_module_code = "AGTTR";
+            $transaction_module_id 	= PreferenceTransactionModule::where('transaction_module_code',$transaction_module_code)
+            ->first()
+            ->transaction_module_id;
 
             CoreMemberTransferMutation::create($data);
 
@@ -125,6 +132,7 @@ class MemberSavingsTransferMutationController extends Controller
             ->where('core_member_transfer_mutation.created_id',$data['created_id'])
             ->first();
             $journal_voucher_period = date("Ym", strtotime($data['member_transfer_mutation_date']));
+            
             
             $data_journal = array(
                 'branch_id'						=> auth()->user()->branch_id,
@@ -138,7 +146,7 @@ class MemberSavingsTransferMutationController extends Controller
                 'transaction_journal_no' 		=> $membertransfer_last->member_no,
                 'created_id' 					=> $data['created_id'],
             );
-
+            // dd($data_journal);
             AcctJournalVoucher::create($data_journal);
 
             $journal_voucher_id = AcctJournalVoucher::where('created_id',$data['created_id'])
@@ -164,7 +172,7 @@ class MemberSavingsTransferMutationController extends Controller
                 'created_id'					=> auth()->user()->user_id,
                 'account_id_default_status'		=> $account_id_default_status,
             );
-
+            // dd($data_debet);
             AcctJournalVoucherItem::create($data_debet);
 
             $account_id = AcctSavings::where('savings_id', $preferencecompany['mandatory_savings_id'])
@@ -185,14 +193,15 @@ class MemberSavingsTransferMutationController extends Controller
                 'created_id'					=> auth()->user()->user_id,
                 'account_id_default_status'		=> $account_id_default_status,
             );
-
+            // dd($data_credit);
             AcctJournalVoucherItem::create($data_credit);
-
+           
             DB::commit();
             $message = array(
                 'pesan' => 'Data Debit Simpanan Wajib berhasil ditambah',
                 'alert' => 'success'
             );
+            
             return redirect('member-savings-transfer-mutation')->with($message);
         } catch (\Exception $e) {
             DB::rollback();

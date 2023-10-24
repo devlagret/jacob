@@ -257,7 +257,7 @@ if(empty($sessiondata)){
                                     </select>
                                 </div>
                             </div>
-                            @php  if( strtotime($acctsavingsaccount['savings_account_pickup_date']) > strtotime('now') && $acctsavingsaccount['unblock_state'] == 0) {
+                            @php  if( strtotime($acctsavingsaccount['savings_account_pickup_date'] ?? '') > strtotime('now') && $acctsavingsaccount['unblock_state'] == 0) {
                                         if (($key=  $acctmutation->where('mutation_name','Pengambilan Via Bank')->pluck('mutation_id')) != false) {
                                             $acctmutation = $acctmutation->except($key[0]);
 										} 

@@ -238,7 +238,7 @@ if(empty($sessiondata)){
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Sandi') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     @php
-                                    if( strtotime($acctsavingsaccount['savings_account_pickup_date']) > strtotime('now') && $acctsavingsaccount['unblock_state'] == 0) {
+                                    if( strtotime($acctsavingsaccount['savings_account_pickup_date'] ?? '' ) > strtotime('now') && $acctsavingsaccount['unblock_state'] == 0) {
                                         if (($key=  $acctmutation->where('mutation_name','Penarikan Tunai')->pluck('mutation_id')) != false) {
                                             $acctmutation = $acctmutation->except($key[0]);
 										} 
@@ -259,6 +259,13 @@ if(empty($sessiondata)){
                                     <input type="hidden" name="savings_account_last_balance" id="savings_account_last_balance" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_last_balance', $acctsavingsaccount['savings_account_last_balance'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
+                            {{-- <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Opening Balance') }}</label>
+                                <div class="col-lg-8 fv-row">
+                                    <input type="text" name="savings_cash_mutation_opening_balance_balance_view" id="savings_cash_mutation_opening_balance_balance_view" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_opening_balance_view', number_format($acctsavingsaccount['savings_account_opening_balance'], 2) ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="hidden" name="savings_cash_mutation_opening_balance" id="savings_cash_mutation_opening_balance" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_opening_balance', $acctsavingsaccount['savings_account_opening_balance'] ?? '') }}" autocomplete="off"/>
+                                </div>
+                            </div> --}}
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Jumlah Transaksi') }}</label>
                                 <div class="col-lg-8 fv-row">
@@ -271,7 +278,7 @@ if(empty($sessiondata)){
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="savings_cash_mutation_amount_adm_view" id="savings_cash_mutation_amount_adm_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('savings_cash_mutation_amount_adm_view', number_format($sessiondata['savings_cash_mutation_amount_adm'], 2) ?? '') }}" autocomplete="off"/>
                                     <input type="hidden" name="savings_cash_mutation_amount_adm" id="savings_cash_mutation_amount_adm" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('savings_cash_mutation_amount_adm', $sessiondata['savings_cash_mutation_amount_adm'] ?? '') }}" autocomplete="off"/>
-                                </div>
+                                </div>  
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Saldo Baru') }}</label>
