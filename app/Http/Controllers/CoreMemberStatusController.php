@@ -26,12 +26,21 @@ class CoreMemberStatusController extends Controller
     public function updateStatus($member_id)
     {
         $member                 = CoreMember::findOrFail($member_id);
-        $member->member_status  = 1;
-        if($member->save()){
-            $message = array(
-                'pesan' => 'Status Anggota berhasil diubah',
-                'alert' => 'success'
-            );
+        // dd($member);
+
+        if($member->member_principal_savings_last_balance > 0){
+            $member->member_status  = 1;
+            if($member->save()){
+                $message = array(
+                    'pesan' => 'Status Anggota berhasil diubah',
+                    'alert' => 'success'
+                );
+            }else{
+                $message = array(
+                    'pesan' => 'Status Anggota gagal diubah',
+                    'alert' => 'error'
+                );
+            }
         }else{
             $message = array(
                 'pesan' => 'Status Anggota gagal diubah',
