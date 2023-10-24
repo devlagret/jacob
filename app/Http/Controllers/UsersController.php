@@ -52,7 +52,7 @@ class UsersController extends Controller
         return redirect('user/add')->with($message);
         }
         // *
-    return $request->all();
+    // return $request->all();
 
         $user = array(
             'username'      => $fields['username'],
@@ -98,7 +98,7 @@ class UsersController extends Controller
             'user_id'       =>['required'],
             'username'      =>['required'],
             'user_group_id' =>['required'],
-            // 'branch_id'     =>['required'],
+            'branch_id'     =>['required'],
         ]);
         $user                   = User::findOrFail($fields['user_id']);
         $user->username         = $fields['username'];

@@ -160,6 +160,7 @@ submitButton.addEventListener('click', function (e) {
                         </div>
                     </div>
                 </div>
+                        <input hidden type="branch_id" name="branch_id" id="branch_id" class="form-control form-control-lg form-control-solid" value="{{ $user->branch_id }}" autocomplete="off"/>
                     {{-- <div class="row mb-6">
                         <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Cabang') }}</label>
                         <div class="col-lg-8 fv-row">
