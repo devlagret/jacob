@@ -50,7 +50,6 @@ class RestoreDataDataTable extends DataTable
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->stateSave(true)
-                    // ->dom('Bfrtip')
                     ->parameters(['scrollX' => true])
                     ->orderBy(1)
                     ->responsive()
