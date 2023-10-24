@@ -110,9 +110,8 @@ class MemberSavingsPaymentController extends Controller
 
         $total_cash_amount = $data['member_principal_savings'] + $data['member_special_savings'] + $data['member_mandatory_savings'];
 
-        DB::beginTransaction();
-
         try {
+            DB::beginTransaction();
             CoreMember::where('member_id', $data['member_id'])
             ->update([
                 'member_name'							=> $data['member_name'],
@@ -382,6 +381,7 @@ class MemberSavingsPaymentController extends Controller
             return redirect('member-savings-payment')->with($message);
         } catch (\Exception $e) {
             DB::rollback();
+            report($e);
             $message = array(
                 'pesan' => 'Data Anggota gagal diubah',
                 'alert' => 'error'

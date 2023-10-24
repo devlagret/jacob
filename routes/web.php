@@ -7,7 +7,6 @@ use App\Http\Controllers\Documentation\ReferencesController;
 use App\Http\Controllers\Logs\AuditLogsController;
 use App\Http\Controllers\Logs\SystemLogsController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\AcctAccountBlockirController;
 use App\Http\Controllers\AcctBankAccountController;
 use App\Http\Controllers\AcctCreditsAccountController;
 use App\Http\Controllers\AcctCreditsAccountPaidOffReportController;
@@ -924,7 +923,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/payment/viewport',  'paymentViewport')->name('p-viewport');
         Route::post('/account/viewport',  'accountViewport')->name('a-viewport');
     });
-    //Restore pages
+    //RestoreData pages
     Route::prefix('restore')->controller(RestoreDataController::class)->name('restore.')->group(function () {
         Route::get('/',  'index')->name('index');
         Route::get('/{table}', 'table')->name('table');
