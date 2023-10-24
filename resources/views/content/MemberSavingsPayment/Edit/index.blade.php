@@ -444,19 +444,19 @@ function function_elements_add(name, value){
                                 </div>
                             </div>
                             <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Saldo Simp Khusus') }}</label>
-                                <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_special_savings_last_balance_view" id="member_special_savings_last_balance_view" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Khusus" value="{{ old('member_special_savings_last_balance', empty($memberses['member_special_savings_last_balance']) ? '' : number_format($memberses['member_special_savings_last_balance'],2) ?? '') }}" autocomplete="off" readonly/>
-                                    <input type="hidden" name="member_special_savings_last_balance" id="member_special_savings_last_balance" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Khusus" value="{{ old('member_special_savings_last_balance', empty($memberses['member_special_savings_last_balance']) ? '' : number_format($memberses['member_special_savings_last_balance'],2) ?? '') }}" autocomplete="off" readonly/>
-                                    <input type="hidden" name="member_special_savings_last_balance_origin" id="member_special_savings_last_balance_origin" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Khusus" value="{{ old('member_special_savings_last_balance', empty($memberses['member_special_savings_last_balance']) ? '' : $memberses['member_special_savings_last_balance'] ?? '') }}" autocomplete="off" readonly/>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Saldo Simp Wajib') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_mandatory_savings_last_balance_view" id="member_mandatory_savings_last_balance_view"class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Wajib" value="{{ old('member_mandatory_savings_last_balance', empty($memberses['member_mandatory_savings_last_balance']) ? '' : number_format($memberses['member_mandatory_savings_last_balance'],2) ?? '') }}" autocomplete="off" readonly/>
                                     <input type="hidden" name="member_mandatory_savings_last_balance" id="member_mandatory_savings_last_balance" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Wajib" value="{{ old('member_mandatory_savings_last_balance', empty($memberses['member_mandatory_savings_last_balance']) ? '' : number_format($memberses['member_mandatory_savings_last_balance'],2) ?? '') }}" autocomplete="off" readonly/>
                                     <input type="hidden" name="member_mandatory_savings_last_balance_origin" id="member_mandatory_savings_last_balance_origin" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Wajib" value="{{ old('member_mandatory_savings_last_balance', empty($memberses['member_mandatory_savings_last_balance']) ? '' : $memberses['member_mandatory_savings_last_balance'] ?? '') }}" autocomplete="off" readonly/>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Saldo Simp Khusus') }}</label>
+                                <div class="col-lg-8 fv-row">
+                                    <input type="text" name="member_special_savings_last_balance_view" id="member_special_savings_last_balance_view" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Khusus" value="{{ old('member_special_savings_last_balance', empty($memberses['member_special_savings_last_balance']) ? '' : number_format($memberses['member_special_savings_last_balance'],2) ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="hidden" name="member_special_savings_last_balance" id="member_special_savings_last_balance" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Khusus" value="{{ old('member_special_savings_last_balance', empty($memberses['member_special_savings_last_balance']) ? '' : number_format($memberses['member_special_savings_last_balance'],2) ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="hidden" name="member_special_savings_last_balance_origin" id="member_special_savings_last_balance_origin" class="form-control form-control-lg form-control-solid" placeholder="Saldo Simp Khusus" value="{{ old('member_special_savings_last_balance', empty($memberses['member_special_savings_last_balance']) ? '' : $memberses['member_special_savings_last_balance'] ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
@@ -481,17 +481,17 @@ function function_elements_add(name, value){
                                 </div>
                             </div>
                             <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Simpanan Khusus') }}</label>
-                                <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_special_savings_view" id="member_special_savings_view" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Khusus" value="{{ old('member_special_savings_view', empty($datases['member_special_savings']) ? '' : number_format($datases['member_special_savings'],2) ?? '') }}" autocomplete="off"/>
-                                    <input type="hidden" name="member_special_savings" id="member_special_savings" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Khusus" value="{{ old('member_special_savings', empty($datases['member_special_savings']) ? '' : $datases['member_special_savings'] ?? '') }}" autocomplete="off"/>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Simpanan Wajib') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_mandatory_savings_view" id="member_mandatory_savings_view" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Wajib" value="{{ old('member_mandatory_savings_view', empty($datases['member_mandatory_savings']) ? '' : number_format($datases['member_mandatory_savings'],2) ?? '') }}" autocomplete="off"/>
                                     <input type="hidden" name="member_mandatory_savings" id="member_mandatory_savings" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Wajib" value="{{ old('member_mandatory_savings', empty($datases['member_mandatory_savings']) ? '' : $datases['member_mandatory_savings'] ?? '') }}" autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Simpanan Khusus') }}</label>
+                                <div class="col-lg-8 fv-row">
+                                    <input type="text" name="member_special_savings_view" id="member_special_savings_view" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Khusus" value="{{ old('member_special_savings_view', empty($datases['member_special_savings']) ? '' : number_format($datases['member_special_savings'],2) ?? '') }}" autocomplete="off"/>
+                                    <input type="hidden" name="member_special_savings" id="member_special_savings" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Khusus" value="{{ old('member_special_savings', empty($datases['member_special_savings']) ? '' : $datases['member_special_savings'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
                         </div>

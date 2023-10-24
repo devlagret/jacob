@@ -200,6 +200,7 @@ function function_elements_add(name, value){
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_name" class="form-control form-control-lg form-control-solid" placeholder="Nama" value="{{ old('member_name', $savingsaccountfrom['member_name'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="member_id" class="form-control form-control-lg form-control-solid" placeholder="id" value="{{ old('member_id', $savingsaccountfrom['member_id'] ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
