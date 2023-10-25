@@ -34,7 +34,7 @@ class SavingsAccountDataTable extends DataTable
     public function query(AcctSavingsAccount $model)
     {
         return $model->newQuery()
-        ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_no', 'core_member.member_name', 'core_member.member_address')
+        ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings.savings_name', 'acct_savings_account.member_id', 'core_member.member_no', 'core_member.member_name', 'core_member.member_address')
         ->join('core_member','acct_savings_account.member_id', '=' ,'core_member.member_id')
         ->join('acct_savings','acct_savings_account.savings_id', '=' ,'acct_savings.savings_id')
         ->where('acct_savings_account.data_state', 0)
@@ -73,6 +73,7 @@ class SavingsAccountDataTable extends DataTable
         return [
             Column::make('acct_savings_account.savings_account_id')->title(__('No'))->data('DT_RowIndex'),
             Column::make('acct_savings_account.savings_account_no')->title(__('No. Rekening'))->data('savings_account_no'),
+            Column::make('acct_savings.savings_name')->title(__('Jenis'))->data('savings_name'),
             Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
             Column::make('core_member.member_address')->title(__('Alamat'))->data('member_address'),
             Column::computed('action') 
