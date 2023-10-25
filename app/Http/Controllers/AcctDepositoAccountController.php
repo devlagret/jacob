@@ -127,6 +127,7 @@ class AcctDepositoAccountController extends Controller
 
     public function processAdd(Request $request)
     {
+        // dd($request->all());
         $preferencecompany = PreferenceCompany::first();
 
         $fields = request()->validate([
@@ -136,6 +137,7 @@ class AcctDepositoAccountController extends Controller
             'office_id'                     => ['required'],
             'deposito_period'               => ['required'],
             'deposito_account_date'         => ['required'],
+            'deposito_account_extra_type'   => ['required'],
             'deposito_account_due_date'     => ['required'],
             'deposito_account_interest'     => ['required'],
             'deposito_account_amount'       => ['required'],
@@ -150,6 +152,7 @@ class AcctDepositoAccountController extends Controller
                 'deposito_id'                           => $fields['deposito_id'],
                 'office_id'                             => $fields['office_id'],
                 'deposito_account_period'               => $fields['deposito_period'],
+                'deposito_account_extra_type'           => $fields['deposito_account_extra_type'],
                 'deposito_account_date'                 => date('Y-m-d', strtotime($fields['deposito_account_date'])),
                 'deposito_account_due_date'             => date('Y-m-d', strtotime($fields['deposito_account_due_date'])),
                 'deposito_account_interest'             => $fields['deposito_account_interest'],

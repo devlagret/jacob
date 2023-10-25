@@ -367,6 +367,17 @@ if(!isset($coremember['member_gender'])){
                                 </div>
                             </div>
                             <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Jenis Perpanjangan') }}</label>
+                                <div class="col-lg-8 fv-row">
+                                    <select name="deposito_account_extra_type" id="deposito_account_extra_type" aria-label="{{ __('Jenis Perpanjangan') }}" data-control="select2" data-placeholder="{{ __('Pilih Perpanjangan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg select2-hidden-accessible" onchange="function_elements_add(this.name, this.value)">
+                                        <option value="deposito_account_extra_type">{{ __('Pilih Perpanjangan..') }}</option>
+                                        @foreach($depositoextratype as $key => $value)
+                                            <option data-kt-flag="{{ $value }}"  value="{{ $key }}" {{ $key === old($key, (int)$sessiondata['deposito_account_extra_type'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tanggal Buka') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="deposito_account_date" class="form-control form-control-lg form-control-solid" placeholder="Tanggal Buka" value="{{ date('d-m-Y') }}" autocomplete="off" readonly/>

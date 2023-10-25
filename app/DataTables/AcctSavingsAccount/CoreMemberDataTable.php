@@ -34,6 +34,10 @@ class CoreMemberDataTable extends DataTable
     public function query(CoreMember $model)
     {
         return $model->newQuery()
+        // ->with('savingAccount')
+        ->select('core_member.*','acct_savings_account.*','acct_savings.*')
+        ->join('acct_savings_account','acct_savings_account.member_id','core_member.member_id')
+        ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
         ->where('core_member.member_active_status', 0)
         ->where('core_member.data_state', 0)
         ->where('core_member.branch_id', auth()->user()->branch_id);
@@ -65,10 +69,11 @@ class CoreMemberDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::make('member_id')->title(__('No'))->data('DT_RowIndex'),
-            Column::make('member_no')->title(__('No Anggota'))->data('member_no'),
-            Column::make('member_name')->title(__('Nama Anggota'))->data('member_name'),
-            Column::make('member_address')->title(__('Alamat'))->data('member_address'),
+            Column::make('core_member.member_id')->title(__('No'))->data('DT_RowIndex'),
+            Column::make('core_member.member_no')->title(__('No Anggota'))->data('member_no'),
+            Column::make('acct_savings.savings_name')->title(__('Jenis Simpanan'))->data('savings_name'),
+            Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
+            Column::make('core_member.member_address')->title(__('Alamat'))->data('member_address'),
             Column::computed('action') 
                     ->title(__('Aksi'))
                     ->exportable(false)
