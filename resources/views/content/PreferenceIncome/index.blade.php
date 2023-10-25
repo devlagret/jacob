@@ -92,7 +92,7 @@ $(document).ready(function(){
     <div class="card mb-5 mb-xl-10">
         <div class="card-header border-0">
             <div class="card-title m-0">
-                <h3 class="fw-bolder m-0">{{ __('Form Tambah Dusun') }}</h3>
+                <h3 class="fw-bolder m-0">{{ __('Form Tambah Pendapatan') }}</h3>
             </div>
 
             <a href="{{ theme()->getPageUrl('preference-income.index') }}" class="btn btn-light align-self-center">
@@ -157,11 +157,17 @@ $(document).ready(function(){
         </div>
         <form id="income-table-form" class="form" method="POST" action="{{ route('preference-income.process-edit') }}" enctype="multipart/form-data">
         @csrf
-        @include('content.PreferenceIncome._table')
-        <div class="card-footer d-flex justify-content-end py-6 px-9">
-            <button type="submit" class="btn btn-primary" id="kt_income_save">
-                @include('partials.general._button-indicator', ['label' => __('Simpan Perubahan')])
-            </button>
+        <div class="card mb-5 mb-xl-10">
+            <div class="card-body border-top">
+                <div class="table-responsive">
+                    @include('content.PreferenceIncome._table')
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <button type="submit" class="btn btn-primary" id="kt_income_save">
+                    @include('partials.general._button-indicator', ['label' => __('Simpan Perubahan')])
+                </button>
+            </div>
         </div>
         </form>
     </div>
