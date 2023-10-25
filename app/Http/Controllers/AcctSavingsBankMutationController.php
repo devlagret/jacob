@@ -443,6 +443,7 @@ class AcctSavingsBankMutationController extends Controller
             );
         } catch (\Exception $e) {
             DB::rollback();
+            report($e);
             $message = array(
                 'pesan' => 'Tabungan gagal ditambah',
                 'alert' => 'error'

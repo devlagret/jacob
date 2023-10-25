@@ -28,7 +28,7 @@ class CoreMemberController extends Controller
 {
     public function index(CoreMemberDataTable $dataTable)
     {
-        session()->forget('dadssta_memberadd');
+        session()->forget('data_memberadd');
 
         return $dataTable->render('content.CoreMember.List.index');
     }
