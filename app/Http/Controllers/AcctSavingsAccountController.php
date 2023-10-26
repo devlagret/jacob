@@ -296,15 +296,15 @@ class AcctSavingsAccountController extends Controller
                 'pesan' => 'Tabungan berhasil ditambah',
                 'alert' => 'success'
             );
+            return redirect('savings-account/print-note/'.$acctsavingsaccount_last->savings_account_id);
         } catch (\Exception $e) {
             DB::rollback();
             $message = array(
                 'pesan' => 'Tabungan gagal ditambah',
                 'alert' => 'error'
             );
+            return redirect('savings-account')->with($message);
         }
-        
-        return redirect('savings-account')->with($message);
     }
 
     public function printNote($savings_account_id){
