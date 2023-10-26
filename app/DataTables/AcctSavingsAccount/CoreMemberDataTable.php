@@ -34,13 +34,8 @@ class CoreMemberDataTable extends DataTable
     public function query(CoreMember $model)
     {
         return $model->newQuery()
-        // ->with('savingAccount')
-        ->select('core_member.*','acct_savings_account.*','acct_savings.*')
-        ->join('acct_savings_account','acct_savings_account.member_id','core_member.member_id')
-        ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
-        ->where('core_member.member_active_status', 0)
-        ->where('core_member.data_state', 0)
-        ->where('core_member.branch_id', auth()->user()->branch_id);
+        ->select('member_no','member_name','member_address','member_id')
+        ->where('data_state', 0);
     }
     /**
      * Optional method if you want to use html builder.
@@ -71,7 +66,6 @@ class CoreMemberDataTable extends DataTable
         return [
             Column::make('core_member.member_id')->title(__('No'))->data('DT_RowIndex'),
             Column::make('core_member.member_no')->title(__('No Anggota'))->data('member_no'),
-            Column::make('acct_savings.savings_name')->title(__('Jenis Simpanan'))->data('savings_name'),
             Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
             Column::make('core_member.member_address')->title(__('Alamat'))->data('member_address'),
             Column::computed('action') 
