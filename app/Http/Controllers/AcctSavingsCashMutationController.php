@@ -138,6 +138,7 @@ class AcctSavingsCashMutationController extends Controller
 
         DB::beginTransaction();
 
+
         try {
             $data  = array(
                 'savings_account_id'                    => $fields['savings_account_id'],
@@ -145,7 +146,6 @@ class AcctSavingsCashMutationController extends Controller
                 'member_id'                             => $request->member_id,
                 'savings_id'                            => $request->savings_id,
                 'savings_cash_mutation_date'            => date('Y-m-d', strtotime($fields['savings_cash_mutation_date'])),
-                // 'savings_cash_mutation_opening_balance' => $request->savings_cash_mutation_opening_balance,
                 'savings_cash_mutation_opening_balance' => $request->savings_cash_mutation_last_balance,
                 'savings_cash_mutation_amount'          => $fields['savings_cash_mutation_amount'],
                 'savings_cash_mutation_amount_adm'      => $request->savings_cash_mutation_amount_adm,
