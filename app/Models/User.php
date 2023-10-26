@@ -93,4 +93,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserInfo::class,'user_id','user_id');
     }
+    public function branch() {
+        return $this->belongsTo(CoreBranch::class,'branch_id','branch_id');
+    }
 }
