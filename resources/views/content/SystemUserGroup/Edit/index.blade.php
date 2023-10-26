@@ -69,7 +69,14 @@ function uncheck_all(){
 }
 </script>
 @endsection
-
+@section('styles')
+<style type="text/css">
+.form-check.form-check-solid .form-check-input{
+    background-color: rgba(100, 100, 100, 0.15) ;
+    border: 1px solid rgba(0, 0, 0, 0.25) ;
+}
+</style>
+@endsection
 <x-base-layout>
     <div class="card mb-5 mb-xl-10">
         <div class="card-header border-0">

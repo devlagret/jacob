@@ -66,7 +66,14 @@ function uncheck_all(){
 }
 </script>
 @endsection
-
+@section('styles')
+<style type="text/css">
+.form-check.form-check-solid .form-check-input{
+    background-color: rgba(100, 100, 100, 0.15) ;
+    border: 1px solid rgba(0, 0, 0, 0.25) ;
+}
+</style>
+@endsection
 <x-base-layout>
     <div class="card mb-5 mb-xl-10">
         <div class="card-header border-0">
@@ -100,12 +107,13 @@ function uncheck_all(){
                     <div class="row mb-6">
                         <label class="col-lg-4 col-form-label fw-bold fs-6"></label>
                         <div class="col-lg-8 fv-row">
-                            <?php foreach($systemmenu as $key => $val) {
+                            <?php $i=0; foreach($systemmenu as $key => $val) {
+                                $l=0;
                                 $digits = strlen((string)$val['id_menu']);
                                 if($digits == 1){
                             ?>
                                 <div class="form-check form-check-custom form-check-success form-check-solid form-check-sm">
-                                    <input class="form-check-input" type="checkbox" name='checkbox_{{$val['id_menu']}}' id='checkbox_{{$val['id_menu']}}' value="1"/>
+                                    <input class="form-check-input parent-{{$i}}" type="checkbox" name='checkbox_{{$val['id_menu']}}' id='checkbox_{{$val['id_menu']}}' value="1"/>
                                     <label class="form-check-label" for="checkbox_{{$val['id_menu']}}">
                                         {{$val['text']}}
                                     </label>
@@ -113,22 +121,22 @@ function uncheck_all(){
                                 <br>
                             <?php   }else if($digits == 2){ ?>
                                 <div class="form-check form-check-custom form-check-success form-check-solid form-check-sm" style="margin-left:25px">
-                                    <input class="form-check-input" type="checkbox" name='checkbox_{{$val['id_menu']}}' id='checkbox_{{$val['id_menu']}}' value="1"/>
+                                    <input class="form-check-input child1-{{$l}}-{{$i}}" type="checkbox" name='checkbox_{{$val['id_menu']}}' id='checkbox_{{$val['id_menu']}}' value="1"/>
                                     <label class="form-check-label" for="checkbox_{{$val['id_menu']}}">
                                         {{$val['text']}}
                                     </label>
                                 </div>
                                 <br>
-                            <?php   }else if($digits == 3){ ?>
+                            <?php $l++; }else if($digits == 3){ ?>
                                 <div class="form-check form-check-custom form-check-success form-check-solid form-check-sm" style="margin-left:50px">
-                                    <input class="form-check-input" type="checkbox" name='checkbox_{{$val['id_menu']}}' id='checkbox_{{$val['id_menu']}}' value="1"/>
+                                    <input class="form-check-input child2-{{$i}}" type="checkbox" name='checkbox_{{$val['id_menu']}}' id='checkbox_{{$val['id_menu']}}' value="1"/>
                                     <label class="form-check-label" for="checkbox_{{$val['id_menu']}}">
                                         {{$val['text']}}
                                     </label>
                                 </div>
                                 <br>
                             <?php   }
-                            } ?>
+                           $i++; } ?>
                         </div>
                     </div>
                 </div>
