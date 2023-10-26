@@ -293,17 +293,6 @@ class SampleDataController extends Controller
                     $total[$v]=$total[$v]+$val['credits_account_last_balance'];
                 }
                 }
-                // if($collectibility_id == 1){
-                //     $total1 = $total1 + $val['credits_account_last_balance'];
-                // } else if($collectibility_id == 2){
-                //     $total2 = $total2 + $val['credits_account_last_balance'];
-                // } else if($collectibility_id == 3){
-                //     $total3 = $total3 + $val['credits_account_last_balance'];
-                // } else if($collectibility_id == 4){
-                //     $total4 = $total4 + $val['credits_account_last_balance'];
-                // } else if($collectibility_id == 5){
-                //     $total5 = $total5 + $val['credits_account_last_balance'];
-                // }
 
             }
 
@@ -314,19 +303,6 @@ class SampleDataController extends Controller
                 // $total[$v]=$total[$v]+$val['credits_account_last_balance'];
                 $data_kolektibilitas[$index][$v]		= $total[$v];
             }}
-            // foreach ($collectibility as $k => $v) {
-            //     if($v['collectibility_id'] == 1){
-            //         $data_kolektibilitas[$index]['total1']		= $total1;
-            //     }else if($v['collectibility_id'] == 2){
-            //         $data_kolektibilitas[$index]['total2']		= $total2;
-            //     }else if($v['collectibility_id'] == 3){
-            //         $data_kolektibilitas[$index]['total3']		= $total3;
-            //     }else if($v['collectibility_id'] == 4){
-            //         $data_kolektibilitas[$index]['total4']		= $total4;
-            //     }else if($v['collectibility_id'] == 5){
-            //         $data_kolektibilitas[$index]['total5']		= $total5;
-            //     }
-            // }
             $index++;
         }
 
@@ -495,7 +471,7 @@ class SampleDataController extends Controller
     public function dropdownDusun(Request $request)
     {
         $city = CoreDusun::select('dusun_id','dusun_name')
-        ->where('kelurahan_id', $kelurahan_id)
+        ->where('kelurahan_id', $request->kelurahan_id)
         ->where('data_state',0)
         ->get();
 
