@@ -132,6 +132,10 @@ License: {{ theme()->getOption('product', 'license') }}
     .shadow{
         box-shadow: 3px 2px 3px 1px rgba(0,0,0,0.2),0 2px 10px 0 rgba(0,0,0,0.19) !important;
     }
+    .select2{
+        border: 1px solid #B5B5C3 ;
+        border-radius: 0.475rem;
+    }
 </style>
 <script>
     @if (Session::has('pesan'))

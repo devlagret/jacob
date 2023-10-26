@@ -357,19 +357,19 @@ $(document).ready(function(){
                             <div class="row mb-6">
                                 <b class="col-lg-12 fw-bold fs-3 text-center text-primary">{{ __('Data Anggota') }}</b>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Nama Lengkap') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_name" class="form-control form-control-lg form-control-solid" placeholder="Sesuai KTP" value="{{ old('member_name', $sessiondata['member_name'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama Panggilan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_nick_name" class="form-control form-control-lg form-control-solid" placeholder="Nama Panggilan" value="{{ old('member_nick_name', $sessiondata['member_nick_name'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-1">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Jenis Kelamin') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="member_gender" id="member_gender" aria-label="{{ __('Pilih Jenis Kelamin') }}" data-control="select2" data-placeholder="{{ __('Pilih jenis kelamin..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -380,19 +380,19 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tempat Lahir') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_place_of_birth" class="form-control form-control-lg form-control-solid" placeholder="Tempat Lahir" value="{{ old('member_place_of_birth', $sessiondata['member_place_of_birth'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tanggal Lahir') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input name="member_date_of_birth" id="member_date_of_birth" class="date form-control form-control-solid form-select-lg" placeholder="Pilih tanggal" value="{{ old('member_date_of_birth', $sessiondata['member_date_of_birth'] ?? '') }}" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Provinsi') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="province_id" id="province_id" aria-label="{{ __('Provinsi') }}" data-control="select2" data-placeholder="{{ __('Pilih provinsi..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg select2-hidden-accessible" onchange="changeProvince()">
@@ -403,7 +403,7 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Kabupaten') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="city_id" id="city_id" aria-label="{{ __('Kabupaten') }}" data-control="select2" data-placeholder="{{ __('Pilih kabupaten..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changeCity()">
@@ -411,7 +411,7 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Kecamatan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="kecamatan_id" id="kecamatan_id" aria-label="{{ __('Kecamatan') }}" data-control="select2" data-placeholder="{{ __('Pilih kecamatan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changeKecamatan()">
@@ -419,7 +419,7 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Kelurahan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="kelurahan_id" id="kelurahan_id" aria-label="{{ __('Kelurahan') }}" data-control="select2" data-placeholder="{{ __('Pilih kelurahan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -427,25 +427,25 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Alamat Sesuai KTP') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <textarea id="member_address" name="member_address" class="form-control form-control form-control-solid" data-kt-autosize="true" placeholder="Alamat Sesuai KTP" onchange="function_elements_add(this.name, this.value)">{{ old('member_address', $sessiondata['member_address'] ?? '') }}</textarea>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Alamat Tinggal Sekarang') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <textarea id="member_address_now" name="member_address_now" class="form-control form-control form-control-solid" data-kt-autosize="true" placeholder="Alamat Tinggal Sekarang" onchange="function_elements_add(this.name, this.value)">{{ old('member_address_now', $sessiondata['member_address_now'] ?? '') }}</textarea>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kode Pos') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_postal_code" class="form-control form-control-lg form-control-solid" placeholder="Kode Pos" value="{{ old('member_postal_code', $sessiondata['member_postal_code'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Status Pernikahan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="member_marital_status" id="member_marital_status" aria-label="{{ __('Pilih Status Pernikahan') }}" data-control="select2" data-placeholder="{{ __('Pilih status pernikahan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changeMatitalStatus(this.name, this.value)">
@@ -456,43 +456,43 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No. KTP/SIM') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_identity_no" class="form-control form-control-lg form-control-solid" placeholder="KTP / SIM " value="{{ old('member_identity_no', $sessiondata['member_identity_no'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No. KTP/SIM Pasangan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_partner_identity_no" class="form-control form-control-lg form-control-solid" placeholder="KTP / SIM Pasangan" value="{{ old('member_partner_identity_no', $sessiondata['member_partner_identity_no'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No Telepon') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_phone" class="form-control form-control-lg form-control-solid" placeholder="No Telepon" value="{{ old('member_phone', $sessiondata['member_phone'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No HP') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_home_phone" class="form-control form-control-lg form-control-solid" placeholder="No Telepon" value="{{ old('member_home_phone', $sessiondata['member_home_phone'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Nama Ibu Kandung') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_mother" class="form-control form-control-lg form-control-solid" placeholder="Nama Ibu Kandung" value="{{ old('member_mother', $sessiondata['member_mother'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jumlah Tanggungan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_dependent" class="form-control form-control-lg form-control-solid" placeholder="Jumlah Tanggungan" value="{{ old('member_dependent', $sessiondata['member_dependent'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Status Rumah') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select data-placeholder="{{ __('Pilih status rumah..') }}" name="member_home_status" id="member_home_status" aria-label="{{ __('Pilih Status Rumah') }}" data-control="select2"  data-allow-clear="true" class="form-select form-select-solid form-select-lg"onchange="function_elements_add(this.name, this.value)" >
@@ -503,13 +503,13 @@ $(document).ready(function(){
                                     </select>
                                  </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 ">{{ __('Lama Menetap') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" placeholder="Lama Menetap" name="member_long_stay" id="member_long_stay" class="form-control form-control-lg form-control-solid"  value="{{ old('member_long_stay', $sessiondata['member_long_stay']) ?? '' }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Pendidikan Terakhir') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select data-placeholder="{{ __('Pilih pendidikan terakhir..') }}" name="member_last_education" id="member_last_education" aria-label="{{ __('Pilih pendidikan terakhir') }}" data-control="select2"  data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -521,26 +521,26 @@ $(document).ready(function(){
                                  </div>
                             </div>
                             <div class="partner-el" id="partner-el">
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 ">{{ __('Nama Pasangan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" placeholder="Nama Pasangan" name="member_partner_name" id="member_partner_name" class="form-control form-control-lg form-control-solid"  value="{{ old('member_partner_name', $sessiondata['member_partner_name']) ?? '' }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 ">{{ __('Tempat Lahir Pasangan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" placeholder="Tempat Lahir Pasangan" name="member_partner_place_of_birth" id="member_partner_place_of_birth" class="form-control form-control-lg form-control-solid"  value="{{ old('member_partner_place_of_birth', $sessiondata['member_partner_place_of_birth']) ?? '' }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 ">{{ __('Tanggal Lahir Pasangan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type ="date"  placeholder="Tanggal Lahir Pasangan" name="member_partner_date_of_birth" id="member_partner_date_of_birth" class="date form-control form-control-solid form-select-lg"  value="{{ old('member_partner_date_of_birth', $sessiondata['member_partner_date_of_birth'] ?? '' )}}" onchange="function_elements_add(this.name, this.value)"/>
                                </div>
                             </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Email') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_email" class="form-control form-control-lg form-control-solid" placeholder="Email" value="{{ old('member_email', $sessiondata['member_email'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
@@ -551,7 +551,7 @@ $(document).ready(function(){
                             <div class="row mb-6">
                                 <b class="col-lg-12 fw-bold fs-3 text-center text-primary">{{ __('Data Pekerjaan') }}</b>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Tipe Pekerjaan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="member_working_type" id="member_working_type" aria-label="{{ __('Pilih Tipe Pekerjaan') }}" data-control="select2" data-placeholder="{{ __('Pilih tipe pekerjaan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changeWorkingType(this.name, this.value)">
@@ -562,61 +562,61 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama Perusahaan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_name" class="form-control form-control-lg form-control-solid" placeholder="Nama Perusahaan" value="{{ old('member_company_name', $sessiondata['member_company_name'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Bidang Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_specialities" class="form-control form-control-lg form-control-solid" placeholder="Bidang Usaha" value="{{ old('member_company_specialities', $sessiondata['member_company_specialities'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jabatan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_job_title" class="form-control form-control-lg form-control-solid" placeholder="Jabatan" value="{{ old('member_company_job_title', $sessiondata['member_company_job_title'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)" />
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Masa Kerja') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_period" class="form-control form-control-lg form-control-solid" placeholder="Masa Kerja" value="{{ old('member_company_period', $sessiondata['member_company_period'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Alamat') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_address" class="form-control form-control-lg form-control-solid" placeholder="Alamat" value="{{ old('member_company_address', $sessiondata['member_company_address'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kota') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_city" class="form-control form-control-lg form-control-solid" placeholder="Kota" value="{{ old('member_company_city', $sessiondata['member_company_city'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kode Pos') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_postal_code" class="form-control form-control-lg form-control-solid" placeholder="Kode Pos" value="{{ old('member_company_postal_code', $sessiondata['member_company_postal_code'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 company">
+                            <div class="row mb-2 company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No Telepon') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_company_phone" class="form-control form-control-lg form-control-solid" placeholder="No Telepon" value="{{ old('member_company_phone', $sessiondata['member_company_phone'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 business" id="div_bus_name">
+                            <div class="row mb-2 business" id="div_bus_name">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Sub Bidang Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_business_name" class="form-control form-control-lg form-control-solid" placeholder="Sub Bidang Usaha" value="{{ old('member_business_name', $sessiondata['member_business_name'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 business" id="div_scale">
+                            <div class="row mb-2 business" id="div_scale">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Skala Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="member_business_scale" id="member_business_scale" aria-label="{{ __('Pilih Skala Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih skala usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -627,13 +627,13 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                             <div class="row mb-6 business">
+                             <div class="row mb-2 business">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Lama Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_business_period" class="form-control form-control-lg form-control-solid" placeholder="Lama Usaha" value="{{ old('member_business_period', $sessiondata['member_business_period'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 business" id="div_owner">
+                            <div class="row mb-2 business" id="div_owner">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kepemilikan Tempat Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="member_business_owner" id="member_business_owner" aria-label="{{ __('Pilih Kepemilikan Tempat Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih kepemilikan tempat usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -644,38 +644,38 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6 business">
+                            <div class="row mb-2 business">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Alamat Tempat Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_business_address" class="form-control form-control-lg form-control-solid" placeholder="Alamat Tempat Usaha" value="{{ old('member_business_address', $sessiondata['member_business_address'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 business">
+                            <div class="row mb-2 business">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kota') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_business_city" class="form-control form-control-lg form-control-solid" placeholder="Kota" value="{{ old('member_business_city', $sessiondata['member_business_city'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 business">
+                            <div class="row mb-2 business">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kode Pos') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_business_postal_code" class="form-control form-control-lg form-control-solid" placeholder="Kode Pos" value="{{ old('member_business_postal_code', $sessiondata['member_business_postal_code'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 business">
+                            <div class="row mb-2 business">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Telepon') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_business_phone" class="form-control form-control-lg form-control-solid" placeholder="Telepon" value="{{ old('member_business_phone', $sessiondata['member_business_phone'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Penghasilan Perbulan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_monthly_income_view" id="member_monthly_income_view" class="form-control form-control-lg form-control-solid" placeholder="Penghasilan Perbulan" value="{{ old('member_monthly_income_view', number_format((float)$sessiondata['member_monthly_income'], 2) ?? '') }}" autocomplete="off"/>
                                     <input type="hidden" name="member_monthly_income" id="member_monthly_income" class="form-control form-control-lg form-control-solid" placeholder="Penghasilan Perbulan" value="{{ old('member_monthly_income', $sessiondata['member_monthly_income'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 ">
+                            <div class="row mb-2 ">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Tipe Pekerjaan Pasangan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="partner_working_type" id="partner_working_type" aria-label="{{ __('Pilih Tipe Pekerjaan Pasangan') }}" data-control="select2" data-placeholder="{{ __('Pilih tipe pekerjaan pasangan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changePartnerWorkingType(this.name, this.value)">
@@ -686,43 +686,43 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-company">
+                            <div class="row mb-2 partner-company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama Perusahaan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="partner_company_name" class="form-control form-control-lg form-control-solid" placeholder="Nama Perusahaan" value="{{ old('partner_company_name', $sessiondata['partner_company_name'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-company">
+                            <div class="row mb-2 partner-company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jabatan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="partner_company_job_title" class="form-control form-control-lg form-control-solid" placeholder="Jabatan" value="{{ old('partner_company_job_title', $sessiondata['partner_company_job_title'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-company">
+                            <div class="row mb-2 partner-company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Bidang Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="partner_company_specialities" class="form-control form-control-lg form-control-solid" placeholder="Bidang Usaha" value="{{ old('partner_company_specialities', $sessiondata['partner_company_specialities'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-company">
+                            <div class="row mb-2 partner-company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Alamat Perusahaan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="partner_company_address" class="form-control form-control-lg form-control-solid" placeholder="Alamat Perusahaan" value="{{ old('partner_company_address', $sessiondata['partner_company_address'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-company">
+                            <div class="row mb-2 partner-company">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Telepon') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="partner_company_phone" class="form-control form-control-lg form-control-solid" placeholder="Telepon" value="{{ old('partner_company_phone', $sessiondata['partner_company_phone'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-business">
+                            <div class="row mb-2 partner-business">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Sub Bidang Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="partner_business_name" class="form-control form-control-lg form-control-solid" placeholder="Sub Bidang Usaha" value="{{ old('partner_business_name', $sessiondata['partner_business_name'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-business" id="div_scale_partner">
+                            <div class="row mb-2 partner-business" id="div_scale_partner">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Skala Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="partner_business_scale" id="partner_business_scale" aria-label="{{ __('Pilih Skala Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih skala usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -733,13 +733,13 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                             <div class="row mb-6 partner-business">
+                             <div class="row mb-2 partner-business">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Lama Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="partner_business_period" class="form-control form-control-lg form-control-solid" placeholder="Lama Usaha" value="{{ old('partner_business_period', $sessiondata['partner_business_period'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6 partner-business" id="div_owner_partner">
+                            <div class="row mb-2 partner-business" id="div_owner_partner">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kepemilikan Tempat Usaha') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="partner_business_owner" id="partner_business_owner" aria-label="{{ __('Pilih Kepemilikan Tempat Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih kepemilikan tempat usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -753,13 +753,13 @@ $(document).ready(function(){
                             <div class="row mb-6 pt-12">
                                 <b class="col-lg-12 fw-bold fs-3 text-center text-primary">{{ __('Data Ahli Waris') }}</b>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_heir" class="form-control form-control-lg form-control-solid" placeholder="Nama" value="{{ old('member_heir', $sessiondata['member_heir'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Hubungan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="member_heir_relationship" id="member_heir_relationship" aria-label="{{ __('Pilih Hubungan') }}" data-control="select2" data-placeholder="{{ __('Pilih hubungan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
@@ -770,13 +770,13 @@ $(document).ready(function(){
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No Telepon') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="member_heir_mobile_phone" class="form-control form-control-lg form-control-solid" placeholder="No Telepon" value="{{ old('member_heir_mobile_phone', $sessiondata['member_heir_mobile_phone'] ?? '') }}" autocomplete="off" onchange="function_elements_add(this.name, this.value)"/>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Alamat') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <textarea id="member_heir_address" name="member_heir_address" class="form-control form-control form-control-solid" data-kt-autosize="true" placeholder="Alamat" onchange="function_elements_add(this.name, this.value)">{{ old('member_heir_address', $sessiondata['member_heir_address'] ?? '') }}</textarea>
