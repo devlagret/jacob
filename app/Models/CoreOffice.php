@@ -34,4 +34,7 @@ class CoreOffice extends Model
     {
         static::addGlobalScope(new NotDeletedScope);
     }
+    public function branch() {
+        return $this->belongsTo(CoreBranch::class,'branch_id','branch_id');
+    }
 }

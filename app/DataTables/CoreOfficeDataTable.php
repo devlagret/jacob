@@ -33,10 +33,7 @@ class CoreOfficeDataTable extends DataTable
      */
     public function query(CoreOffice $model)
     {
-        return $model->newQuery()
-        ->join('core_branch','core_branch.branch_id','=','core_office.branch_id')
-        ->select('core_office.office_id', 'core_office.office_code', 'core_office.office_name', 'core_branch.branch_name')
-        ->where('core_office.data_state',0);
+        return $model->newQuery()->with('branch');
     }
 
     /**
@@ -69,7 +66,7 @@ class CoreOfficeDataTable extends DataTable
             Column::make('office_id')->title(__('No'))->data('DT_RowIndex'),
             Column::make('office_code')->title(__('Kode BO')),
             Column::make('office_name')->title(__('Nama BO')),
-            Column::make('core_branch.branch_name')->title(__('Cabang'))->data('branch_name'),
+            Column::make('branch.branch_name')->title(__('Cabang')),
             Column::computed('action') 
                     ->title(__('Aksi'))
                     ->exportable(false)
