@@ -67,36 +67,40 @@ class LoginRequest extends FormRequest
         ->first();
         $end_of_days = SystemEndOfDays::orderBy('created_at','DESC')
         ->first();
-
+        if(empty($data_user)){
+            throw ValidationException::withMessages([
+                'username' => __('auth.failed'),
+            ]);
+        }
         if ($data_user['user_group_id'] == 1 || $data_user['user_group_id'] == 5) {
             if ($data_user->user_id == 1) {
                 $this->ensureIsNotRateLimited();
-                    
+
                 if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
                     RateLimiter::hit($this->throttleKey());
-        
+
                     throw ValidationException::withMessages([
                         'username' => __('auth.failed'),
                     ]);
                 }
-                
+
                 $this->loginRequest($this->input('username'));
-        
+
                 RateLimiter::clear($this->throttleKey());
             } else {
                 if ($preferencecompany->maintenance_status == 0){
                     $this->ensureIsNotRateLimited();
-                    
+
                     if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
                         RateLimiter::hit($this->throttleKey());
-            
+
                         throw ValidationException::withMessages([
                             'username' => __('auth.failed'),
                         ]);
                     }
-                    
+
                     $this->loginRequest($this->input('username'));
-            
+
                     RateLimiter::clear($this->throttleKey());
                 } else {
                     throw ValidationException::withMessages([
@@ -108,32 +112,32 @@ class LoginRequest extends FormRequest
             if ($end_of_days['end_of_days_status'] == 1 && date('Y-m-d',strtotime($end_of_days['open_at'])) == date('Y-m-d')) {
                 if ($data_user->user_id == 1) {
                     $this->ensureIsNotRateLimited();
-                        
+
                     if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
                         RateLimiter::hit($this->throttleKey());
-            
+
                         throw ValidationException::withMessages([
                             'username' => __('auth.failed'),
                         ]);
                     }
-                    
+
                     $this->loginRequest($this->input('username'));
-            
+
                     RateLimiter::clear($this->throttleKey());
                 } else {
                     if ($preferencecompany->maintenance_status == 0){
                         $this->ensureIsNotRateLimited();
-                        
+
                         if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
                             RateLimiter::hit($this->throttleKey());
-                
+
                             throw ValidationException::withMessages([
                                 'username' => __('auth.failed'),
                             ]);
                         }
-                        
+
                         $this->loginRequest($this->input('username'));
-                
+
                         RateLimiter::clear($this->throttleKey());
                     } else {
                         throw ValidationException::withMessages([
@@ -149,32 +153,32 @@ class LoginRequest extends FormRequest
                 } else {
                     if ($data_user->user_id == 1) {
                         $this->ensureIsNotRateLimited();
-                            
+
                         if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
                             RateLimiter::hit($this->throttleKey());
-                
+
                             throw ValidationException::withMessages([
                                 'username' => __('auth.failed'),
                             ]);
                         }
-                        
+
                         $this->loginRequest($this->input('username'));
-                
+
                         RateLimiter::clear($this->throttleKey());
                     } else {
                         if ($preferencecompany->maintenance_status == 0){
                             $this->ensureIsNotRateLimited();
-                            
+
                             if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
                                 RateLimiter::hit($this->throttleKey());
-                    
+
                                 throw ValidationException::withMessages([
                                     'username' => __('auth.failed'),
                                 ]);
                             }
-                            
+
                             $this->loginRequest($this->input('username'));
-                    
+
                             RateLimiter::clear($this->throttleKey());
                         } else {
                             throw ValidationException::withMessages([
@@ -242,7 +246,7 @@ class LoginRequest extends FormRequest
                 'remark' => 'Login System',
                 'log_time' => date('Y-m-d H:i:s'),
             );
-    
+
             SystemLogUser::create($data);
         }
     }
@@ -264,22 +268,22 @@ class LoginRequest extends FormRequest
             foreach($acct_deposito_account as $deposito_account){
 
                 $deposito_account_due_date_new = strtotime("+1 day", strtotime($deposito_account['deposito_account_due_date']));
-                
+
                 if(date('Y-m-d', $deposito_account_due_date_new) <= date('Y-m-d')){
-                    
+
                     $period_extra = $deposito_account['deposito_account_period'];
                     $deposito_account_due_date = strtotime("+".$period_extra." month", strtotime($deposito_account['deposito_account_due_date']));
 
                     $table                              = AcctDepositoAccount::findOrFail($deposito_account['deposito_account_id']);
                     $table->deposito_account_due_date   = date('Y-m-d', $deposito_account_due_date);
                     $table->updated_id                  = $user_id;
-                    
+
                     if($table->save()){
                         $date 	= date('d', strtotime($deposito_account['deposito_account_due_date']));
                         $month 	= date('m', strtotime($deposito_account['deposito_account_due_date']));
                         $year 	= date('Y', strtotime($deposito_account['deposito_account_due_date']));
 
-                        for ($i=1; $i<= $deposito_account['deposito_account_period']; $i++) { 
+                        for ($i=1; $i<= $deposito_account['deposito_account_period']; $i++) {
                             $depositoprofitsharing = array ();
 
                             $month = $month + 1;
@@ -310,11 +314,11 @@ class LoginRequest extends FormRequest
                             ->where('acct_deposito_profit_sharing.deposito_account_id', $depositoprofitsharing['deposito_account_id'])
                             ->where('acct_deposito_profit_sharing.deposito_profit_sharing_due_date', $depositoprofitsharing['deposito_profit_sharing_due_date'])
                             ->get();
-                            
+
                             if(count($depositoprofitsharing_data) == 0){
                                 AcctDepositoProfitSharing::create($depositoprofitsharing);
                             }
-                            
+
                         }
                     }
                 }
@@ -373,7 +377,7 @@ class LoginRequest extends FormRequest
                         $credits_account_payment_date_old 	= $val['credits_account_payment_date'];
                         $credits_account_payment_date 		= date('Y-m-d', strtotime("+1 weeks", strtotime($credits_account_payment_date_old)));
                     }
-                    
+
                 }
 
                 if($angsuran_ke == $total_angsuran){
@@ -381,7 +385,7 @@ class LoginRequest extends FormRequest
                 } else {
                     $credits_account_status = 0;
                 }
-                
+
                 if($val['payment_type_id'] == 1){
                     $angsuranpokok 		= $val['credits_account_principal_amount'];
                     $angsuranbunga 	 	= $val['credits_account_interest_amount'];
@@ -389,7 +393,7 @@ class LoginRequest extends FormRequest
                     $angsuranbunga 	 	= ($val['credits_account_last_balance'] * $val['credits_account_interest']) /100;
                     $angsuranpokok 		= $val['credits_account_payment_amount'] - $angsuranbunga;
                 }
-                
+
                 $credits_payment_date 			= date('Y-m-d');
                 $date1 							= date_create($credits_payment_date);
                 $date2 							= date_create($val['credits_account_payment_date']);
@@ -417,7 +421,7 @@ class LoginRequest extends FormRequest
                     'credits_others_income'						=> $others_income,
                     'credits_principal_opening_balance'			=> $pinjaman['credits_account_last_balance'],
                     'credits_principal_last_balance'			=> $last_balance,
-                    'credits_interest_opening_balance'			=> $val['credits_account_interest_last_balance'],				
+                    'credits_interest_opening_balance'			=> $val['credits_account_interest_last_balance'],
                     'credits_interest_last_balance'				=> $val['credits_account_interest_last_balance'] + $angsuranbunga,
                     'credits_account_payment_date'				=> $val['credits_account_payment_date'],
                     'credits_payment_to'						=> $val['credits_account_payment_to']+1,
@@ -495,9 +499,9 @@ class LoginRequest extends FormRequest
                     ->join('acct_credits','acct_credits_account.credits_id','=','acct_credits.credits_id')
                     ->orderBy('acct_credits_payment.created_at','DESC')
                     ->first();
-                        
+
                     $journal_voucher_period = date("Ym", strtotime($data_cash['credits_payment_date']));
-                    
+
                     $data_journal = array(
                         'branch_id'						=> $data_cash['branch_id'],
                         'journal_voucher_period' 		=> $journal_voucher_period,
@@ -510,7 +514,7 @@ class LoginRequest extends FormRequest
                         'transaction_journal_no' 		=> $acctcashpayment_last['credits_account_serial'],
                         'created_id' 					=> $data_cash['created_id'],
                     );
-                    
+
                     AcctJournalVoucher::create($data_journal);
 
                     $journal_voucher_id 		= AcctJournalVoucher::where('created_id',$data_cash['created_id'])
@@ -660,7 +664,7 @@ class LoginRequest extends FormRequest
 
                         AcctJournalVoucherItem::create($data_credit);
                     }
-                    
+
                 }
             }
 
@@ -716,9 +720,9 @@ class LoginRequest extends FormRequest
                             ->where('core_member_transfer_mutation.created_id', $data['created_id'])
                             ->orderBy('core_member_transfer_mutation.member_transfer_mutation_id','DESC')
                             ->first();
-                                
+
                             $journal_voucher_period = date("Ym", strtotime($data['member_transfer_mutation_date']));
-                            
+
                             $data_journal = array(
                                 'branch_id'						=> $branch_id,
                                 'journal_voucher_period' 		=> $journal_voucher_period,
@@ -731,14 +735,14 @@ class LoginRequest extends FormRequest
                                 'transaction_journal_no' 		=> $membertransfer_last['member_no'],
                                 'created_id' 					=> $data['created_id'],
                             );
-                            
+
                             AcctJournalVoucher::create($data_journal);
-        
+
                             $journal_voucher_id = AcctJournalVoucher::where('created_id',$data['created_id'])
                             ->orderBy('journal_voucher_id','DESC')
                             ->first()
                             ->journal_voucher_id;
-        
+
                             $preferencecompany 	= PreferenceCompany::first();
 
                             $account_id 		= AcctSavings::where('savings_id',$data['savings_id'])
@@ -824,9 +828,9 @@ class LoginRequest extends FormRequest
                                 ->where('core_member_transfer_mutation.created_id', $data['created_id'])
                                 ->orderBy('core_member_transfer_mutation.member_transfer_mutation_id','DESC')
                                 ->first();
-                                    
+
                                 $journal_voucher_period = date("Ym", strtotime($data['member_transfer_mutation_date']));
-                                
+
                                 $data_journal = array(
                                     'branch_id'						=> $branch_id,
                                     'journal_voucher_period' 		=> $journal_voucher_period,
@@ -839,14 +843,14 @@ class LoginRequest extends FormRequest
                                     'transaction_journal_no' 		=> $membertransfer_last['member_no'],
                                     'created_id' 					=> $data['created_id'],
                                 );
-                                
+
                                 AcctJournalVoucher::create($data_journal);
-            
+
                                 $journal_voucher_id = AcctJournalVoucher::where('created_id',$data['created_id'])
                                 ->orderBy('journal_voucher_id','DESC')
                                 ->first()
                                 ->journal_voucher_id;
-            
+
                                 $preferencecompany 	= PreferenceCompany::first();
 
                                 $account_id 		= AcctSavings::where('savings_id',$data['savings_id'])

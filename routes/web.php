@@ -79,6 +79,7 @@ use App\Http\Controllers\PPOBPriceController;
 use App\Http\Controllers\PPOBSettingController;
 use App\Http\Controllers\PPOBTopUpController;
 use App\Http\Controllers\PreferenceCollectibilityController;
+use App\Http\Controllers\preferenceCompanyController;
 use App\Http\Controllers\PreferenceIncomeController;
 use App\Http\Controllers\RestoreDataController;
 use App\Http\Controllers\SampleDataController;
@@ -931,7 +932,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/{table}/{col}/{id}', 'restore')->name('data');
         Route::get('/force/{table}/{col}/{id}','forceDelete')->name('force-delete');
     });
-   
+     //MemberSavingsPayment pages
+     Route::prefix('company')->controller(preferenceCompanyController::class)->name('pc.')->group(function () {
+        Route::get('/',  'index')->name('index');
+        Route::post('/process-edit',  'processEdit')->name('process-edit');
+        Route::post('/elements-add',  'elementsAdd')->name('elements-add');
+    });
     //Whatsapp pages
     // Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
     //     Route::get('/', [WhatsappController::class, 'index'])->name('index');
