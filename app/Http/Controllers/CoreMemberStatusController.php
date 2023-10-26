@@ -26,7 +26,6 @@ class CoreMemberStatusController extends Controller
     public function updateStatus($member_id)
     {
         $member                 = CoreMember::findOrFail($member_id);
-        // dd($member);
 
         if($member->member_principal_savings_last_balance > 0){
             $member->member_status  = 1;
@@ -43,7 +42,7 @@ class CoreMemberStatusController extends Controller
             }
         }else{
             $message = array(
-                'pesan' => 'Status Anggota gagal diubah',
+                'pesan' => 'Status Anggota gagal diubah karena belum memiliki simpanan',
                 'alert' => 'error'
             );
         }
