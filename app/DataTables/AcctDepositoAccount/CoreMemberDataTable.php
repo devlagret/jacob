@@ -36,6 +36,7 @@ class CoreMemberDataTable extends DataTable
         return $model->newQuery()
         ->where('core_member.member_active_status', 0)
         ->where('core_member.data_state', 0)
+        ->where('core_member.member_status',1)
         ->where('core_member.branch_id', auth()->user()->branch_id);
     }
     /**

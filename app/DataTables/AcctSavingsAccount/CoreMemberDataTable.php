@@ -35,6 +35,7 @@ class CoreMemberDataTable extends DataTable
     {
         return $model->newQuery()
         ->select('member_no','member_name','member_address','member_id')
+        ->where('member_status', 1)
         ->where('data_state', 0);
     }
     /**
