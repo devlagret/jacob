@@ -128,7 +128,7 @@
         <div class="card-body pt-6">
             <div class="table-responsive">
                 <div class="row mb-6">
-                    <table class="table table-rounded border gy-7 gs-7 show-border">
+                    <table class="table table-rounded border  gs-7 show-border">
                     <thead>
                             <tr align="center">
                                 <th colspan="2"><b>LAPORAN NERACA</b></th>
@@ -143,7 +143,7 @@
                         <tbody>
                             <tr>
                                 <td style="width: 50%">
-                                    <table class="table table-rounded border gy-7 gs-7 show-border">
+                                    <table class="table table-rounded border  gs-7 show-border">
                                         <?php
                                             $grand_total_account_amount1 = 0;
                                             $total_account_amount10	= 0;
@@ -339,7 +339,7 @@
                                     </table>
                                 </td>
                                 <td style="width: 50%">
-                                    <table class="table table-rounded border gy-7 gs-7 show-border">
+                                    <table class="table table-rounded border  gs-7 show-border">
                                         <?php
                                             foreach ($acctbalancesheetreport_right as $key => $val) {
                                                 if($val['report_tab2'] == 0){
@@ -536,7 +536,7 @@
                             </tr>
                             <tr>
                                 <td style='width: 50%'>
-                                    <table class="table table-rounded border gy-7 gs-7 show-border">
+                                    <table class="table table-rounded border  gs-7 show-border">
                                         <tr>
                                             <?php
                                                 echo "
@@ -551,7 +551,7 @@
                                 </td>
 
                                 <td style='width: 50%'>
-                                    <table class="table table-rounded border gy-7 gs-7 show-border">
+                                    <table class="table table-rounded border  gs-7 show-border">
                                         <tr>
                                             <?php 
                                                 echo "
