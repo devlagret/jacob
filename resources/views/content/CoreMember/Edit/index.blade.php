@@ -501,7 +501,7 @@ $(document).ready(function(){
                                     <select name="member_working_type" id="member_working_type" aria-label="{{ __('Pilih Tipe Pekerjaan') }}" data-control="select2" data-placeholder="{{ __('Pilih tipe pekerjaan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changeWorkingType()">
                                         <option value="">{{ __('Pilih tipe pekerjaan..') }}</option>
                                         @foreach($workingtype as $key => $value)
-                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('member_working_type', (int)$memberworking['member_working_type'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('member_working_type', $memberworking['member_working_type'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -566,7 +566,7 @@ $(document).ready(function(){
                                     <select name="member_business_scale" id="member_business_scale" aria-label="{{ __('Pilih Skala Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih skala usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" >
                                         <option value="">{{ __('Pilih skala usaha..') }}</option>
                                         @foreach($businessscale as $key => $value)
-                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('member_business_scale', (int)$memberworking['member_business_scale'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('member_business_scale', $memberworking['member_business_scale'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -583,7 +583,7 @@ $(document).ready(function(){
                                     <select name="member_business_owner" id="member_business_owner" aria-label="{{ __('Pilih Kepemilikan Tempat Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih kepemilikan tempat usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" >
                                         <option value="">{{ __('Pilih kepemilikan tempat usaha..') }}</option>
                                         @foreach($businessowner as $key => $value)
-                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('member_business_owner', (int)$memberworking['member_business_owner'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('member_business_owner', $memberworking['member_business_owner'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -615,7 +615,7 @@ $(document).ready(function(){
                             <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Penghasilan Perbulan') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_monthly_income_view" id="member_monthly_income_view" class="form-control form-control-lg form-control-solid" placeholder="Penghasilan Perbulan" value="{{ old('member_monthly_income_view', number_format((float)$memberworking['member_monthly_income'], 2) ?? '') }}" autocomplete="off" />
+                                    <input type="text" name="member_monthly_income_view" id="member_monthly_income_view" class="form-control form-control-lg form-control-solid" placeholder="Penghasilan Perbulan" value="{{ old('member_monthly_income_view',number_format($memberworking['member_monthly_income']??0, 2) ?? '') }}" autocomplete="off" />
                                     <input type="hidden" name="member_monthly_income" id="member_monthly_income" class="form-control form-control-lg form-control-solid" placeholder="Penghasilan Perbulan" value="{{ old('member_monthly_income', $memberworking['member_monthly_income'] ?? '') }}" autocomplete="off" />
                                 </div>
                             </div>
@@ -625,7 +625,7 @@ $(document).ready(function(){
                                     <select name="partner_working_type" id="partner_working_type" aria-label="{{ __('Pilih Tipe Pekerjaan Pasangan') }}" data-control="select2" data-placeholder="{{ __('Pilih tipe pekerjaan pasangan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changePartnerWorkingType()">
                                         <option value="">{{ __('Pilih tipe pekerjaan pasangan..') }}</option>
                                         @foreach($workingtype as $key => $value)
-                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('partner_working_type', (int)$memberworking['partner_working_type'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('partner_working_type', $memberworking['partner_working_type'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -672,7 +672,7 @@ $(document).ready(function(){
                                     <select name="partner_business_scale" id="partner_business_scale" aria-label="{{ __('Pilih Skala Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih skala usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" >
                                         <option value="">{{ __('Pilih skala usaha..') }}</option>
                                         @foreach($businessscale as $key => $value)
-                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('partner_business_scale', (int)$memberworking['partner_business_scale'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('partner_business_scale', $memberworking['partner_business_scale'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -689,7 +689,7 @@ $(document).ready(function(){
                                     <select name="partner_business_owner" id="partner_business_owner" aria-label="{{ __('Pilih Kepemilikan Tempat Usaha') }}" data-control="select2" data-placeholder="{{ __('Pilih kepemilikan tempat usaha..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" >
                                         <option value="">{{ __('Pilih kepemilikan tempat usaha..') }}</option>
                                         @foreach($businessowner as $key => $value)
-                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('partner_business_owner', (int)$memberworking['partner_business_owner'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('partner_business_owner', $memberworking['partner_business_owner'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -709,7 +709,7 @@ $(document).ready(function(){
                                     <select name="member_heir_relationship" id="member_heir_relationship" aria-label="{{ __('Pilih Hubungan') }}" data-control="select2" data-placeholder="{{ __('Pilih hubungan..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" >
                                         <option value="">{{ __('Pilih hubungan..') }}</option>
                                         @foreach($familyrelationship as $key => $value)
-                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key === old('member_heir_relationship', (int)$member['member_heir_relationship'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                            <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('member_heir_relationship', $member['member_heir_relationship'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
