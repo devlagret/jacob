@@ -13,7 +13,7 @@
             <!--begin::Content-->
             <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
                 <!--begin::Logo-->
-                <a href="{{ $theme->getPageUrl('index') }}" >
+                <a class="mb-6" href="{{ $theme->getPageUrl('index') }}" >
                     {{-- <img alt="Logo" src="{{ asset(theme()->getMediaUrlPath() . 'logos/logo-2-dark.svg') }}" class="h-45px"/> --}}
                     <img alt="Logo" src="{{ asset('img/' . AuthenticatedSessionController::getLogo()) }}" class="h-150px"/>
                 </a>

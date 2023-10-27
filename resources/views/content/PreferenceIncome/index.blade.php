@@ -157,7 +157,6 @@ $(document).ready(function(){
         </div>
         <form id="income-table-form" class="form" method="POST" action="{{ route('preference-income.process-edit') }}" enctype="multipart/form-data">
         @csrf
-        <div class="card mb-5 mb-xl-10">
             <div class="card-body border-top">
                 <div class="table-responsive">
                     @include('content.PreferenceIncome._table')
@@ -168,7 +167,6 @@ $(document).ready(function(){
                     @include('partials.general._button-indicator', ['label' => __('Simpan Perubahan')])
                 </button>
             </div>
-        </div>
         </form>
     </div>
 </x-base-layout>
