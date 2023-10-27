@@ -16,7 +16,7 @@ class AcctCreditsDailyMutationController extends Controller
 {
     public function payment() {
       $corebranch = CoreBranch::where('data_state', 0);
-      if(Auth::user()->branch_id!=1){
+      if(Auth::user()->branch_id!=0){
             $corebranch->where('branch_id',Auth::user()->branch_id);
       }
       $corebranch = $corebranch->get();
@@ -24,7 +24,7 @@ class AcctCreditsDailyMutationController extends Controller
     }
     public function account() {
       $corebranch = CoreBranch::where('data_state', 0);
-      if(Auth::user()->branch_id!=1){
+      if(Auth::user()->branch_id!=0){
             $corebranch->where('branch_id',Auth::user()->branch_id);
       }
       $corebranch = $corebranch->get();
@@ -70,7 +70,7 @@ class AcctCreditsDailyMutationController extends Controller
     protected function pritCreditPayment($sesi) {
       $preferencecompany	= PreferenceCompany::select('logo_koperasi', 'company_name')->first();
       $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
-      if(Auth::user()->branch_id!=1&&empty($sesi['branch_id'])){
+      if(Auth::user()->branch_id!=0&&empty($sesi['branch_id'])){
             $branch_id = Auth::user()->branch_id;
       }else{$branch_id = $sesi['branch_id'];}
       $acctcreditspayment = AcctCreditsPayment::with('member','account')
@@ -164,7 +164,7 @@ class AcctCreditsDailyMutationController extends Controller
       $spreadsheet        = new Spreadsheet();
       $preferencecompany	= PreferenceCompany::select('logo_koperasi', 'company_name')->first();
       $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
-      if(Auth::user()->branch_id!=1&&empty($sesi['branch_id'])){
+      if(Auth::user()->branch_id!=0&&empty($sesi['branch_id'])){
             $branch_id = Auth::user()->branch_id;
       }else{$branch_id = $sesi['branch_id'];}
       $acctcreditspayment = AcctCreditsPayment::with('member','account')
@@ -284,7 +284,7 @@ class AcctCreditsDailyMutationController extends Controller
     protected function printCreditsAccount($sesi) {
       $preferencecompany	= PreferenceCompany::select('logo_koperasi', 'company_name')->first();
       $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
-      if(Auth::user()->branch_id!=1&&empty($sesi['branch_id'])){
+      if(Auth::user()->branch_id!=0&&empty($sesi['branch_id'])){
             $branch_id = Auth::user()->branch_id;
       }else{$branch_id = $sesi['branch_id'];}
       $acctcreditspayment = AcctCreditsAccount::with('member')
@@ -357,7 +357,7 @@ class AcctCreditsDailyMutationController extends Controller
       $spreadsheet        = new Spreadsheet();
       $preferencecompany	= PreferenceCompany::select('logo_koperasi', 'company_name')->first();
       $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
-      if(Auth::user()->branch_id!=1&&empty($sesi['branch_id'])){
+      if(Auth::user()->branch_id!=0&&empty($sesi['branch_id'])){
             $branch_id = Auth::user()->branch_id;
       }else{$branch_id = $sesi['branch_id'];}
       $acctcreditspayment = AcctCreditsPayment::with('member','account')

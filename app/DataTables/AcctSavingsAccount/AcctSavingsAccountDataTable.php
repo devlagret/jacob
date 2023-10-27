@@ -4,6 +4,7 @@ namespace App\DataTables\AcctSavingsAccount;
 
 use App\Models\AcctSavingsAccount;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -43,28 +44,24 @@ class AcctSavingsAccountDataTable extends DataTable
      */
     public function query(AcctSavingsAccount $model)
     {
-        $sessiondata = session()->get('filter_savingsaccount');
+        $sessiondata = Session::get('filter_savingsaccount');
         if(!$sessiondata){
             $sessiondata = array(
                 'savings_id' => null,
-                'branch_id' => Auth::user()->branch_id,
             );
         }
-        if(!$sessiondata['branch_id'] || !$sessiondata['branch_id']==0){
-            $sessiondata['branch_id'] =  Auth::user()->branch_id;
-        }
-
         $querydata = $model->newQuery()->with('savingdata','member')
-        ->whereHas('member', function($q) use($sessiondata){
-            $q->where('branch_id',$sessiondata['branch_id']);
-        })
         ->whereHas('savingdata', function($q){
             $q->where('savings_status',0);
         });
         if($sessiondata['savings_id']){
             $querydata = $querydata->where('savings_id', $sessiondata['savings_id']);
         }
-
+        if(!is_null($sessiondata['branch_id'])||Auth::user()->branch_id!==0){
+            $querydata->whereHas('member', function($q) use($sessiondata){
+                $q->where('branch_id',$sessiondata['branch_id']??Auth::user()->branch_id);
+            });
+        }
         return $querydata;
     }
     /**

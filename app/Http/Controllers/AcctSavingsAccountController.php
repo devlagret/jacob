@@ -19,6 +19,7 @@ use App\Models\PreferenceTransactionModule;
 use App\DataTables\AcctSavingsAccount\AcctSavingsAccountDataTable;
 use App\DataTables\AcctSavingsAccount\CoreMemberDataTable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
 use Elibyy\TCPDF\Facades\TCPDF;
@@ -29,10 +30,12 @@ class AcctSavingsAccountController extends Controller
     {
         session()->forget('data_savingsaccountadd');
         $sessiondata = session()->get('filter_savingsaccount');
-
-        $corebranch = CoreBranch::select('branch_id', 'branch_name')
-        ->where('data_state', 0)
-        ->get();
+        // dump($sessiondata);
+        $corebranch = CoreBranch::select('branch_id', 'branch_name');
+        if(Auth::user()->branch_id!=0){
+            $corebranch->where('branch_id',Auth::user()->branch_id);
+        }
+        $corebranch = $corebranch->get();
 
         $acctsavings = AcctSavings::select('savings_id', 'savings_name')
         ->where('savings_status', 0)
@@ -43,21 +46,9 @@ class AcctSavingsAccountController extends Controller
     }
 
     public function filter(Request $request){
-        if($request->savings_id){
-            $savings_id = $request->savings_id;
-        }else{
-            $savings_id = null;
-        }
-
-        if($request->branch_id){
-            $branch_id = $request->branch_id;
-        }else{
-            $branch_id = null;
-        }
-
         $sessiondata = array(
-            'savings_id' => $savings_id,
-            'branch_id'  => $branch_id
+            'savings_id' => $request->savings_id,
+            'branch_id'  => $request->branch_id
         );
 
         session()->put('filter_savingsaccount', $sessiondata);
