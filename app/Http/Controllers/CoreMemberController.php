@@ -35,7 +35,6 @@ class CoreMemberController extends Controller
 
     public function add()
     {
-        $config                 = theme()->getOption('page', 'view');
         $sessiondata            = session()->get('data_memberadd');
         $homestatus		= Configuration::HomeStatus();
         $lasteducation = Configuration::LastEducation();
@@ -273,7 +272,6 @@ class CoreMemberController extends Controller
         $membercharacter		= Configuration::MemberCharacter();
         $homestatus		= Configuration::HomeStatus();
         $lasteducation = Configuration::LastEducation();
-        $config                 = theme()->getOption('page', 'member-edit');
         $member                 = CoreMember::findOrFail($member_id);
         $memberworking          = CoreMemberWorking::where('member_id', $member_id)->first();
         $membergender           = array_filter(Configuration::MemberGender());
