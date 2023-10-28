@@ -134,4 +134,12 @@ class AcctSavingsController extends Controller
 
         return redirect('savings')->with($message);
     }
+
+    public function getSavingsName($savings_id){
+        $savings_name = AcctSavings::select('*')
+        ->where('savings_id',$savings_id)
+        ->first();
+        return $savings_name['savings_name'];
+    }
+
 }
