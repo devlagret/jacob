@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Scopes\NotDeletedScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CoreMember extends Model
 {
-
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -31,5 +33,18 @@ class CoreMember extends Model
 
     public function savingDetail(){
         return $this->hasMany(AcctSavingsMemberDetail::class,'member_id','member_id');
+    }
+    public function branch() {
+        return $this->belongsTo(CoreBranch::class,'branch_id','branch_id');
+    }
+    public function city() {
+        return $this->belongsTo(CoreCity::class,'city_id','city_id');
+    }
+    public function kecamatan() {
+        return $this->belongsTo(CoreKecamatan::class,'kecamatan_id','kecamatan_id');
+    }
+    protected static function booted()
+    {
+        static::addGlobalScope(new NotDeletedScope);
     }
 }

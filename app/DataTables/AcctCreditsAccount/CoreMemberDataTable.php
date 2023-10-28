@@ -3,6 +3,7 @@
 namespace App\DataTables\AcctCreditsAccount;
 
 use App\Models\CoreMember;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -33,12 +34,13 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(CoreMember $model)
     {
-        return $model->newQuery()
-        ->select('member_id','member_name','member_no','member_address')
-        ->where('data_state', 0)
+        $model = $model->newQuery()->with('branch')
         ->where('member_status', 1)
         ->orderBy('member_no', 'ASC');
-
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
 
     /**
@@ -70,6 +72,7 @@ class CoreMemberDataTable extends DataTable
         return [
             Column::make('member_id')->title(__('No'))->data('DT_RowIndex'),
             Column::make('member_no')->title(__('No Anggota')),
+            Column::make('branch.branch_name')->title(__('Cabang')),
             Column::make('member_name')->title(__('Nama Anggota')),
             Column::make('member_address')->title(__('Alamat')),
             Column::computed('action') 

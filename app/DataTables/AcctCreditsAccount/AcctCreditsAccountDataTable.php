@@ -3,6 +3,7 @@
 namespace App\DataTables\AcctCreditsAccount;
 
 use App\Models\AcctCreditsAccount;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -51,7 +52,7 @@ class AcctCreditsAccountDataTable extends DataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\CreditsAccount/CreditsAccountDataTable $model
+     * @param \App\Models\AcctCreditsAccount $model
      * @return \Illuminate\Database\Eloquent\Builder
      */ 
     public function query(AcctCreditsAccount $model)
@@ -68,19 +69,15 @@ class AcctCreditsAccountDataTable extends DataTable
             $end_date = date('Y-m-d', strtotime($session['end_date']));
         }
 
-        $table = $model->newQuery()
-        ->select('acct_credits_account.credits_account_serial','core_member.member_name','acct_credits.credits_name','acct_credits_account.payment_type_id','acct_source_fund.source_fund_name','acct_credits_account.credits_account_date','acct_credits_account.credits_account_amount','acct_credits_account.credits_account_status','acct_credits_account.credits_account_id','acct_credits_account.credits_approve_status')
-        ->join('core_member','acct_credits_account.member_id','=','core_member.member_id')
-        ->join('acct_credits','acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('acct_source_fund','acct_credits_account.source_fund_id','=','acct_source_fund.source_fund_id')
-        ->where('acct_credits_account.credits_account_date','>=', $start_date)
-        ->where('acct_credits_account.credits_account_date','<=', $end_date)
-        ->where('acct_credits_account.data_state', 0);
+        $table = $model->newQuery()->with('sourcefund','member','credit')
+        ->where('credits_account_date','>=', $start_date)
+        ->where('credits_account_date','<=', $end_date)
+        ->where('data_state', 0);
         if(!empty($session['credits_id'])){
-            $table = $table->where('acct_credits_account.credits_id', $session['credits_id']);
+            $table = $table->where('credits_id', $session['credits_id']);
         }
-        if(!empty($session['branch_id'])){
-            $table = $table->where('acct_credits_account.branch_id', $session['branch_id']);
+        if(!empty($session['branch_id'])||Auth::user()->branch_id!==0){
+            $table = $table->where('branch_id', $session['branch_id']??Auth::user()->branch_id);
         }
 
         return $table;
@@ -115,10 +112,10 @@ class AcctCreditsAccountDataTable extends DataTable
         return [
             Column::make('credits_account_id')->title(__('No'))->data('DT_RowIndex'),
             Column::make('credits_account_serial')->title(__('No. Perjanjian Kredit')),
-            Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
-            Column::make('acct_credits.credits_name')->title(__('Jenis Pinjaman'))->data('credits_name'),
+            Column::make('member.member_name')->title(__('Nama Anggota')),
+            Column::make('credit.credits_name')->title(__('Jenis Pinjaman')),
             Column::make('payment_type_id')->title(__('Jenis Angsuran')),
-            Column::make('acct_source_fund.source_fund_name')->title(__('Jenis Sumber Dana'))->data('source_fund_name'),
+            Column::make('sourcefund.source_fund_name')->title(__('Jenis Sumber Dana')),
             Column::make('credits_account_date')->title(__('Tanggal Pinjaman')),
             Column::make('credits_account_amount')->title(__('Jumlah Pinjaman')),
             Column::make('credits_account_status')->title(__('Status Pinjaman')),

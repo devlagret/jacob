@@ -36,7 +36,7 @@ class AcctSavingsAccount extends Model
     public function savingdata() {
         return $this->belongsTo(AcctSavings::class,'savings_id','savings_id');
     }
-     protected static function booted()
+    protected static function booted()
     {
         static::addGlobalScope(new NotDeletedScope);
     }
