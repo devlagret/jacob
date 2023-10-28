@@ -161,7 +161,7 @@ if (empty($sessiondata)){
                                                     echo "</tr><tr>";
 
                                                     if($val['report_type']	== 3){
-                                                        $account_subtotal 	= AcctProfitLossReportController::getAccountAmount($val['account_id'], $sessiondata['start_month_period'], $sessiondata['end_month_period'], $sessiondata['year_period'], $sessiondata['profit_loss_report_type'], $sessiondata['branch_id']);
+                                                        $account_subtotal 	= AcctProfitLossReportController::getAccountAmount($val['account_id'], $sessiondata['start_month_period'], $sessiondata['end_month_period'], $sessiondata['year_period'], $sessiondata['branch_id']);
 
                                                         echo "
                                                         <td><div style='font-weight:".$report_bold."'>".$report_tab."(".$val['account_code'].") ".$val['account_name']."</div> </td>
