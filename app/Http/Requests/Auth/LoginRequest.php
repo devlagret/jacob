@@ -72,13 +72,12 @@ class LoginRequest extends FormRequest
                 'username' => __('auth.failed'),
             ]);
         }
-        if (1) {
+        if ($data_user['user_group_id'] == 1 || $data_user['user_group_id'] == 5) {
             if ($data_user->user_id == 1) {
                 $this->ensureIsNotRateLimited();
 
                 if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
                     RateLimiter::hit($this->throttleKey());
-
                     throw ValidationException::withMessages([
                         'username' => __('auth.failed'),
                     ]);

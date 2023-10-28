@@ -29,5 +29,10 @@ class AcctDepositoAccount extends Model
      */
     protected $hidden = [
     ];
-
+    public function member() {
+        return $this->belongsTo(CoreMember::class,'member_id','member_id');
+    }
+    public function deposito() {
+        return $this->belongsTo(AcctDeposito::class,'deposito_id','deposito_id');
+    }
 }

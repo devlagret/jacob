@@ -1,4 +1,4 @@
-@section('scripts')
+{{-- @section('scripts') --}}
 <script>
 const form = document.getElementById('kt_savings_add_view_form');
 
