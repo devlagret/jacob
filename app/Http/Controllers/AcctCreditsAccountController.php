@@ -22,15 +22,19 @@ use App\Models\PreferenceCompany;
 use App\Models\PreferenceInventory;
 use App\Models\PreferenceTransactionModule;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AcctCreditsAccountController extends Controller
 {
     public function index(AcctCreditsAccountDataTable $dataTable)
     {
-        session()->forget('array_creditsaccountangunan');
-        session()->forget('member_creditsaccount');
-        session()->forget('data_creditsaccount');
+        Session::forget('array_creditsaccountangunan');
+        Session::forget('member_creditsaccount');
+        Session::forget('data_creditsaccount');
+        Session::forget('credit-token');
         $acctcredits = AcctCredits::select('credits_id','credits_name')
         ->where('data_state',0)
         ->orderBy('credits_number','ASC')
@@ -38,7 +42,7 @@ class AcctCreditsAccountController extends Controller
         $corebranch = CoreBranch::select('branch_id', 'branch_name')
         ->where('data_state',0)
         ->get();
-        $datasession = session()->get('filter_creditsaccount');
+        $datasession = Session::get('filter_creditsaccount');
         
         return $dataTable->render('content.AcctCreditsAccount.List.index', compact('acctcredits','corebranch','datasession'));
     }
@@ -50,6 +54,9 @@ class AcctCreditsAccountController extends Controller
 
     public function add()
     {
+        if(empty(Session::get('credit-token'))){
+            Session::put('credit-token',Str::uuid());
+        }
         $coremember = session()->get('member_creditsaccount');
         $creditid = AcctCredits::select('credits_id','credits_name')
         ->where('data_state',0)
@@ -62,9 +69,7 @@ class AcctCreditsAccountController extends Controller
         $sumberdana = AcctSourceFund::select('source_fund_id','source_fund_name')
         ->where('data_state', 0)
         ->get();
-        $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id','acct_savings_account.savings_account_no','core_member.member_name')
-        ->join('core_member', 'acct_savings_account.member_id','=','core_member.member_id')
-        ->where('acct_savings_account.data_state', 0)
+        $acctsavingsaccount = AcctSavingsAccount::with('member','savingdata')
         ->get();
         $daftaragunan = session()->get('array_creditsaccountangunan');
         return view('content.AcctCreditsAccount.Add.index', compact('coremember','creditid','datasession','coreoffice','sumberdana','acctsavingsaccount','daftaragunan'));
@@ -109,32 +114,29 @@ class AcctCreditsAccountController extends Controller
 
     public function selectMember($member_id)
     {
-        $coremember = CoreMember::where('member_id', $member_id)
-        ->join('core_city','core_city.city_id','=','core_member.city_id')
-        ->join('core_kecamatan','core_kecamatan.kecamatan_id','=','core_member.kecamatan_id')
-        ->first();
-
+        $coremember = CoreMember::with('city','kecamatan')->where('member_id', $member_id)->first();
         $data = array(
             'member_id'                             => $coremember->member_id,
             'member_no'                             => $coremember->member_no,
             'member_name'                           => $coremember->member_name,
-            'member_address'                        => $coremember->city_name.", ".$coremember->kecamatan_name.", ".$coremember->member_address,
+            'member_address'                        => $coremember->city->city_name.", ".$coremember->kecamatan->kecamatan_name.", ".$coremember->member_address,
             'member_date_of_birth'                  => $coremember->member_date_of_birth,
             'member_gender'                         => $coremember->member_gender,
             'member_phone'                          => $coremember->member_phone,
-            'city_name'                             => $coremember->city_name,
-            'kecamatan_name'                        => $coremember->kecamatan_name,
+            'city_name'                             => $coremember->city->city_name,
+            'kecamatan_name'                        => $coremember->kecamatan->kecamatan_name,
             'member_mother'                         => $coremember->member_mother,
             'member_identity_no'                    => $coremember->member_identity_no,
         );
-
-        session()->put('member_creditsaccount', $data);
-
+        Session::put('member_creditsaccount', $data);
         return redirect('credits-account/add');
     }
 
     public function processAdd(Request $request)
     {
+        if(empty(Session::get('credit-token'))){
+            return redirect('credits-account/detail')->with(['pesan' => 'Data Credit Berjangka berhasil ditambah -','alert' => 'success']);
+        }
         $daftaragunan = session()->get('array_creditsaccountangunan');
         $data = array (
             "credits_account_date" 						=> date('Y-m-d', strtotime($request->credit_account_date)),
@@ -244,6 +246,7 @@ class AcctCreditsAccountController extends Controller
             return redirect('credits-account/detail')->with($message);
         } catch (\Exception $e) {
             DB::rollback();
+            report($e);
             $message = array(
                 'pesan' => 'Data Credit Berjangka gagal ditambah',
                 'alert' => 'error'
@@ -346,17 +349,7 @@ class AcctCreditsAccountController extends Controller
     public function approving($credits_account_id)
     {
         $paymenttype = Configuration::  PaymentType();
-        $acctcreditsaccount = AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
-        ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
-        ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
-        ->join('core_member_working', 'acct_credits_account.member_id','=','core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id','=','core_province.province_id')
-        ->join('core_city', 'core_member.city_id','=','core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id','=','core_kecamatan.kecamatan_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_account_id', $credits_account_id)
-        ->first();
+        $acctcreditsaccount = AcctCreditsAccount::with('member')->first();
 
         return view('content.AcctCreditsAccount.Approve.index', compact('paymenttype','acctcreditsaccount'));
     }
@@ -402,7 +395,7 @@ class AcctCreditsAccountController extends Controller
             AcctCreditsAccount::where('credits_account_id', $acctcreditsaccount->credits_account_id)
             ->update([
                 'credits_approve_status' => 1,
-                'updated_id'             => auth()->user()->user_id,
+                'updated_id'             => Auth::id(),
             ]);
 
             $data_journal = array(
@@ -415,7 +408,7 @@ class AcctCreditsAccountController extends Controller
                 'transaction_module_code'		=> $transaction_module_code,
                 'transaction_journal_id' 		=> $acctcreditsaccount['credits_account_id'],
                 'transaction_journal_no' 		=> $acctcreditsaccount['credits_account_serial'],
-                'created_id'					=> auth()->user()->user_id,								
+                'created_id'					=> Auth::id(),								
             );
             AcctJournalVoucher::create($data_journal);
 
@@ -864,9 +857,7 @@ class AcctCreditsAccountController extends Controller
         $sumberdana = AcctSourceFund::select('source_fund_id','source_fund_name')
         ->where('data_state', 0)
         ->get();
-        $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id','acct_savings_account.savings_account_no','core_member.member_name')
-        ->join('core_member', 'acct_savings_account.member_id','=','core_member.member_id')
-        ->where('acct_savings_account.data_state', 0)
+        $acctsavingsaccount = AcctSavingsAccount::with('member')
         ->get();
         $daftaragunan = session()->get('array_creditsaccountangunan');
         $paymenttype = Configuration::PaymentType();
@@ -5429,9 +5420,9 @@ class AcctCreditsAccountController extends Controller
         ->where('acct_credits_account.credits_account_id', $id)
         ->first();
 
-        $total_credits_account 			= $credistaccount['credits_account_amount'];
-        $credits_account_interest 		= $credistaccount['credits_account_interest'];
-        $credits_account_period 		= $credistaccount['credits_account_period'];
+        $total_credits_account 			= ($credistaccount['credits_account_amount']??0);
+        $credits_account_interest 		= ($credistaccount['credits_account_interest']??0);
+        $credits_account_period 		= ($credistaccount['credits_account_period']??0);
 
         $installment_pattern			= array();
         $opening_balance				= $total_credits_account;
@@ -5448,7 +5439,7 @@ class AcctCreditsAccountController extends Controller
                 $tanggal_angsuran 								= date('d-m-Y', strtotime("+".$i." months", strtotime($credistaccount['credits_account_date'])));
             }
             
-            $angsuran_pokok									= $credistaccount['credits_account_amount']/$credits_account_period;				
+            $angsuran_pokok									= ($credistaccount['credits_account_amount']??0)/$credits_account_period;				
 
             $angsuran_margin								= $opening_balance*$credits_account_interest/100;				
 

@@ -32,7 +32,7 @@ class AcctSavingsAccountController extends Controller
         $sessiondata = session()->get('filter_savingsaccount');
         // dump($sessiondata);
         $corebranch = CoreBranch::select('branch_id', 'branch_name');
-        if(Auth::user()->branch_id!=0){
+        if(Auth::user()->branch_id!==0){
             $corebranch->where('branch_id',Auth::user()->branch_id);
         }
         $corebranch = $corebranch->get();

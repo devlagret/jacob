@@ -75,7 +75,14 @@ var validator = FormValidation.formValidation(
             'credits_account_last_balance_principal_view': {
                 validators: {
                     notEmpty: {
-                        message: 'Plafon Pinjaman diisi'
+                        message: 'Plafon Pinjaman harus diisi'
+                    }
+                }
+            },
+            'savings_account_id': {
+                validators: {
+                    notEmpty: {
+                        message: 'No. Simpanan harus diisi'
                     }
                 }
             },
@@ -142,7 +149,7 @@ $(document).ready(function(){
             }
 
         });
-    }); 
+    });
 
     $('#button_modal_member').click(function(){
         $.ajax({
@@ -153,7 +160,7 @@ $(document).ready(function(){
                     $('.modal-title').html("Daftar Anggota");
                     $('#modal-body').html(msg);
             }
-    
+
         });
     });
 
@@ -376,7 +383,7 @@ function function_elements_add(name, value){
             type: "POST",
             url : "{{route('credits-account.elements-add')}}",
             data : {
-                'name'      : name, 
+                'name'      : name,
                 'value'     : value,
                 '_token'    : '{{csrf_token()}}'
             },
@@ -567,7 +574,7 @@ function receivedamount() {
     var by_provisi      = $("#credit_account_provisi").val();
     var by_notary      = $("#credit_account_notary").val();
     var by_insurance    = $("#credit_account_insurance").val();
-    
+
     if (by_admin == '') {
         by_admin = 0;
     }
@@ -584,7 +591,7 @@ function receivedamount() {
         by_insurance = 0;
     }
 
- 
+
 
     var terima_bersih = parseInt(pinjaman) - (parseInt(by_admin) + parseInt(by_provisi) + parseInt(by_notary) + parseInt(by_insurance) );
 
@@ -652,7 +659,7 @@ function change_payment_type_id(value) {
     } else if (value == 4) {
         $('#credit_account_payment_amount_view').prop('readonly', true);
     }
-    
+
     function_elements_add('payment_type_id', value);
 }
 </script>
@@ -832,7 +839,7 @@ function change_payment_type_id(value) {
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Terima Bersih') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="credit_account_amount_received_view" id="credit_account_amount_received_view" class="form-control form-control-lg form-control-solid" placeholder="Terima Bersih" value="{{ old('credit_account_amount_received_view', empty($datasession['credit_account_amount_received']) ? '' : (is_string($datasession['credit_account_amount_received'])? $datasession['credit_account_amount_received'] : number_format($datasession['credit_account_amount_received'],2)) ?? '') }}" autocomplete="off"/>
-                                    <input type="hidden" name="credit_account_amount_received" id="credit_account_amount_received" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_amount_received', $datasession['credit_account_amount_received'] ?? '') }}"/>  
+                                    <input type="hidden" name="credit_account_amount_received" id="credit_account_amount_received" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_amount_received', $datasession['credit_account_amount_received'] ?? '') }}"/>
                                 </div>
                             </div>
                         </div>
@@ -913,12 +920,12 @@ function change_payment_type_id(value) {
                                 </div>
                             </div>
                             <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No. Simpanan') }}</label>
+                                <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('No. Simpanan') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <select name="savings_account_id" id="savings_account_id" data-control="select2" data-placeholder="{{ __('Pilih No. Simpanan') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
                                         <option value="">{{ __('Pilih') }}</option>
                                         @foreach($acctsavingsaccount as $key => $value)
-                                            <option data-kt-flag="{{ $value['savings_account_id'] }}" value="{{ $value['savings_account_id'] }}" {{ $value['savings_account_id'] == old('savings_account_id', $datasession['savings_account_id'] ?? '') ? 'selected' :'' }}>{{ $value['savings_account_no'] }} - {{ $value['member_name'] }}</option>
+                                            <option data-kt-flag="{{ $value['savings_account_id'] }}" value="{{ $value['savings_account_id'] }}" {{ $value['savings_account_id'] == old('savings_account_id', $datasession['savings_account_id'] ?? '') ? 'selected' :'' }}>{{ $value['savings_account_no'] }} - {{ $value->member->member_name }} ({{$value->savingdata->savings_name}})</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -928,7 +935,7 @@ function change_payment_type_id(value) {
                 </div>
                 <div class="card-footer d-flex justify-content-end py-6 px-9">
                     <button type="reset" id="kt_credits_account_add_reset" class="btn btn-white btn-active-light-primary me-2">{{ __('Batal') }}</button>
-    
+
                     <button type="submit" class="btn btn-primary" id="kt_credits_account_add_submit">
                         @include('partials.general._button-indicator', ['label' => __('Simpan')])
                     </button>
@@ -942,17 +949,17 @@ function change_payment_type_id(value) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title"></h3>
-    
+
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
                         <span class="bi bi-x-lg"></span>
                     </div>
                     <!--end::Close-->
                 </div>
-    
+
                 <div class="modal-body" id="modal-body">
                 </div>
-    
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -965,18 +972,18 @@ function change_payment_type_id(value) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title">Angunan</h3>
-    
+
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
                         <span class="bi bi-x-lg"></span>
                     </div>
                     <!--end::Close-->
                 </div>
-    
+
                 <div class="modal-body" id="modal-body">
                     @include('content.AcctCreditsAccount.Add.AcctCreditsAgunan.index')
                 </div>
-    
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -984,4 +991,24 @@ function change_payment_type_id(value) {
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" id="kt_modal_core_savings_account">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Daftar Tabungan</h3>
+
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                        <span class="bi bi-x-lg"></span>
+                    </div>
+                </div>
+
+                <div class="modal-body" id="modal-savings-account-body">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-base-layout>

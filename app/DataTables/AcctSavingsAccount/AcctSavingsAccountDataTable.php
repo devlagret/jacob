@@ -48,6 +48,7 @@ class AcctSavingsAccountDataTable extends DataTable
         if(!$sessiondata){
             $sessiondata = array(
                 'savings_id' => null,
+                'branch_id' => null,
             );
         }
         $querydata = $model->newQuery()->with('savingdata','member')

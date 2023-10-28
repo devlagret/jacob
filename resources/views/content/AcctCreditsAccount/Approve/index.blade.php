@@ -1,4 +1,4 @@
-@section('scripts')
+    @section('scripts')
     <script>
         const form = document.getElementById('kt_credit_account_approving_view_form');
 
@@ -77,25 +77,25 @@
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama Anggota') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_name" class="form-control form-control-lg form-control-solid" placeholder="Nama Anggota" value="{{ old('member_name', $acctcreditsaccount['member_name'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="member_name" class="form-control form-control-lg form-control-solid" placeholder="Nama Anggota" value="{{ old('member_name', $acctcreditsaccount->member->member_name ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Alamat Anggota') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <textarea  name="member_address" class="form-control form-control-lg form-control-solid" placeholder="Alamat Anggota" autocomplete="off" readonly>{{ old('member_address', $acctcreditsaccount['member_address'] ?? '') }}</textarea>
+                                    <textarea  name="member_address" class="form-control form-control-lg form-control-solid" placeholder="Alamat Anggota" autocomplete="off" readonly>{{ old('member_address', $acctcreditsaccount->member->member_address ?? '') }}</textarea>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No. Identitas') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input  name="member_identity_no" class="form-control form-control-lg form-control-solid" placeholder="No. Identitas" autocomplete="off" value="{{ old('member_identity_no', $acctcreditsaccount['member_identity_no'] ?? '') }}" readonly>
+                                    <input  name="member_identity_no" class="form-control form-control-lg form-control-solid" placeholder="No. Identitas" autocomplete="off" value="{{ old('member_identity_no', $acctcreditsaccount->member->member_identity_no ?? '') }}" readonly>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jenis Pinjaman') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input  name="credits_name" class="form-control form-control-lg form-control-solid" placeholder="Jenis Pinjaman" autocomplete="off" value="{{ old('credits_name', $acctcreditsaccount['credits_name'] ?? '') }}" readonly>
+                                    <input  name="credits_name" class="form-control form-control-lg form-control-solid" placeholder="Jenis Pinjaman" autocomplete="off" value="{{ old('credits_name', $acctcreditsaccount->credit->credits_name ?? '') }}" readonly>
                                 </div>
                             </div>
                             <div class="row mb-6">
