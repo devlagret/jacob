@@ -119,8 +119,8 @@ class NominativeMemberReportController extends Controller
                 <td width=\"15%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: center;font-size:10;\">Nama</div></td>
                 <td width=\"20%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: center;font-size:10;\">Alamat</div></td>
                 <td width=\"15%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: center;font-size:10;\">Simp Pokok</div></td>
-                <td width=\"15%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: right;font-size:10;\">Simp KHS</div></td>
                 <td width=\"15%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: right;font-size:10;\">Simp WJB</div></td>
+                <td width=\"15%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: right;font-size:10;\">Simp KHS</div></td>
             </tr>				
         </table>";
 
@@ -155,8 +155,8 @@ class NominativeMemberReportController extends Controller
             <td colspan =\"3\" style=\"border-top: 1px solid black;\"><div style=\"font-size:10;text-align:left;font-style:italic\"></div></td>
             <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;font-weight:bold;text-align:center\">Jumlah </div></td>
             <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;text-align:right\">".number_format($simp_pokok, 2)."</div></td>
-            <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;text-align:right\">".number_format($simp_khs, 2)."</div></td>
             <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;text-align:right\">".number_format($simp_wjb, 2)."</div></td>
+            <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;text-align:right\">".number_format($simp_khs, 2)."</div></td>
         </tr>							
         </table>";
 
@@ -227,7 +227,7 @@ class NominativeMemberReportController extends Controller
             $sheet->setCellValue('E4',"Alamat");
             $sheet->setCellValue('F4',"Simpanan Pokok");
             $sheet->setCellValue('G4',"Simpanan Wajib");
-            $sheet->setCellValue('H4',"Simpanan Wajib");
+            $sheet->setCellValue('H4',"Simpanan Khusus");
 
             $row = 4;
 			$no  = 0;
