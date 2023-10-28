@@ -26,6 +26,7 @@ use App\DataTables\AcctSavingsProfitSharingDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
+use Carbon\Carbon;
 
 class AcctSavingsProfitSharingController extends Controller
 {
@@ -41,10 +42,17 @@ class AcctSavingsProfitSharingController extends Controller
         $period 	    = SystemPeriodLog::select('*')
         ->orderBy('period_log_id', 'DESC')
         ->first();
+        // dd($period);
+        $today = Carbon::today()->format('mY');
+        // dd($today);
+        if($period == null){
+            $last_month     = substr($today,0,2);
+            $next_month     = $last_month + 1;
+        }else{
+            $last_month     = substr($period['period'],0,2);
+            $next_month     = $last_month + 1;
+        }
 
-        $last_month     = substr($period['period'],0,2);
-        $next_month     = $last_month + 1;
-        
         if($last_month == 12){
             $next_month = 1;
         } else {
