@@ -2,6 +2,7 @@
 
 namespace App\DataTables\AcctDepositoAccountClosing;
 
+use App\Models\AcctDepositoAccount;
 use App\Models\AcctSavingsAccount;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -33,11 +34,28 @@ class AcctSavingsAccountDataTable extends DataTable
      */
     public function query(AcctSavingsAccount $model)
     {
+        $sessiondata         = session()->get('data_depositoaccountclosingadd');
+        
+        $deposito_account_id = $sessiondata['deposito_account_id'];
+
+        if(!$sessiondata || $sessiondata == ""){
+            $sessiondata['deposito_account_amount_adm'] = 0;
+        }
+        $sessiondata['deposito_account_id'] = $deposito_account_id;
+        session()->put('data_depositoaccountclosingadd', $sessiondata);
+
+        $acctdepositoaccount    = AcctDepositoAccount::select('acct_deposito_account.*', 'core_member.member_no', 'core_member.member_name', 'core_member.member_address', 'core_member.member_phone', 'acct_deposito.deposito_name')
+        ->join('core_member', 'core_member.member_id', 'acct_deposito_account.member_id')
+        ->join('acct_deposito', 'acct_deposito.deposito_id', 'acct_deposito_account.deposito_id')
+        ->where('acct_deposito_account.deposito_account_id', $deposito_account_id)
+        ->first();
+
         return $model->newQuery()
         ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'core_member.member_name', 'core_member.member_address')
         ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
         ->where('acct_savings_account.savings_account_status', 0)
         ->where('acct_savings_account.data_state', 0)
+        ->where('core_member.member_id',$acctdepositoaccount['member_id'])
         ->where('acct_savings_account.branch_id', auth()->user()->branch_id);
     }
     /**

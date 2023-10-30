@@ -53,7 +53,7 @@
         <div class="card-body pt-6">
             <div class="table-responsive">
                 <div class="row mb-6">
-                    <table class="table table-rounded border gy-7 gs-7 show-border">
+                    <table class="table table-rounded border  gs-7 show-border">
                         <thead>
                             <tr align="center">
                                 <th width="5%"><b>No</b></th>

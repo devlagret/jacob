@@ -666,6 +666,13 @@ class CoreMemberController extends Controller
         return $data;
     }
 
+    public function getMemberName($member_id){
+        $member_name = CoreMember::select('*')
+        ->where('member_id',$member_id)
+        ->first();
+        return $member_name['member_name'];
+    }
+
     public function export(){
         $branch_id          = auth()->user()->branch_id;
         $memberstatus		= Configuration::MemberStatus();
