@@ -12,7 +12,7 @@
     use App\Models\AcctDepositoAccount;
 
     //tgl hari ini
-    $today = Carbon::today()->format('m-d-Y');
+    $today = Carbon::today()->format('d-m-Y');
     // $today = ' 2023-11-28';
 
     //jatuh tempo simp berjangka 
