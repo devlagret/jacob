@@ -82,12 +82,12 @@ class AcctSavingsAccountController extends Controller
         $membergender           = array_filter(Configuration::MemberGender());
         $memberidentity         = array_filter(Configuration::MemberIdentity());
         $familyrelationship     = array_filter(Configuration::FamilyRelationship());
-        
+
         $acctsavings            = AcctSavings::select('savings_id', 'savings_name')
         ->where('savings_status', 0)
         ->where('data_state', 0)
         ->get();
-        
+
         $coreoffice             = CoreOffice::select('office_id', 'office_name')
         ->where('data_state', 0)
         ->get();
@@ -134,7 +134,7 @@ class AcctSavingsAccountController extends Controller
             'office_id'                             =>['required'],
             'savings_account_first_deposit_amount'  =>['required'],
         ]);
-        
+
 		$pickup_date = date('Y-m-d', strtotime($request->savings_account_pickup_date));
         $period = $request->saving_account_period;
 		if(!collect(['25','26','27'])->contains($fields['savings_id'])){
@@ -184,14 +184,14 @@ class AcctSavingsAccountController extends Controller
 			$transaction_module_id 		= PreferenceTransactionModule::select('transaction_module_id')
             ->first()
             ->transaction_module_id;
-            
+
             $acctsavingsaccount_last 	= AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name')
 			->join('core_member','acct_savings_account.member_id', '=', 'core_member.member_id')
 			->where('acct_savings_account.created_id', $data['created_id'])
 			->whereDate('acct_savings_account.created_at', date('Y-m-d'))
 			->orderBy('acct_savings_account.created_at','DESC')
             ->first();
-                
+
             $journal_voucher_period = date("Ym", strtotime($data['savings_account_date']));
 
             $data_journal = array(
@@ -303,18 +303,15 @@ class AcctSavingsAccountController extends Controller
         ->first()
         ->branch_city;
 
-        $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_no', 'core_member.member_gender', 'core_member.member_address', 'core_member.member_phone', 'core_member.member_date_of_birth', 'core_member.member_identity_no', 'core_member.city_id', 'core_member.kecamatan_id', 'core_member.identity_id','core_member.branch_id', 'core_member.member_job', 'acct_savings_account.savings_id', 'acct_savings.savings_code', 'acct_savings.savings_name', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_first_deposit_amount', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.voided_remark', 'acct_savings_account.validation', 'acct_savings_account.validation_at', 'acct_savings_account.validation_id', 'acct_savings_account.office_id')
-        ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
-        ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
-        ->where('acct_savings_account.data_state', 0)
-        ->where('acct_savings_account.savings_account_id', $savings_account_id)
+        $acctsavingsaccount = AcctSavingsAccount::with('savingdata','member')
+        ->where('savings_account_id', $savings_account_id)
         ->first();
 
         $pdf = new TCPDF('L', PDF_UNIT, 'A4', true, 'UTF-8', false);
 
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
-
+        $pdf::SetTitle('Kwitansi Tabungan');
         $pdf::SetMargins(6, 6, 6, 6);
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -358,7 +355,7 @@ class AcctSavingsAccountController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"0\" width=\"100%\">
             <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Nama</div></td>
-                <td width=\"80%\"><div style=\"text-align: left;\">: ".$acctsavingsaccount['member_name']."</div></td>
+                <td width=\"80%\"><div style=\"text-align: left;\">: ".$acctsavingsaccount->member->member_name."</div></td>
             </tr>
             <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">No. Rekening</div></td>
@@ -366,7 +363,7 @@ class AcctSavingsAccountController extends Controller
             </tr>
             <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Alamat</div></td>
-                <td width=\"80%\"><div style=\"text-align: left;\">: ".$acctsavingsaccount['member_address']."</div></td>
+                <td width=\"80%\"><div style=\"text-align: left;\">: ".$acctsavingsaccount->member->member_address."</div></td>
             </tr>
             <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Terbilang</div></td>
@@ -379,7 +376,7 @@ class AcctSavingsAccountController extends Controller
                 <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Jumlah</div></td>
                 <td width=\"80%\"><div style=\"text-align: left;\">: Rp. &nbsp;".number_format($acctsavingsaccount['savings_account_first_deposit_amount'], 2)."</div></td>
-            </tr>				
+            </tr>
         </table>
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"0\" width=\"100%\">
             <tr>
@@ -391,7 +388,7 @@ class AcctSavingsAccountController extends Controller
                 <td width=\"30%\"><div style=\"text-align: center;\">Penyetor</div></td>
                 <td width=\"20%\"><div style=\"text-align: center;\"></div></td>
                 <td width=\"30%\"><div style=\"text-align: center;\">Teller/Kasir</div></td>
-            </tr>				
+            </tr>
         </table>";
 
 
@@ -404,9 +401,9 @@ class AcctSavingsAccountController extends Controller
 
     public function validation($savings_account_id){
         $savingsaccount                 = AcctSavingsAccount::findOrFail($savings_account_id);
-        $savingsaccount->validation     = 1;        
-        $savingsaccount->validation_id  = auth()->user()->user_id;        
-        $savingsaccount->validation_at  = date('Y-m-d');     
+        $savingsaccount->validation     = 1;
+        $savingsaccount->validation_id  = auth()->user()->user_id;
+        $savingsaccount->validation_at  = date('Y-m-d');
         if($savingsaccount->save()){
             $message = array(
                 'pesan' => 'Tabungan berhasil divalidasi',
