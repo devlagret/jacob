@@ -116,7 +116,7 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
                 <td width=\"11%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: center;font-size:10;\">TANGGAL</div></td>
                 <td width=\"16%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: center;font-size:10;\">NO. REK</div></td>
                 <td width=\"25%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: center;font-size:10;\">NAMA</div></td>
-                <td width=\"15%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: right;font-size:10;\">NOMINAL</div></td>
+                <td width=\"15%\" style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: right;font-size:10;\">PENUTUPAN</div></td>
                 <td width=\"17%\"style=\"border-bottom: 1px solid black;border-top: 1px solid black\"><div style=\"text-align: right;font-size:10;\">Saldo</div></td>
             </tr>				
         </table>
@@ -134,11 +134,10 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
                     <td width=\"11%\"><div style=\"text-align: left;\">".$val['deposito_account_date']."</div></td>
                     <td width=\"16%\"><div style=\"text-align: left;\">".$val['deposito_account_no']."</div></td>
                     <td width=\"25%\"><div style=\"text-align: left;\">".$val['member_name']."</div></td>
-                    <td width=\"15%\"><div style=\"text-align: right;\">".number_format($val['deposito_account_amount'], 2)."</div></td>
+                    <td width=\"15%\"><div style=\"text-align: right;\">".$val['deposito_account_closed_date']."</div></td>
                     <td width=\"17%\"><div style=\"text-align: right;\">".number_format($val['deposito_account_amount'], 2)."</div></td>
                 </tr>";
 
-                $totalnominal 	+= $val['deposito_account_amount'];
                 $totalsaldo	+= $val['deposito_account_amount'];
                 $no++;
 
@@ -150,7 +149,7 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
             <tr>
                 <td colspan =\"3\" style=\"border-top: 1px solid black;\"><div style=\"font-size:10;text-align:left;font-style:italic\">Printed : ".date('d-m-Y H:i:s')."  ".auth()->user()->username."</div></td>
                 <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;font-weight:bold;text-align:center\">Jumlah </div></td>
-                <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;text-align:right\">".number_format($grandtotalnominal, 2)."</div></td>
+                <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;text-align:right\"></div></td>
                 <td style=\"border-top: 1px solid black\"><div style=\"font-size:10;text-align:right\">".number_format($grandtotalsaldo, 2)."</div></td>
             </tr>
         </table>";
@@ -158,7 +157,7 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
         //$pdf::Image( $path, 4, 4, 40, 20, 'PNG', '', 'LT', false, 300, 'L', false, false, 1, false, false, false);
         $pdf::writeHTML($export, true, false, false, false, '');
 
-        $filename = 'Laporan Mutasi Harian Tunai Simpanan.pdf';
+        $filename = 'Laporan Mutasi Harian Penutupan Simpanan Berjangka.pdf';
         $pdf::Output($filename, 'I');
     }
 
@@ -192,11 +191,11 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
         if(count($acctdepositomutation)>=0){
             $spreadsheet->getProperties()->setCreator($preferencecompany['company_name'])
             ->setLastModifiedBy($preferencecompany['company_name'])
-            ->setTitle("Laporan Mutasi Harian Pembukaan Tunai Simpanan Berjangka")
+            ->setTitle("Laporan Mutasi Harian Penutupan Tunai Simpanan Berjangka")
             ->setSubject("")
-            ->setDescription("Laporan Mutasi Harian Pembukaan Tunai Simpanan Berjangka")
-            ->setKeywords("Laporan, Mutasi, Harian, Pembukaan, Tunai, Simpanan , Berjangka")
-            ->setCategory("Laporan Mutasi Harian Pembukaan Tunai Simpanan Berjangka");
+            ->setDescription("Laporan Mutasi Harian Penutupan Tunai Simpanan Berjangka")
+            ->setKeywords("Laporan, Mutasi, Harian, Penutupan, Tunai, Simpanan , Berjangka")
+            ->setCategory("Laporan Mutasi Harian Penutupan Tunai Simpanan Berjangka");
 
             $sheet = $spreadsheet->getActiveSheet(0);
             $spreadsheet->getActiveSheet()->setTitle("Laporan MHTS");
@@ -219,13 +218,13 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B3:H3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:H3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $sheet->setCellValue('B1', "Laporan Mutasi Harian Pembukaan Tunai Simpanan Berjangka ".date('d M Y'));	
+            $sheet->setCellValue('B1', "Laporan Mutasi Harian Penutupan Tunai Simpanan Berjangka ".date('d M Y'));	
             $sheet->setCellValue('B3', "No");
             $sheet->setCellValue('C3', "Tanggal");
             $sheet->setCellValue('D3', "No. Rek");
             $sheet->setCellValue('E3', "Nama Anggota");
             $sheet->setCellValue('F3', "Sandi");
-            $sheet->setCellValue('G3', "Nominal");
+            $sheet->setCellValue('G3', "Penutupan");
             $sheet->setCellValue('H3', "Saldo");
 
             
@@ -247,12 +246,11 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
                 $sheet->setCellValue('D'.$j, $val['deposito_account_no']);
                 $sheet->setCellValue('E'.$j, $val['member_name']);
                 $sheet->setCellValue('F'.$j, 0);
-                $sheet->setCellValue('G'.$j, number_format($val['deposito_account_amount'],2));
+                $sheet->setCellValue('G'.$j, $val['deposito_account_closed_date']);
                 $sheet->setCellValue('H'.$j, number_format($val['deposito_account_amount'],2));
 
                 $no++;
                 $j++;
-                $totalnominal   += $val['deposito_account_amount'];
                 $totalsaldo 	+= $val['deposito_account_amount'];
             }
 
@@ -266,12 +264,12 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B'.$m.':H'.$m)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $spreadsheet->getActiveSheet()->setCellValue('B'.$m, 'Total');
-            $spreadsheet->getActiveSheet()->setCellValue('G'.$m, number_format($grandtotalnominal,2));
+            $spreadsheet->getActiveSheet()->setCellValue('G'.$m, "");
             $spreadsheet->getActiveSheet()->setCellValue('H'.$m, number_format($grandtotalsaldo,2));
 
         }
             ob_clean();
-            $filename='Laporan Mutasi Harian Pembukaan Tunai Simpanan Berjangka.xls';
+            $filename='Laporan Mutasi Harian Penutupan Tunai Simpanan Berjangka.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="'.$filename.'"');
             header('Cache-Control: max-age=0');

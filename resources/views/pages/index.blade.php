@@ -18,7 +18,7 @@
     //jatuh tempo simp berjangka 
     $depositoAccount = AcctDepositoAccount::select('*')
         ->where('deposito_account_due_date', '<', $today)
-        ->get();
+        ->simplePaginate(3);
 
     $depositoAccountCount = count($depositoAccount);
 @endphp
@@ -62,6 +62,7 @@
                             </tbody>
                         </table>
                     <?php } ?>
+                    {{ $depositoAccount->links() }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

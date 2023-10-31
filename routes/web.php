@@ -792,7 +792,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/filter', [AcctSavingsAccountMutationController::class, 'filter'])->name('filter');
         Route::get('/reset-filter', [AcctSavingsAccountMutationController::class, 'resetFilter'])->name('reset-filter');
         Route::get('/modal-savings-account', [AcctSavingsAccountMutationController::class, 'modalSavingsAccount'])->name('modal-savings-account');
-        // Route::get('/select-savings-account/{savings_account_id}', [SavingsAccountMutationController::class, 'selectSavingsAccount'])->name('select-savings-account');
+        Route::get('/select-savings-account/{savings_account_id}', [AcctSavingsAccountMutationController::class, 'selectSavingsAccount'])->name('select-savings-account');
         Route::post('/print', [AcctSavingsAccountMutationController::class, 'processPrinting'])->name('print');
     });
 

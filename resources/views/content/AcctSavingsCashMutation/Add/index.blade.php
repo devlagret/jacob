@@ -85,6 +85,31 @@ $(document).ready(function(){
         });
     });
     
+    // alert savings_account_blockir
+    var blockirtype = $("#savings_account_blockir_type").val();
+    var oldAmount = $("#savings_account_last_balance_view").val();
+    var blockirAmount = $("#savings_account_blockir_amount").val();
+    var mutationAmount = $("#savings_cash_mutation_amount_view").val();
+    var rangeAmount = oldAmount - blockirAmount; 
+
+    if(blockirtype == 0){
+        alert('Rekening diblokir,Silahkan pilih rekening lainnya');
+        $.ajax({
+            type: "GET",
+            url : "{{route('savings-cash-mutation.modal-savings-account')}}",
+            success: function(msg){
+                $('#kt_modal_savings_account').modal('show');
+                $('#modal-body').html(msg);
+            }
+        });
+        $('#kt_savings_cash_mutation_add_submit').hide();
+        $('#kt_savings_cash_mutation_add_submit_2').show();
+        
+    }else{
+        $('#kt_savings_cash_mutation_add_submit').show();
+        $('#kt_savings_cash_mutation_add_submit_2').hide();
+    }
+
     $("#savings_cash_mutation_amount_view").change(function(){
         var savings_cash_mutation_amount                                    = $("#savings_cash_mutation_amount_view").val();
         document.getElementById("savings_cash_mutation_amount").value       = savings_cash_mutation_amount;
@@ -146,6 +171,8 @@ if(empty($sessiondata)){
     $sessiondata['savings_cash_mutation_amount']        = 0;
     $sessiondata['savings_cash_mutation_amount_adm']    = 0;
     $sessiondata['savings_cash_mutation_last_balance']  = 0;
+    $sessiondata['savings_account_blockir_amount']      = 0;
+    $sessiondata['savings_account_blockir_type']        = 1;
 }
 ?>
 <x-base-layout>
@@ -259,13 +286,19 @@ if(empty($sessiondata)){
                                     <input type="hidden" name="savings_account_last_balance" id="savings_account_last_balance" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_last_balance', $acctsavingsaccount['savings_account_last_balance'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
-                            {{-- <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Opening Balance') }}</label>
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Saldo Blockir') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="savings_cash_mutation_opening_balance_balance_view" id="savings_cash_mutation_opening_balance_balance_view" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_opening_balance_view', number_format($acctsavingsaccount['savings_account_opening_balance'], 2) ?? '') }}" autocomplete="off" readonly/>
-                                    <input type="hidden" name="savings_cash_mutation_opening_balance" id="savings_cash_mutation_opening_balance" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_opening_balance', $acctsavingsaccount['savings_account_opening_balance'] ?? '') }}" autocomplete="off"/>
+                                    <input type="text" name="savings_account_blockir_amount" id="savings_account_blockir_amount" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_blockir_amount', $acctsavingsaccount['savings_account_blockir_amount'] ??  $sessiondata['savings_account_blockir_amount']) }}" autocomplete="off" readonly/>
+                                    <input type="hidden" name="savings_account_blockir_type" id="savings_account_blockir_type" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ old('savings_account_blockir_type', $acctsavingsaccount['savings_account_blockir_type'] ??  $sessiondata['savings_account_blockir_type']) }}" autocomplete="off"/>
                                 </div>
-                            </div> --}}
+                            </div>
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Saldo Tersisa') }}</label>
+                                <div class="col-lg-8 fv-row">
+                                    <input type="" name="savings_account_range_amount" id="savings_account_range_amount" class="form-control form-control-lg form-control-solid" placeholder="Saldo Lama" value="{{ $acctsavingsaccount['savings_account_last_balance'] - $sessiondata['savings_account_blockir_amount'] }}" autocomplete="off" readonly/>
+                                </div>
+                            </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Jumlah Transaksi') }}</label>
                                 <div class="col-lg-8 fv-row">
@@ -307,6 +340,9 @@ if(empty($sessiondata)){
     
                     <button type="submit" class="btn btn-primary" id="kt_savings_cash_mutation_add_submit">
                         @include('partials.general._button-indicator', ['label' => __('Simpan')])
+                    </button>
+                    <button type="button" class="btn btn-danger" id="kt_savings_cash_mutation_add_submit_2">
+                        @include('partials.general._button-indicator', ['label' => __('No Rekening Ini diblokir,Silahkan pilih rekening lainya!')])
                     </button>
                 </div>
             </form>
