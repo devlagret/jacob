@@ -22,6 +22,7 @@ use App\Models\PreferenceCompany;
 use App\Models\PreferenceInventory;
 use App\Models\PreferenceTransactionModule;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -138,6 +139,8 @@ class AcctCreditsAccountController extends Controller
             return redirect('credits-account/detail')->with(['pesan' => 'Data Credit Berjangka berhasil ditambah -','alert' => 'success']);
         }
         $token = Session::get('credit-token');
+        dump(date('Y-m-d', strtotime($request->credit_account_due_date)));
+        dd($request->all());
         $daftaragunan = session()->get('array_creditsaccountangunan');
         $data = array (
             "credits_account_date" 						=> date('Y-m-d', strtotime($request->credit_account_date)),
@@ -349,7 +352,7 @@ class AcctCreditsAccountController extends Controller
     public function approving($credits_account_id)
     {
         $paymenttype = Configuration::  PaymentType();
-        $acctcreditsaccount = AcctCreditsAccount::with('member')->first();
+        $acctcreditsaccount = AcctCreditsAccount::with('member')->find($credits_account_id);
 
         return view('content.AcctCreditsAccount.Approve.index', compact('paymenttype','acctcreditsaccount'));
     }
@@ -381,7 +384,6 @@ class AcctCreditsAccountController extends Controller
         DB::beginTransaction();
 
         try {
-
             AcctCreditsAccount::where('credits_account_id', $acctcreditsaccount->credits_account_id)
             ->update([
                 'credits_approve_status' => 1,
@@ -757,7 +759,6 @@ class AcctCreditsAccountController extends Controller
                 ]);
 
             }
-            dump($acctcreditsaccount['credits_account_insurance']);
             if($acctcreditsaccount['credits_account_insurance'] !='' && $acctcreditsaccount['credits_account_insurance'] > 0){
                 $account_id_default_status 			= AcctAccount::where('account_id',$preferencecompany['account_cash_id'])
                 ->where('data_state',0)
@@ -855,7 +856,7 @@ class AcctCreditsAccountController extends Controller
         $paymentpreference = Configuration::PaymentPreference();
         $paymentperiod = Configuration::CreditsPaymentPeriod();
         $membergender = Configuration::MemberGender();
-        $creditsdata = AcctCreditsAccount::with('member')->find($credits_account_id);
+        $creditsdata = AcctCreditsAccount::with('member','anggunan')->find($credits_account_id);
         if($creditsdata['payment_type_id']== ''||$creditsdata['payment_type_id']==1){
             $datapola 			= $this->flat($credits_account_id);
         } else if($creditsdata['payment_type_id'] == 2){
@@ -5105,17 +5106,7 @@ class AcctCreditsAccountController extends Controller
 
     public function printSchedule($credits_account_id)
     {
-        $acctcreditsaccount		= AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
-        ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
-        ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
-        ->join('core_member_working', 'acct_credits_account.member_id','=','core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id','=','core_province.province_id')
-        ->join('core_city', 'core_member.city_id','=','core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id','=','core_kecamatan.kecamatan_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_account_id', $credits_account_id)
-        ->first();
+        $acctcreditsaccount		= AcctCreditsAccount::with('member')->find($credits_account_id);
         $paymenttype 			= Configuration::PaymentType();
         $paymentperiod 			= Configuration::CreditsPaymentPeriod();
         $preferencecompany 		= PreferenceCompany::first();
@@ -5135,7 +5126,7 @@ class AcctCreditsAccountController extends Controller
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(10, 5, 10, 10);
+        $pdf::SetMargins(5, 5, 5, true);
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -5146,7 +5137,8 @@ class AcctCreditsAccountController extends Controller
 
         $pdf::SetFont('helvetica', 'B', 20);
 
-        $pdf::AddPage();
+        $pdf::AddPage('p');
+        $pdf::SetTitle('Jadwal Angsuran');
 
         $pdf::SetFont('helvetica', '', 9);
 
@@ -5186,7 +5178,7 @@ class AcctCreditsAccountController extends Controller
                         <div style=\"font-size:12px\";><b>Nama</b></div>
                     </td>
                     <td style=\"text-align:left;\" width=\"45%\">
-                        <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount['member_name']."</b></div>
+                        <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount->member->member_name."</b></div>
                     </td>
                     <td style=\"text-align:left;\" width=\"20%\">
                         <div style=\"font-size:12px\";><b>Jangka Waktu</b></div>
@@ -5220,26 +5212,29 @@ class AcctCreditsAccountController extends Controller
         <br>
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Ke</div></td>
+                <td width=\"4%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Ke</div></td>
                 <td width=\"12%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Tanggal Angsuran</div></td>
-                <td width=\"18%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Saldo Pokok</div></td>
+                <td width=\"8%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Hari</div></td>
+                <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Saldo Pokok</div></td>
                 <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Angsuran Pokok</div></td>
                 <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Angsuran Bunga</div></td>
-                <td width=\"18%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Total Angsuran</div></td>
-                <td width=\"18%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Sisa Pokok</div></td>
+                <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Total Angsuran</div></td>
+                <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Sisa Pokok</div></td>
 
 
             </tr>
-        </table>";
+        ";
 
         $no = 1;
 
-        $tbl2 = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">";
+        $tbl2 = "";
 
         $tbl3 ="";
         $totalpokok = 0;
         $totalmargin = 0;
         $total = 0;
+        $totalpk = 0;
+        Carbon::setLocale('id');
         foreach ($datapola as $key => $val) {
 
             $roundAngsuran=round($val['angsuran'],-3);
@@ -5248,13 +5243,14 @@ class AcctCreditsAccountController extends Controller
 
             $tbl3 .= "
                 <tr>
-                    <td width=\"5%\"><div style=\"text-align: left;\">&nbsp; ".$val['ke']."</div></td>
-                    <td width=\"12%\"><div style=\"text-align: right;\">".date('d-m-Y',strtotime($val['tanggal_angsuran']))." &nbsp; </div></td>
-                    <td width=\"18%\"><div style=\"text-align: right;\">".number_format($val['opening_balance'], 2)." &nbsp; </div></td>
-                    <td width=\"15%\"><div style=\"text-align: right;\">".number_format($val['angsuran_pokok'], 2)." &nbsp; </div></td>
-                    <td width=\"15%\"><div style=\"text-align: right;\">".number_format($sumAngsuranBunga,2)." &nbsp; </div></td>
-                    <td width=\"18%\"><div style=\"text-align: right;\">".number_format($roundAngsuran,2)." &nbsp; </div></td>
-                    <td width=\"18%\"><div style=\"text-align: right;\">".number_format($val['last_balance'], 2)." &nbsp; </div></td>
+                    <td ><div style=\"text-align: left;\">&nbsp; ".$val['ke']."</div></td>
+                    <td ><div style=\"text-align: center;\">".date('d-m-Y',strtotime($val['tanggal_angsuran']))." &nbsp; </div></td>
+                    <td ><div style=\"text-align: left;\">".Carbon::parse($val['tanggal_angsuran'])->translatedFormat('l')." &nbsp; </div></td>
+                    <td ><div style=\"text-align: right;\">".number_format($val['opening_balance'], 2)." &nbsp; </div></td>
+                    <td ><div style=\"text-align: right;\">".number_format($val['angsuran_pokok'], 2)." &nbsp; </div></td>
+                    <td ><div style=\"text-align: right;\">".number_format($sumAngsuranBunga,2)." &nbsp; </div></td>
+                    <td ><div style=\"text-align: right;\">".number_format($roundAngsuran,2)." &nbsp; </div></td>
+                    <td ><div style=\"text-align: right;\">".number_format($val['last_balance'], 2)." &nbsp; </div></td>
 
                 </tr>
             ";
@@ -5263,14 +5259,16 @@ class AcctCreditsAccountController extends Controller
             $totalpokok += $val['angsuran_pokok'];
             $totalmargin += $sumAngsuranBunga;
             $total += $roundAngsuran;
+            $totalpk += $val['last_balance'];
         }
 
         $tbl4 = "
             <tr>
-                <td colspan=\"3\"><div style=\"text-align: right;font-weight:bold\">Total</div></td>
+                <td colspan=\"4\"><div style=\"text-align: right;font-weight:bold\">Total</div></td>
                 <td><div style=\"text-align: right;font-weight:bold\">".number_format($totalpokok, 2)."</div></td>
                 <td><div style=\"text-align: right;font-weight:bold\">".number_format($totalmargin, 2)."</div></td>
                 <td><div style=\"text-align: right;font-weight:bold\">".number_format($total, 2)."</div></td>
+                <td><div style=\"text-align: right;font-weight:bold\">".number_format($totalpk, 2)."</div></td>
             </tr>
         </table>";
 
@@ -5499,17 +5497,7 @@ class AcctCreditsAccountController extends Controller
 
     public function printScheduleMember($credits_account_id)
     {
-        $acctcreditsaccount		= AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
-        ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
-        ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
-        ->join('core_member_working', 'acct_credits_account.member_id','=','core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id','=','core_province.province_id')
-        ->join('core_city', 'core_member.city_id','=','core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id','=','core_kecamatan.kecamatan_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_account_id', $credits_account_id)
-        ->first();
+        $acctcreditsaccount		= AcctCreditsAccount::find($credits_account_id);
         $paymenttype 			= Configuration::PaymentType();
         $paymentperiod 			= Configuration::CreditsPaymentPeriod();
         $preferencecompany 		= PreferenceCompany::first();
@@ -5541,7 +5529,7 @@ class AcctCreditsAccountController extends Controller
         $pdf::SetFont('helvetica', 'B', 20);
 
         $pdf::AddPage();
-
+        $pdf::SetTitle('Jadwal Angsuran For Member');
         $pdf::SetFont('helvetica', '', 9);
 
         // <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
@@ -5580,7 +5568,7 @@ class AcctCreditsAccountController extends Controller
                         <div style=\"font-size:12px\";><b>Nama</b></div>
                     </td>
                     <td style=\"text-align:left;\" width=\"45%\">
-                        <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount['member_name']."</b></div>
+                        <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount->member->member_name."</b></div>
                     </td>
                     <td style=\"text-align:left;\" width=\"20%\">
                         <div style=\"font-size:12px\";><b>Jangka Waktu</b></div>

@@ -46,6 +46,9 @@ class AcctCreditsAccount extends Model
     public function sourcefund() {
         return $this->belongsTo(AcctSourceFund::class,'source_fund_id','source_fund_id');
     }
+    public function anggunan() {
+        return $this->hasMany(AcctCreditsAgunan::class,'credits_account_id','credits_account_id');
+    }
     protected static function booted()
     {
         static::addGlobalScope(new NotDeletedScope);

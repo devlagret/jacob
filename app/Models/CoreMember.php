@@ -43,6 +43,9 @@ class CoreMember extends Model
     public function kecamatan() {
         return $this->belongsTo(CoreKecamatan::class,'kecamatan_id','kecamatan_id');
     }
+    public function savingacc() {
+        return $this->hasMany(AcctSavingsAccount::class,'member_id','member_id');
+    }
     protected static function booted()
     {
         static::addGlobalScope(new NotDeletedScope);

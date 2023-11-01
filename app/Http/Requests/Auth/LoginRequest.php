@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -675,36 +676,29 @@ class LoginRequest extends FormRequest
 
     public function autoDebetMandatorySavings($user_id, $branch_id, $username)
     {
-        $coremember	= CoreMember::select('core_member.member_id', 'core_member.member_mandatory_savings', 'core_member.member_mandatory_savings_last_balance',  'acct_savings_account.savings_id', 'acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_last_balance')
-        ->join('acct_savings_account', 'acct_savings_account.savings_account_id','=','core_member.member_debet_savings_account_id')
-        ->where('core_member.data_state', 0)
-        ->orderBy('core_member.member_id','ASC')
-        ->get();
+        $coremember	= CoreMember::with('savingacc')->get();
 
         DB::beginTransaction();
 
         try {
 
-            foreach($coremember as $key => $val){
+            foreach($coremember as $key => $value){
+                foreach ($value->savingacc as $key => $val) {
                 if($val['member_mandatory_savings'] <= $val['savings_account_last_balance']){
                     if($val['member_mandatory_savings_last_balance'] == 0){
                         $data = array(
                             'branch_id'										=> $branch_id,
-                            'member_id'										=> $val['member_id'],
+                            'member_id'										=> $value['member_id'],
                             'savings_id'									=> $val['savings_id'],
                             'savings_account_id'							=> $val['savings_account_id'],
                             'mutation_id'									=> 5,
                             'member_transfer_mutation_date'					=> date('Y-m-d'),
-                            'member_mandatory_savings_opening_balance'		=> $val['member_mandatory_savings_last_balance'],
-                            'member_mandatory_savings'						=> $val['member_mandatory_savings'],
-                            'member_mandatory_savings_last_balance'			=> $val['member_mandatory_savings_last_balance'] + $val['member_mandatory_savings'],
+                            'member_mandatory_savings_opening_balance'		=> $value['member_mandatory_savings_last_balance'],
+                            'member_mandatory_savings'						=> $value['member_mandatory_savings'],
+                            'member_mandatory_savings_last_balance'			=> $value['member_mandatory_savings_last_balance'] + $value['member_mandatory_savings'],
                             'operated_name'									=> $username,
                             'created_id'									=> $user_id,
                         );
-
-                        $member_name = CoreMember::where('member_id',$data['member_id'])
-                        ->first()
-                        ->member_name;
 
                         $transaction_module_code = "AGTTR";
 
@@ -756,7 +750,7 @@ class LoginRequest extends FormRequest
                             $data_debit = array(
                                 'journal_voucher_id'			=> $journal_voucher_id,
                                 'account_id'					=> $account_id,
-                                'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$member_name,
+                                'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$value->member_name,
                                 'journal_voucher_amount'		=> $data['member_mandatory_savings'],
                                 'journal_voucher_debit_amount'	=> $data['member_mandatory_savings'],
                                 'account_id_status'				=> 1,
@@ -778,7 +772,7 @@ class LoginRequest extends FormRequest
                             $data_credit =array(
                                 'journal_voucher_id'			=> $journal_voucher_id,
                                 'account_id'					=> $account_id,
-                                'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$member_name,
+                                'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$value->member_name,
                                 'journal_voucher_amount'		=> $data['member_mandatory_savings'],
                                 'journal_voucher_credit_amount'	=> $data['member_mandatory_savings'],
                                 'account_id_status'				=> 0,
@@ -802,16 +796,12 @@ class LoginRequest extends FormRequest
                                 'savings_account_id'							=> $val['savings_account_id'],
                                 'mutation_id'									=> 5,
                                 'member_transfer_mutation_date'					=> date('Y-m-d'),
-                                'member_mandatory_savings_opening_balance'		=> $val['member_mandatory_savings_last_balance'],
-                                'member_mandatory_savings'						=> $val['member_mandatory_savings'],
-                                'member_mandatory_savings_last_balance'			=> $val['member_mandatory_savings_last_balance'] + $val['member_mandatory_savings'],
+                                'member_mandatory_savings_opening_balance'		=> $value['member_mandatory_savings_last_balance'],
+                                'member_mandatory_savings'						=> $value['member_mandatory_savings'],
+                                'member_mandatory_savings_last_balance'			=> $value['member_mandatory_savings_last_balance'] + $value['member_mandatory_savings'],
                                 'operated_name'									=> $username,
                                 'created_id'									=> $user_id,
                             );
-
-                            $member_name = CoreMember::where('member_id',$data['member_id'])
-                            ->first()
-                            ->member_name;
 
                             $transaction_module_code = "AGTTR";
 
@@ -820,8 +810,6 @@ class LoginRequest extends FormRequest
                             ->transaction_module_id;
 
                             if(CoreMemberTransferMutation::create($data)){
-
-                                $this->MainPage_model->updateCoreMember($data_token);
                                 $membertransfer_last 	= CoreMemberTransferMutation::select('core_member.member_name','core_member.member_transfer_mutation_id','core_member.member_no')
                                 ->join('core_member','core_member_transfer_mutation.member_id','=','core_member.member_id')
                                 ->where('core_member_transfer_mutation.created_id', $data['created_id'])
@@ -864,7 +852,7 @@ class LoginRequest extends FormRequest
                                 $data_debit = array(
                                     'journal_voucher_id'			=> $journal_voucher_id,
                                     'account_id'					=> $account_id,
-                                    'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$member_name,
+                                    'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$value->member_name,
                                     'journal_voucher_amount'		=> $data['member_mandatory_savings'],
                                     'journal_voucher_debit_amount'	=> $data['member_mandatory_savings'],
                                     'account_id_status'				=> 1,
@@ -886,7 +874,7 @@ class LoginRequest extends FormRequest
                                 $data_credit =array(
                                     'journal_voucher_id'			=> $journal_voucher_id,
                                     'account_id'					=> $account_id,
-                                    'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$member_name,
+                                    'journal_voucher_description'	=> 'AUTO DEBET SIMPANAN WAJIB '.$value->member_name,
                                     'journal_voucher_amount'		=> $data['member_mandatory_savings'],
                                     'journal_voucher_credit_amount'	=> $data['member_mandatory_savings'],
                                     'account_id_status'				=> 0,
@@ -899,6 +887,7 @@ class LoginRequest extends FormRequest
                         }
                     }
                 }
+            }
             }
             DB::commit();
         } catch (\Exception $e) {
