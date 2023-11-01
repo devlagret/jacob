@@ -83,6 +83,7 @@ use App\Http\Controllers\PPOBTopUpController;
 use App\Http\Controllers\PreferenceCollectibilityController;
 use App\Http\Controllers\preferenceCompanyController;
 use App\Http\Controllers\PreferenceIncomeController;
+use App\Http\Controllers\Logs\RequestLogController;
 use App\Http\Controllers\RestoreDataController;
 use App\Http\Controllers\SampleDataController;
 use App\Http\Controllers\SavingsDailyCashDepositMutationController;
@@ -97,6 +98,7 @@ use App\Http\Controllers\SystemUserGroupController;
 use App\Http\Controllers\TaxReportController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WhatsappController;
+use App\Models\RequestLog;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -135,6 +137,7 @@ Route::prefix('documentation')->group(function () {
 Route::middleware(['auth','loged'])->group(function () {
     // Logs pages
     Route::prefix('log')->name('log.')->group(function () {
+        Route::get('request', [RequestLogController::class,'index']);
         Route::resource('system', SystemLogsController::class)->only(['index', 'destroy']);
         Route::resource('audit', AuditLogsController::class)->only(['index', 'destroy']);
     });
