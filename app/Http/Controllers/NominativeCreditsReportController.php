@@ -55,8 +55,7 @@ class NominativeCreditsReportController extends Controller
             }
         }
 
-        $acctcreditsaccount = AcctCreditsAccount::select('*')
-        ->with('member')
+        $acctcreditsaccount = AcctCreditsAccount::with('member')
         ->where('data_state', 0)
         ->where('credits_approve_status', 1)
         ->where('credits_account_last_balance', '>', 0)
@@ -68,6 +67,7 @@ class NominativeCreditsReportController extends Controller
         }
         $acctcreditsaccount = $acctcreditsaccount->orderBy('created_at', 'ASC')
         ->get();
+        // dd($acctcreditsaccount);
 
         $acctcredits 		= AcctCredits::select('credits_id', 'credits_name')
         ->where('data_state', 0)
@@ -189,8 +189,8 @@ class NominativeCreditsReportController extends Controller
                     <tr>
                         <td width=\"3.4%\"><div style=\"text-align: left;\">" . $no . "</div></td>
                         <td width=\"8%\"><div style=\"text-align: left;\">" . $val['credits_account_serial'] . "</div></td>
-                        <td width=\"17%\"><div style=\"text-align: left;\">" . $val['member_name'] . "</div></td>
-                        <td width=\"17%\"><div style=\"text-align: left;\">" . $val['member_address'] . "</div></td>
+                        <td width=\"17%\"><div style=\"text-align: left;\">" . $val->member->member_name . "</div></td>
+                        <td width=\"17%\"><div style=\"text-align: left;\">" . $val->member->member_address . "</div></td>
                         <td width=\"9%\"><div style=\"text-align: right;\">" . number_format($val['credits_account_amount'], 2) . "</div></td>
                         <td width=\"3.7%\"><div style=\"text-align: right;\">" . number_format($val['credits_account_interest'], 2) . "</div></td>
                         <td width=\"9%\"><div style=\"text-align: right;\">" . number_format($val['credits_account_last_balance'], 2) . "</div></td>
@@ -295,8 +295,8 @@ class NominativeCreditsReportController extends Controller
                 }
                 $acctcreditsaccount_credits = $acctcreditsaccount_credits->orderby('credits_account_serial', 'ASC')
                 ->orderBy('member_id', 'ASC')
-                ->orderBy('member.member_name', 'ASC')
-                ->orderBy('member.member_address', 'ASC')
+                ->orderBy('member_name', 'ASC')
+                ->orderBy('member_address', 'ASC')
                 ->orderBy('credits_account_last_balance', 'ASC')
                 ->orderBy('credits_account_date', 'ASC')
                 ->orderBy('credits_account_due_date', 'ASC')
@@ -338,8 +338,8 @@ class NominativeCreditsReportController extends Controller
                             <tr>
                                 <td width=\"3%\"><div style=\"text-align: left;\">" . $nov . "</div></td>
                                 <td width=\"8%\"><div style=\"text-align: left;\">" . $v['credits_account_serial'] . "</div></td>
-                                <td width=\"10%\"><div style=\"text-align: left;\">" . $v['member.member_name'] . "</div></td>
-                                <td width=\"12%\"><div style=\"text-align: left;\">" . $v['member_address'] . "</div></td>
+                                <td width=\"10%\"><div style=\"text-align: left;\">" . $v->member->member_name . "</div></td>
+                                <td width=\"12%\"><div style=\"text-align: left;\">" . $v->member->member_address . "</div></td>
                                 <td width=\"10%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_amount'], 2) . "</div></td>
                                 <td width=\"7%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_interest'], 2) . "</div></td>
                                 <td width=\"10%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_last_balance'], 2) . "</div></td>
@@ -427,8 +427,8 @@ class NominativeCreditsReportController extends Controller
                 }
                 $acctcreditsaccount_sourcefund = $acctcreditsaccount_sourcefund->orderBy('credits_account_serial', 'ASC')
                 ->orderBy('member_id', 'ASC')
-                ->orderBy('member.member_name', 'ASC')
-                ->orderBy('member.member_address', 'ASC')
+                ->orderBy('member_name', 'ASC')
+                ->orderBy('member_address', 'ASC')
                 ->orderBy('credits_account_date', 'ASC')
                 ->orderBy('credits_account_due_date', 'ASC')
                 ->orderBy('credits_account_interest', 'ASC')
@@ -474,8 +474,8 @@ class NominativeCreditsReportController extends Controller
                                 <tr>
                                     <td width=\"3%\"><div style=\"text-align: left;\">" . $nov . "</div></td>
                                     <td width=\"8%\"><div style=\"text-align: left;\">" . $v['credits_account_serial'] . "</div></td>
-                                    <td width=\"10%\"><div style=\"text-align: left;\">" . $v['member_name'] . "</div></td>
-                                    <td width=\"12%\"><div style=\"text-align: left;\">" . $v['member_address'] . "</div></td>
+                                    <td width=\"10%\"><div style=\"text-align: left;\">" . $v->member->member_name . "</div></td>
+                                    <td width=\"12%\"><div style=\"text-align: left;\">" . $v->member->member_address . "</div></td>
                                     <td width=\"10%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_amount'], 2) . "</div></td>
                                     <td width=\"7%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_interest'], 2) . "</div></td>
                                     <td width=\"10%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_last_balance'], 2) . "</div></td>
@@ -719,8 +719,8 @@ class NominativeCreditsReportController extends Controller
 
                     $spreadsheet->getActiveSheet()->setCellValue('B' . $row, $no);
                     $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $val['credits_account_serial']);
-                    $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val['member.member_name']);
-                    $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val['member.member_address']);
+                    $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val->member->member_name);
+                    $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val->member->member_address);
                     $spreadsheet->getActiveSheet()->setCellValue('F' . $row, number_format($val['credits_account_amount'], 2));
                     $spreadsheet->getActiveSheet()->setCellValue('G' . $row, number_format($val['credits_account_last_balance'], 2));
                     $spreadsheet->getActiveSheet()->setCellValue('H' . $row, $val['credits_account_date']);
@@ -766,9 +766,7 @@ class NominativeCreditsReportController extends Controller
                 $jumlahSimpananPokok	= 0;
 
                 foreach ($acctcredits as $k => $v) {
-                    $acctcreditsaccount_credits = AcctCreditsAccount::select('acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_interest_last_balance' ,'acct_credits_account.credits_account_interest', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_interest_last_balance',
-                    'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_payment_amount')
-                    ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
+                    $acctcreditsaccount_credits = AcctCreditsAccount::with('member')
                     ->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
                     ->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
                     ->where('acct_credits_account.credits_account_last_balance', '>', 0)
@@ -849,8 +847,8 @@ class NominativeCreditsReportController extends Controller
 
                             $spreadsheet->getActiveSheet()->setCellValue('B' . $row, $no);
                             $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $val['credits_account_serial']);
-                            $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val['member_name']);
-                            $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val['member_address']);
+                            $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val->member->member_name);
+                            $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val->member->member_address);
                             $spreadsheet->getActiveSheet()->setCellValue('F' . $row, number_format($val['credits_account_amount'], 2));
                             $spreadsheet->getActiveSheet()->setCellValue('G' . $row, number_format($val['credits_account_interest'], 2));
                             $spreadsheet->getActiveSheet()->setCellValue('H' . $row, number_format($val['credits_account_last_balance'], 2));
@@ -922,9 +920,7 @@ class NominativeCreditsReportController extends Controller
 
                 $i = 4;
                 foreach ($acctsourcefund as $k => $v) {
-                    $acctcreditsaccount_sourcefund = AcctCreditsAccount::select('acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_interest', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_interest_last_balance', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_interest_last_balance',
-                    'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_payment_amount')
-                    ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
+                    $acctcreditsaccount_sourcefund = AcctCreditsAccount::with('member')
                     ->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
                     ->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
                     ->where('acct_credits_account.source_fund_id', $v['source_fund_id'])
@@ -1014,8 +1010,8 @@ class NominativeCreditsReportController extends Controller
 
                             $spreadsheet->getActiveSheet()->setCellValue('B' . $row, $no);
                             $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $val['credits_account_serial']);
-                            $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val['member_name']);
-                            $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val['member_address']);
+                            $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val->member->member_name);
+                            $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val->member->member_address);
                             $spreadsheet->getActiveSheet()->setCellValue('F' . $row, number_format($val['credits_account_amount'], 2));
                             $spreadsheet->getActiveSheet()->setCellValue('G' . $row, number_format($val['credits_account_interest'], 2));
                             $spreadsheet->getActiveSheet()->setCellValue('H' . $row, number_format($val['credits_account_last_balance'], 2));
