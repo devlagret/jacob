@@ -17,7 +17,7 @@ class preferenceCompanyController extends Controller
         return view('content.PreferenceCompany.index',compact('data','acc','saving'));
     }
     public function processEdit(Request $request) {
-        $configdata = $request->config;
+        $configdata = $request->account;
          try {
          DB::beginTransaction();
          $config = PreferenceCompany::first();
@@ -32,8 +32,8 @@ class preferenceCompanyController extends Controller
          $config->account_insurance_cost_id = $configdata['account_insurance_cost_id'];
          $config->account_mutation_adm_id = $configdata['account_mutation_adm_id'];
          $config->account_savings_tax_id = $configdata['account_savings_tax_id'];
-         $config->save()
-;         DB::rollBack();
+         $config->save();
+         DB::commit();
          return redirect()->back()->with(['pesan' => 'Edit Konfigurasi Perusahaan Sukses','alert' => 'success']);
          } catch (\Exception $e) {
          DB::rollBack();

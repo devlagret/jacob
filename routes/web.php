@@ -568,7 +568,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/approving/{credits_account_id}', [AcctCreditsAccountController::class, 'approving'])->name('approving');
         Route::post('/process-approving', [AcctCreditsAccountController::class, 'processApproving'])->name('process-approving');
         Route::get('/reject/{credits_account_id}', [AcctCreditsAccountController::class, 'reject'])->name('reject');
-        Route::get('/detail', [AcctCreditsAccountController::class, 'detail'])->name('detail');
+        Route::get('/detail/{credits_account_id}', [AcctCreditsAccountController::class, 'detail'])->name('detail');
     });
 
     // CreditsAccountPaidOffReport pages

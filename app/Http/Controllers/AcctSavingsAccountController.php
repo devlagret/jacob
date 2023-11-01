@@ -295,7 +295,8 @@ class AcctSavingsAccountController extends Controller
         }
     }
 
-    public function printNote($savings_account_id){
+    public function printNote($savings_account_id)
+    {
         $preferencecompany	= PreferenceCompany::select('logo_koperasi', 'company_name')->first();
         $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
         $branch_city        = CoreBranch::select('branch_city')
@@ -394,7 +395,6 @@ class AcctSavingsAccountController extends Controller
 
         //$pdf::Image( $path, 4, 4, 40, 20, 'PNG', '', 'LT', false, 300, 'L', false, false, 1, false, false, false);
         $pdf::writeHTML($export, true, false, false, false, '');
-
         $filename = 'Kwitansi Tabungan.pdf';
         $pdf::Output($filename, 'I');
     }

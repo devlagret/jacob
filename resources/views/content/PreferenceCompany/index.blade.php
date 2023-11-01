@@ -164,7 +164,7 @@ $(document).ready(function(){
                     </div>
                     <div class="row">
                         <div class="row mb-6">
-                            <label class="col-lg-3 col-form-label fw-bold fs-6 required">{{ __('COA Biaya Asiransi') }}</label>
+                            <label class="col-lg-3 col-form-label fw-bold fs-6 required">{{ __('COA Biaya Asuransi') }}</label>
                             <div class="col-auto pt-3">:</div>
                             <div class="col-lg-8 fv-row">
                                 {{ Form::select('account_insurance_cost_id', $acc, ($data->account_insurance_cost_id??''), ["name"=>"account[account_insurance_cost_id]",'id'=>"account[account_insurance_cost_id]","aria-label"=>"Kelompok","data-control"=>"select2", "data-placeholder"=>"Pilih Kelompok..", "data-allow-clear"=>"true",'class'=>"form-select form-select-solid form-select-lg"]) }}

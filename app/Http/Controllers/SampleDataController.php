@@ -339,15 +339,15 @@ class SampleDataController extends Controller
             ->orderBy('credits_account_id','DESC')
             ->orderBy('credits_principal_last_balance','DESC')
             ->first();
-            $total_payment		= AcctCreditsAccount::select(DB::Raw('SUM(acct_credits_account.credits_account_last_balance) as total_outstanding'))
-            ->join('acct_credits_payment','acct_credits_payment.credits_account_id','=','acct_credits_account.credits_account_id')
+            // $total_payment		= AcctCreditsAccount::select(DB::Raw('SUM(acct_credits_account.credits_account_last_balance) as total_outstanding'))
+            // ->join('acct_credits_payment','acct_credits_payment.credits_account_id','=','acct_credits_account.credits_account_id')
             // ->whereNotIn('acct_credits_account.credits_account_id','acct_credits_payment.credits_account_id')
-            ->where('acct_credits_payment.credits_payment_date','<=', $date)
-            ->groupBy('acct_credits_payment.credits_account_id')
-            ->where('acct_credits_account.credits_account_date','<=', $date)
-            ->where('acct_credits_account.data_state',0)
-            ->where('acct_credits_account.credits_account_status',0)
-            ->first();
+            // ->where('acct_credits_payment.credits_payment_date','<=', $date)
+            // ->groupBy('acct_credits_payment.credits_account_id')
+            // ->where('acct_credits_account.credits_account_date','<=', $date)
+            // ->where('acct_credits_account.data_state',0)
+            // ->where('acct_credits_account.credits_account_status',0)
+            // ->first();
             $total_akun_os		= AcctCreditsAccount::select(DB::Raw('count(acct_credits_account.credits_account_last_balance) as total_akun'))
             ->where('credits_account_date','<=', $date)
             ->where('data_state',0)
