@@ -925,7 +925,7 @@ function change_payment_type_id(value) {
                                     <select name="savings_account_id" id="savings_account_id" data-control="select2" data-placeholder="{{ __('Pilih No. Simpanan') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="function_elements_add(this.name, this.value)">
                                         <option value="">{{ __('Pilih') }}</option>
                                         @foreach($acctsavingsaccount as $key => $value)
-                                            <option data-kt-flag="{{ $value['savings_account_id'] }}" value="{{ $value['savings_account_id'] }}" {{ $value['savings_account_id'] == old('savings_account_id', $datasession['savings_account_id'] ?? '') ? 'selected' :'' }}>{{ $value['savings_account_no'] }} - {{ $value->member->member_name }} ({{$value->savingdata->savings_name}})</option>
+                                            <option data-kt-flag="{{ $value['savings_account_id'] }}" value="{{ $value['savings_account_id'] }}" {{ $value['savings_account_id'] == old('savings_account_id', $datasession['savings_account_id'] ?? '') ? 'selected' :'' }}>{{ $value['savings_account_no'] }} -f</option>
                                         @endforeach
                                     </select>
                                 </div>

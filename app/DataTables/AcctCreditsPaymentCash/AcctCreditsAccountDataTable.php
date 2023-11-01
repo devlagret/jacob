@@ -3,6 +3,7 @@
 namespace App\DataTables\AcctCreditsPaymentCash;
 
 use App\Models\AcctCreditsAccount;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -39,13 +40,10 @@ class AcctCreditsAccountDataTable extends DataTable
      */
     public function query(AcctCreditsAccount $model)
     {
-        return $model->newQuery()
-        ->select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_due_date', 'core_member.member_name', 'core_member.member_no')
-        ->join('core_member', 'core_member.member_id', '=', 'acct_credits_account.member_id')
-        ->where('acct_credits_account.credits_account_status', 0)
-        ->where('acct_credits_account.credits_approve_status', 1)
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.branch_id', auth()->user()->branch_id);
+        return $model->newQuery()->with('member')
+        ->where('credits_account_status', 0)
+        ->where('credits_approve_status', 1)
+        ->where('branch_id', Auth::user()->branch_id);
     }
     /**
      * Optional method if you want to use html builder.
@@ -74,12 +72,12 @@ class AcctCreditsAccountDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::make('acct_credits_account.credits_account_id')->title(__('No'))->data('DT_RowIndex'),
-            Column::make('acct_credits_account.credits_account_serial')->title(__('No Akad Pinjaman'))->data('credits_account_serial'),
-            Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
-            Column::make('core_member.member_no')->title(__('No Anggota'))->data('member_no'),
-            Column::make('acct_credits_account.credits_account_date')->title(__('Tanggal Pinjam'))->data('credits_account_date'),
-            Column::make('acct_credits_account.credits_account_due_date')->title(__('Tanggal Jatuh Tempo'))->data('credits_account_due_date'),
+            Column::make('credits_account_id')->title(__('No'))->data('DT_RowIndex'),
+            Column::make('credits_account_serial')->title(__('No Akad Pinjaman')),
+            Column::make('member.member_name')->title(__('Nama Anggota')),
+            Column::make('member.member_no')->title(__('No Anggota')),
+            Column::make('credits_account_date')->title(__('Tanggal Pinjam')),
+            Column::make('credits_account_due_date')->title(__('Tanggal Jatuh Tempo')),
             Column::computed('action') 
                     ->title(__('Aksi'))
                     ->exportable(false)
