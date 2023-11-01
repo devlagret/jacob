@@ -22,6 +22,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AcctCreditsPaymentCashController extends Controller
 {
@@ -29,7 +31,7 @@ class AcctCreditsPaymentCashController extends Controller
     {
         session()->forget('data_creditspaymentcashadd');
         $sessiondata = session()->get('filter_creditspaymentcash');
-
+        Session::forget('payment-token');
         $acctcredits = AcctCredits::select('credits_name', 'credits_id')
         ->where('data_state', 0)
         ->get();
@@ -80,6 +82,9 @@ class AcctCreditsPaymentCashController extends Controller
 
     public function elementsAdd(Request $request)
     {
+        if(empty(Session::get('payment-token'))){
+            Session::put('payment-token',Str::uuid());
+        }
         $sessiondata = session()->get('data_creditspaymentcashadd');
         if(!$sessiondata || $sessiondata == ""){
             $sessiondata['credits_payment_fine']        = 0;
@@ -172,6 +177,9 @@ class AcctCreditsPaymentCashController extends Controller
 
     public function processAdd(Request $request)
     {
+        if(empty(Session::get('payment-token'))){
+            return redirect('credits-payment-cash')->with(['pesan' => 'Angsuran Tunai berhasil ditambah','alert' => 'success']);
+        }
         $preferencecompany = PreferenceCompany::first();
 
         $fields = request()->validate([
@@ -415,15 +423,18 @@ class AcctCreditsPaymentCashController extends Controller
                 'pesan' => 'Angsuran Tunai berhasil ditambah',
                 'alert' => 'success'
             );
+            Session::forget('payment-token');
+            return redirect('credits-payment-cash')->with($message);
         } catch (\Exception $e) {
+            Session::forget('payment-token');
             DB::rollback();
             $message = array(
                 'pesan' => 'Angsuran Tunai gagal ditambah',
                 'alert' => 'error'
             );
+            return redirect('credits-payment-cash')->with($message);
         }
         
-        return redirect('credits-payment-cash')->with($message);
     }
 
     public function printNote($credits_payment_id){
