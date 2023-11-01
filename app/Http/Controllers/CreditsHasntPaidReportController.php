@@ -53,18 +53,18 @@ class CreditsHasntPaidReportController extends Controller
                 $branch_id = $sesi['branch_id'];
             }
         }
-        
-        $acctcreditsaccount = AcctCreditsAccount::select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_principal_amount', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_payment_date','acct_credits_account.credits_account_last_payment_date', 'acct_credits_account.credits_account_payment_amount','acct_credits_account.credits_account_accumulated_fines', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_status')
-        ->join('core_member', 'acct_credits_account.member_id', '=' ,'core_member.member_id')
-        ->where('acct_credits_account.credits_account_payment_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
-        ->where('acct_credits_account.credits_account_payment_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
-        ->where('acct_credits_account.credits_account_status', 0)
-        ->where('acct_credits_account.data_state', 0)
-        ->whereRaw('CURDATE() >= acct_credits_account.credits_account_payment_date');
+
+        $acctcreditsaccount = AcctCreditsAccount::with('member')
+        ->where('credits_account_payment_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
+        ->where('credits_account_payment_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
+        ->where('credits_account_status', 0)
+        ->where('data_state', 0)
+        ->whereRaw('CURDATE() >= credits_account_payment_date');
+
         if(!empty($branch_id)){
-            $acctcreditsaccount = $acctcreditsaccount->where('acct_credits_account.branch_id', $branch_id);
+            $acctcreditsaccount = $acctcreditsaccount->where('branch_id', $branch_id);
         }
-        $acctcreditsaccount = $acctcreditsaccount->orderBy('acct_credits_account.credits_account_serial', 'ASC')
+        $acctcreditsaccount = $acctcreditsaccount->orderBy('credits_account_serial', 'ASC')
         ->get();
         // dd($acctcreditsaccount);
         $pdf = new TCPDF('L', PDF_UNIT, 'F4', true, 'UTF-8', false);

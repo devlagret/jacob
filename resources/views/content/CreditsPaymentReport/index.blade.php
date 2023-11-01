@@ -13,11 +13,11 @@
                 <div class="card-body border-top p-9">
                     <div class="row mb-6">
                         <div class="col-lg-3 fv-row">
-                            <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tanggal Mulai') }}</label>
+                            <label class="col-lg-8 col-form-label fw-bold fs-6 required">{{ __('Tanggal Mulai') }}</label>
                             <input name="start_date" id="start_date" class="date form-control form-control-solid form-select-lg" placeholder="Pilih tanggal"/>
                         </div>
                         <div class="col-lg-3 fv-row">
-                            <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tanggal Akhir') }}</label>
+                            <label class="col-lg-8 col-form-label fw-bold fs-6 required">{{ __('Tanggal Akhir') }}</label>
                             <input name="end_date" id="end_date" class="date form-control form-control-solid form-select-lg" placeholder="Pilih tanggal"/>
                         </div>
                         <div class="col-lg-3 fv-row">

@@ -54,18 +54,19 @@ class NominativeCreditsReportController extends Controller
                 $branch_id = $sesi['branch_id'];
             }
         }
-        
-        $acctcreditsaccount = AcctCreditsAccount::select()
-        ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_approve_status', 1)
-        ->where('acct_credits_account.credits_account_last_balance', '>', 0)
-        ->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
-        ->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])));
+
+        $acctcreditsaccount = AcctCreditsAccount::select('*')
+        ->with('member')
+        ->where('data_state', 0)
+        ->where('credits_approve_status', 1)
+        ->where('credits_account_last_balance', '>', 0)
+        ->where('credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
+        ->where('credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])));
+
         if(!empty($branch_id)){
-            $acctcreditsaccount = $acctcreditsaccount->where('acct_credits_account.branch_id', $branch_id);
+            $acctcreditsaccount = $acctcreditsaccount->where('branch_id', $branch_id);
         }
-        $acctcreditsaccount = $acctcreditsaccount->orderBy('acct_credits_account.created_at', 'ASC')
+        $acctcreditsaccount = $acctcreditsaccount->orderBy('created_at', 'ASC')
         ->get();
 
         $acctcredits 		= AcctCredits::select('credits_id', 'credits_name')
@@ -280,39 +281,37 @@ class NominativeCreditsReportController extends Controller
 			$totalsisapokokglobal	= 0;
 			$totalsisamarginglobal 	= 0;
 			foreach ($acctcredits as $kCredits => $vCredits) {
-                $acctcreditsaccount_credits = AcctCreditsAccount::select('acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_interest_last_balance' ,'acct_credits_account.credits_account_interest', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_interest_last_balance',
-				'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_payment_amount')
-                ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-                ->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
-                ->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
-                ->where('acct_credits_account.credits_account_last_balance', '>', 0)
-                ->where('acct_credits_account.credits_approve_status', 1)
-                ->where('acct_credits_account.data_state', 0);
+                $acctcreditsaccount_credits = AcctCreditsAccount::with('member')
+                ->where('credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
+                ->where('credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
+                ->where('credits_account_last_balance', '>', 0)
+                ->where('credits_approve_status', 1)
+                ->where('data_state', 0);
                 if (!empty($vCredits['credits_id'])) {
-                    $acctcreditsaccount_credits = $acctcreditsaccount_credits->where('acct_credits_account.credits_id', $vCredits['credits_id']);
+                    $acctcreditsaccount_credits = $acctcreditsaccount_credits->where('credits_id', $vCredits['credits_id']);
                 }
                 if (!empty($branch_id)) {
-                    $acctcreditsaccount_credits = $acctcreditsaccount_credits->where('acct_credits_account.branch_id', $branch_id);
+                    $acctcreditsaccount_credits = $acctcreditsaccount_credits->where('branch_id', $branch_id);
                 }
-                $acctcreditsaccount_credits = $acctcreditsaccount_credits->orderby('acct_credits_account.credits_account_serial', 'ASC')
-                ->orderBy('acct_credits_account.member_id', 'ASC')
-                ->orderBy('core_member.member_name', 'ASC')
-                ->orderBy('core_member.member_address', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_last_balance', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_date', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_due_date', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_amount', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_interest_last_balance', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_interest', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_period', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_provisi', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_komisi', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_insurance', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_stash', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_adm_cost', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_materai', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_risk_reserve', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_principal', 'ASC')
+                $acctcreditsaccount_credits = $acctcreditsaccount_credits->orderby('credits_account_serial', 'ASC')
+                ->orderBy('member_id', 'ASC')
+                ->orderBy('member.member_name', 'ASC')
+                ->orderBy('member.member_address', 'ASC')
+                ->orderBy('credits_account_last_balance', 'ASC')
+                ->orderBy('credits_account_date', 'ASC')
+                ->orderBy('credits_account_due_date', 'ASC')
+                ->orderBy('credits_account_amount', 'ASC')
+                ->orderBy('credits_account_interest_last_balance', 'ASC')
+                ->orderBy('credits_account_interest', 'ASC')
+                ->orderBy('credits_account_period', 'ASC')
+                ->orderBy('credits_account_provisi', 'ASC')
+                ->orderBy('credits_account_komisi', 'ASC')
+                ->orderBy('credits_account_insurance', 'ASC')
+                ->orderBy('credits_account_stash', 'ASC')
+                ->orderBy('credits_account_adm_cost', 'ASC')
+                ->orderBy('credits_account_materai', 'ASC')
+                ->orderBy('credits_account_risk_reserve', 'ASC')
+                ->orderBy('credits_account_principal', 'ASC')
                 ->get();
 
 				if (!empty($acctcreditsaccount_credits)) {
@@ -339,7 +338,7 @@ class NominativeCreditsReportController extends Controller
                             <tr>
                                 <td width=\"3%\"><div style=\"text-align: left;\">" . $nov . "</div></td>
                                 <td width=\"8%\"><div style=\"text-align: left;\">" . $v['credits_account_serial'] . "</div></td>
-                                <td width=\"10%\"><div style=\"text-align: left;\">" . $v['member_name'] . "</div></td>
+                                <td width=\"10%\"><div style=\"text-align: left;\">" . $v['member.member_name'] . "</div></td>
                                 <td width=\"12%\"><div style=\"text-align: left;\">" . $v['member_address'] . "</div></td>
                                 <td width=\"10%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_amount'], 2) . "</div></td>
                                 <td width=\"7%\"><div style=\"text-align: right;\">" . number_format($v['credits_account_interest'], 2) . "</div></td>
@@ -416,37 +415,35 @@ class NominativeCreditsReportController extends Controller
 			$totalsisapokokglobal	= 0;
 			$totalsisamarginglobal 	= 0;
 			foreach ($acctsourcefund as $kSF => $vSF) {
-                $acctcreditsaccount_sourcefund = AcctCreditsAccount::select('acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_interest', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_interest_last_balance', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_interest_last_balance',
-				'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_payment_amount')
-                ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-                ->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
-                ->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
-                ->where('acct_credits_account.source_fund_id', $vSF['source_fund_id'])
-                ->where('acct_credits_account.credits_account_last_balance', '>', 0)
-                ->where('acct_credits_account.credits_approve_status', 1)
-                ->where('acct_credits_account.data_state', 0);
+                $acctcreditsaccount_sourcefund = AcctCreditsAccount::with('member')
+                ->where('credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])))
+                ->where('credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
+                ->where('source_fund_id', $vSF['source_fund_id'])
+                ->where('credits_account_last_balance', '>', 0)
+                ->where('credits_approve_status', 1)
+                ->where('data_state', 0);
                 if (!empty($branch_id)) {
-                    $acctcreditsaccount_sourcefund = $acctcreditsaccount_sourcefund->where('acct_credits_account.branch_id', $branch_id);
+                    $acctcreditsaccount_sourcefund = $acctcreditsaccount_sourcefund->where('branch_id', $branch_id);
                 }
-                $acctcreditsaccount_sourcefund = $acctcreditsaccount_sourcefund->orderBy('acct_credits_account.credits_account_serial', 'ASC')
-                ->orderBy('acct_credits_account.member_id', 'ASC')
-                ->orderBy('core_member.member_name', 'ASC')
-                ->orderBy('core_member.member_address', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_date', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_due_date', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_interest', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_last_balance', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_amount', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_interest_last_balance', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_period', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_provisi', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_komisi', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_insurance', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_stash', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_adm_cost', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_materai', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_risk_reserve', 'ASC')
-                ->orderBy('acct_credits_account.credits_account_principal', 'ASC')
+                $acctcreditsaccount_sourcefund = $acctcreditsaccount_sourcefund->orderBy('credits_account_serial', 'ASC')
+                ->orderBy('member_id', 'ASC')
+                ->orderBy('member.member_name', 'ASC')
+                ->orderBy('member.member_address', 'ASC')
+                ->orderBy('credits_account_date', 'ASC')
+                ->orderBy('credits_account_due_date', 'ASC')
+                ->orderBy('credits_account_interest', 'ASC')
+                ->orderBy('credits_account_last_balance', 'ASC')
+                ->orderBy('credits_account_amount', 'ASC')
+                ->orderBy('credits_account_interest_last_balance', 'ASC')
+                ->orderBy('credits_account_period', 'ASC')
+                ->orderBy('credits_account_provisi', 'ASC')
+                ->orderBy('credits_account_komisi', 'ASC')
+                ->orderBy('credits_account_insurance', 'ASC')
+                ->orderBy('credits_account_stash', 'ASC')
+                ->orderBy('credits_account_adm_cost', 'ASC')
+                ->orderBy('credits_account_materai', 'ASC')
+                ->orderBy('credits_account_risk_reserve', 'ASC')
+                ->orderBy('credits_account_principal', 'ASC')
                 ->get();
 
 				if (!empty($acctcreditsaccount_sourcefund)) {
@@ -556,18 +553,17 @@ class NominativeCreditsReportController extends Controller
                 $branch_id = $sesi['branch_id'];
             }
         }
-        
-        $acctcreditsaccount = AcctCreditsAccount::select()
-        ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_approve_status', 1)
-        ->where('acct_credits_account.credits_account_last_balance', '>', 0)
-        ->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
-        ->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])));
+        $acctcreditsaccount = AcctCreditsAccount::with('member')
+        ->where('data_state', 0)
+        ->where('credits_approve_status', 1)
+        ->where('credits_account_last_balance', '>', 0)
+        ->where('credits_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
+        ->where('credits_account_date', '<=', date('Y-m-d', strtotime($sesi['end_date'])));
+
         if(!empty($branch_id)){
-            $acctcreditsaccount = $acctcreditsaccount->where('acct_credits_account.branch_id', $branch_id);
+            $acctcreditsaccount = $acctcreditsaccount->where('branch_id', $branch_id);
         }
-        $acctcreditsaccount = $acctcreditsaccount->orderBy('acct_credits_account.created_at', 'ASC')
+        $acctcreditsaccount = $acctcreditsaccount->orderBy('created_at', 'ASC')
         ->get();
 
         $acctcredits 		= AcctCredits::select('credits_id', 'credits_name')
@@ -723,8 +719,8 @@ class NominativeCreditsReportController extends Controller
 
                     $spreadsheet->getActiveSheet()->setCellValue('B' . $row, $no);
                     $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $val['credits_account_serial']);
-                    $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val['member_name']);
-                    $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val['member_address']);
+                    $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $val['member.member_name']);
+                    $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val['member.member_address']);
                     $spreadsheet->getActiveSheet()->setCellValue('F' . $row, number_format($val['credits_account_amount'], 2));
                     $spreadsheet->getActiveSheet()->setCellValue('G' . $row, number_format($val['credits_account_last_balance'], 2));
                     $spreadsheet->getActiveSheet()->setCellValue('H' . $row, $val['credits_account_date']);
