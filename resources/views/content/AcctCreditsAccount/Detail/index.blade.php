@@ -9,7 +9,7 @@
             {!! theme()->getSvgIcon("icons/duotune/arrows/arr079.svg", "svg-icon-4 me-1") !!}
             {{ __('Kembali') }}</a>
     </div>
-
+@dump($creditsdata)
     <div id="kt_user_edit_view">
         <form id="kt_credits_account_add_view_form" class="form" method="POST" action="{{ route('credits-account.process-add') }}" enctype="multipart/form-data">
         @csrf
@@ -23,50 +23,50 @@
                         <div class="row mb-6">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('No. Anggota') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <input type="text" name="member_no" id="member_no" class="form-control form-control-lg form-control-solid" placeholder="No. Anggota" value="{{ old('member_no', $coremember['member_no'] ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="member_id" id="member_id" class="form-control form-control-lg form-control-solid" value="{{ old('member_id', $coremember['member_id'] ?? '') }}"/>
+                                <input type="text" name="member_no" id="member_no" class="form-control form-control-lg form-control-solid" placeholder="No. Anggota" value="{{ old('member_no', $creditsdata->member->member_no ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="member_id" id="member_id" class="form-control form-control-lg form-control-solid" value="{{ old('member_id', $creditsdata->member->member_id ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('Nama Anggota') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <input type="text" name="member_name" id="member_name" class="form-control form-control-lg form-control-solid" placeholder="Nama Anggota" value="{{ old('member_name', $coremember['member_name'] ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="member_name" id="member_name" class="form-control form-control-lg form-control-solid" placeholder="Nama Anggota" value="{{ old('member_name', $creditsdata->member->member_name ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('Tanggal Lahir') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <input type="text" name="member_date_of_birth" id="member_date_of_birth" class="form-control form-control-lg form-control-solid" placeholder="Tanggal Lahir" value="{{ old('member_date_of_birth', empty($coremember['member_date_of_birth']) ? '' : date('d-m-Y', strtotime($coremember['member_date_of_birth'])) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="member_date_of_birth" id="member_date_of_birth" class="form-control form-control-lg form-control-solid" placeholder="Tanggal Lahir" value="{{ old('member_date_of_birth', empty($creditsdata->member->member_date_of_birth) ? '' : date('d-m-Y', strtotime($creditsdata->member->member_date_of_birth)) ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('Jenis Kelamin') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <input type="text" name="member_gender" id="member_gender" class="form-control form-control-lg form-control-solid" placeholder="Jenis Kelamin" value="{{ old('member_gender', empty($coremember['member_gender']) ? '' : $membergender[$coremember['member_gender']] ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="member_gender" id="member_gender" class="form-control form-control-lg form-control-solid" placeholder="Jenis Kelamin" value="{{ old('member_gender', empty($creditsdata->member->member_gender) ? '' : $membergender[$creditsdata->member->member_gender] ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('No. Telepon') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <input type="text" name="member_phone" id="member_phone" class="form-control form-control-lg form-control-solid" placeholder="No. Telepon" value="{{ old('member_phone', $coremember['member_phone'] ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="member_phone" id="member_phone" class="form-control form-control-lg form-control-solid" placeholder="No. Telepon" value="{{ old('member_phone', $creditsdata->member->member_phone ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('Alamat') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <textarea type="text" name="member_address" id="member_address" class="form-control form-control-lg form-control-solid" placeholder="Alamat" autocomplete="off" readonly>{{ old('member_address', $coremember['member_address'] ?? '') }}</textarea>
+                                <textarea type="text" name="member_address" id="member_address" class="form-control form-control-lg form-control-solid" placeholder="Alamat" autocomplete="off" readonly>{{ old('member_address', $creditsdata->member->member_address ?? '') }}</textarea>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('Nama Ibu') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <input type="text" name="member_mother" id="member_mother" class="form-control form-control-lg form-control-solid" placeholder="Nama Ibu" value="{{ old('member_mother', $coremember['member_mother'] ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="member_mother" id="member_mother" class="form-control form-control-lg form-control-solid" placeholder="Nama Ibu" value="{{ old('member_mother', $creditsdata->member->member_mother ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row">
                             <label class="col-lg-2 col-form-label fw-bold fs-6">{{ __('No. Identitas') }}</label>
                             <div class="col-lg-10 fv-row">
-                                <input type="text" name="member_identity_no" id="member_identity_no" class="form-control form-control-lg form-control-solid" placeholder="No. Identitas" value="{{ old('member_identity_no', $coremember['member_identity_no'] ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="member_identity_no" id="member_identity_no" class="form-control form-control-lg form-control-solid" placeholder="No. Identitas" value="{{ old('member_identity_no', $creditsdata->member->member_identity_no ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                                 <select name="credits_id" id="credits_id" data-control="select2" data-placeholder="{{ __('Pilih Jenis Pinjaman') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" disabled>
                                     <option value="">{{ __('Pilih') }}</option>
                                     @foreach($creditid as $key => $value)
-                                        <option data-kt-flag="{{ $value['credits_id'] }}" value="{{ $value['credits_id'] }}" {{ $value['credits_id'] == old('credits_id', $datasession['credits_id'] ?? '') ? 'selected' :'' }}>{{ $value['credits_name'] }}</option>
+                                        <option data-kt-flag="{{ $value['credits_id'] }}" value="{{ $value['credits_id'] }}" {{ $value['credits_id'] == old('credits_id', $creditsdata->credits_id ?? '') ? 'selected' :'' }}>{{ $value['credits_name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -92,7 +92,7 @@
                                 <select name="payment_period" id="payment_period" data-control="select2" data-placeholder="{{ __('Pilih Angsuran Tiap') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" disabled>
                                     <option value="">{{ __('Pilih') }}</option>
                                     @foreach($paymentperiod as $key => $value)
-                                        <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('payment_period', $datasession['payment_period'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
+                                        <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('payment_period', $creditsdata->credits_payment_period ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -100,13 +100,13 @@
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Tanggal Realisasi') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_date" id="credit_account_date" class="form-control form-control-lg form-control-solid" placeholder="Tanggal Realisasi" value="{{ old('credit_account_date', empty($datasession['credit_account_date']) ? date('d-m-Y') : $datasession['credit_account_date'] ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="credit_account_date" id="credit_account_date" class="form-control form-control-lg form-control-solid" placeholder="Tanggal Realisasi" value="{{ old('credit_account_date', empty($creditsdata->credits_account_date) ? date('d-m-Y') : $creditsdata->credits_account_date ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Tanggal Angsuran I') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_payment_to" id="credit_account_payment_to" class="form-control form-control-lg form-control-solid" placeholder="Tanggal Angsuran I" value="{{ old('credit_account_payment_to', empty($datasession['credit_account_payment_to']) ? date('d-m-Y') : $datasession['credit_account_payment_to'] ?? '') }}" autocomplete="off" readonly/>
+                                <input type="text" name="credit_account_payment_to" id="credit_account_payment_to" class="form-control form-control-lg form-control-solid" placeholder="Tanggal Angsuran I" value="{{ old('credits_account_payment_date', empty($creditsdata['credits_account_payment_date']) ? date('d-m-Y') : $creditsdata['credits_account_payment_date'] ?? '') }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
@@ -123,7 +123,7 @@
                                 <select name="office_id" id="office_id" data-control="select2" data-placeholder="{{ __('Pilih Business Office (BO)') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" disabled>
                                     <option value="">{{ __('Pilih') }}</option>
                                     @foreach($coreoffice as $key => $value)
-                                        <option data-kt-flag="{{ $value['office_id'] }}" value="{{ $value['office_id'] }}" {{ $value['office_id'] == old('office_id', $datasession['office_id'] ?? '') ? 'selected' :'' }}>{{ $value['office_name'] }}</option>
+                                        <option data-kt-flag="{{ $value['office_id'] }}" value="{{ $value['office_id'] }}" {{ $value['office_id'] == old('office_id', $creditsdata['office_id'] ?? '') ? 'selected' :'' }}>{{ $value['office_name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -131,57 +131,57 @@
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Plafon Pinjaman') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credits_account_last_balance_principal_view" id="credits_account_last_balance_principal_view" class="form-control form-control-lg form-control-solid" placeholder="Plafon Pinjaman" value="{{ old('credits_account_last_balance_principal_view', empty($datasession['credits_account_last_balance_principal']) ? '' : number_format($datasession['credits_account_last_balance_principal'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credits_account_last_balance_principal" id="credits_account_last_balance_principal" class="form-control form-control-lg form-control-solid" value="{{ old('credits_account_last_balance_principal', $datasession['credits_account_last_balance_principal'] ?? '') }}"/>
+                                <input type="text" name="credits_account_last_balance_principal_view" id="credits_account_last_balance_principal_view" class="form-control form-control-lg form-control-solid" placeholder="Plafon Pinjaman" value="{{ old('credits_account_last_balance_principal_view', empty($creditsdata['credits_account_last_balance_principal']) ? '' : number_format($creditsdata['credits_account_last_balance_principal'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credits_account_last_balance_principal" id="credits_account_last_balance_principal" class="form-control form-control-lg form-control-solid" value="{{ old('credits_account_last_balance_principal', $creditsdata['credits_account_last_balance_principal'] ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Angsuran Pokok') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credits_account_principal_amount_view" id="credits_account_principal_amount_view" class="form-control form-control-lg form-control-solid" placeholder="Angsuran Pokok" value="{{ old('credits_account_principal_amount_view', empty($datasession['credits_account_principal_amount']) ? '' : number_format($datasession['credits_account_principal_amount'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credits_account_principal_amount" id="credits_account_principal_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credits_account_principal_amount', $datasession['credits_account_principal_amount'] ?? '') }}"/>
+                                <input type="text" name="credits_account_principal_amount_view" id="credits_account_principal_amount_view" class="form-control form-control-lg form-control-solid" placeholder="Angsuran Pokok" value="{{ old('credits_account_principal_amount_view', empty($creditsdata['credits_account_principal_amount']) ? '' : number_format($creditsdata['credits_account_principal_amount'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credits_account_principal_amount" id="credits_account_principal_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credits_account_principal_amount', $creditsdata['credits_account_principal_amount'] ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jumlah Angsuran') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_payment_amount_view" id="credit_account_payment_amount_view" class="form-control form-control-lg form-control-solid" placeholder="Jumlah Angsuran" value="{{ old('credit_account_payment_amount_view', empty($datasession['credit_account_payment_amount']) ? '' : number_format($datasession['credit_account_payment_amount'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credit_account_payment_amount" id="credit_account_payment_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_payment_amount', $datasession['credit_account_payment_amount'] ?? '') }}"/>
+                                <input type="text" name="credit_account_payment_amount_view" id="credit_account_payment_amount_view" class="form-control form-control-lg form-control-solid" placeholder="Jumlah Angsuran" value="{{ old('credit_account_payment_amount_view', empty($creditsdata['credit_account_payment_amount']) ? '' : number_format($creditsdata['credit_account_payment_amount'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credit_account_payment_amount" id="credit_account_payment_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_payment_amount', $creditsdata['credit_account_payment_amount'] ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Biaya Provisi') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_provisi_view" id="credit_account_provisi_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Provisi" value="{{ old('credit_account_provisi_view', empty($datasession['credit_account_provisi']) ? '' : number_format($datasession['credit_account_provisi'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credit_account_provisi" id="credit_account_provisi" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_provisi', $datasession['credit_account_provisi'] ?? '') }}"/>
+                                <input type="text" name="credit_account_provisi_view" id="credit_account_provisi_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Provisi" value="{{ old('credit_account_provisi_view', empty($creditsdata['credit_account_provisi']) ? '' : number_format($creditsdata['credit_account_provisi'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credit_account_provisi" id="credit_account_provisi" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_provisi', $creditsdata['credit_account_provisi'] ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Biaya Survei') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_komisi_view" id="credit_account_komisi_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Survei" value="{{ old('credit_account_komisi_view', empty($datasession['credit_account_komisi']) ? '' : number_format($datasession['credit_account_komisi'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credit_account_komisi" id="credit_account_komisi" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_komisi', $datasession['credit_account_komisi'] ?? '') }}"/>
+                                <input type="text" name="credit_account_komisi_view" id="credit_account_komisi_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Survei" value="{{ old('credit_account_komisi_view', empty($creditsdata['credit_account_komisi']) ? '' : number_format($creditsdata['credit_account_komisi'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credit_account_komisi" id="credit_account_komisi" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_komisi', $creditsdata['credit_account_komisi'] ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Biaya Asuransi') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_insurance_view" id="credit_account_insurance_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Asuransi" value="{{ old('credit_account_insurance_view', empty($datasession['credit_account_insurance']) ? '' : number_format($datasession['credit_account_insurance'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credit_account_insurance" id="credit_account_insurance" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_insurance', $datasession['credit_account_insurance'] ?? '') }}"/>
+                                <input type="text" name="credit_account_insurance_view" id="credit_account_insurance_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Asuransi" value="{{ old('credit_account_insurance_view', empty($creditsdata['credit_account_insurance']) ? '' : number_format($creditsdata['credit_account_insurance'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credit_account_insurance" id="credit_account_insurance" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_insurance', $creditsdata['credit_account_insurance'] ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Biaya Simpanan Wajib') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_stash_view" id="credit_account_stash_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Simpanan Wajib" value="{{ old('credit_account_stash_view', empty($datasession['credit_account_stash']) ? '' : number_format($datasession['credit_account_stash'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credit_account_stash" id="credit_account_stash" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_stash', $datasession['credit_account_stash'] ?? '') }}"/>
+                                <input type="text" name="credit_account_stash_view" id="credit_account_stash_view" class="form-control form-control-lg form-control-solid" placeholder="Biaya Simpanan Wajib" value="{{ old('credit_account_stash_view', empty($creditsdata['credit_account_stash']) ? '' : number_format($creditsdata['credit_account_stash'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credit_account_stash" id="credit_account_stash" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_stash', $creditsdata['credit_account_stash'] ?? '') }}"/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Terima Bersih') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="credit_account_amount_received_view" id="credit_account_amount_received_view" class="form-control form-control-lg form-control-solid" placeholder="Terima Bersih" value="{{ old('credit_account_amount_received_view', empty($datasession['credit_account_amount_received']) ? '' : number_format($datasession['credit_account_amount_received'],2) ?? '') }}" autocomplete="off" readonly/>
-                                <input type="hidden" name="credit_account_amount_received" id="credit_account_amount_received" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_amount_received', $datasession['credit_account_amount_received'] ?? '') }}"/>
+                                <input type="text" name="credit_account_amount_received_view" id="credit_account_amount_received_view" class="form-control form-control-lg form-control-solid" placeholder="Terima Bersih" value="{{ old('credit_account_amount_received_view', empty($creditsdata['credit_account_amount_received']) ? '' : number_format($creditsdata['credit_account_amount_received'],2) ?? '') }}" autocomplete="off" readonly/>
+                                <input type="hidden" name="credit_account_amount_received" id="credit_account_amount_received" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_amount_received', $creditsdata['credit_account_amount_received'] ?? '') }}"/>
                             </div>
                         </div>
                     </div>
