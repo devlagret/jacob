@@ -132,7 +132,7 @@ Route::prefix('documentation')->group(function () {
     Route::get('getting-started/changelog', [PagesController::class, 'index']);
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','loged'])->group(function () {
     // Logs pages
     Route::prefix('log')->name('log.')->group(function () {
         Route::resource('system', SystemLogsController::class)->only(['index', 'destroy']);
