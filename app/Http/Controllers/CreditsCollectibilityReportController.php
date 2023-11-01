@@ -160,6 +160,7 @@ class CreditsCollectibilityReportController extends Controller
         foreach ($preferencecollectibility as $k => $v) {
             if($v['collectibility_id'] == 1){
                 $persent1 	= ($total1 / $totaloutstanding) * 100;
+                // $persent1 	= 0;
                 $ppap1 		= ($total1 * $v['collectibility_ppap']) / 100;
                 $export .= "
                 <tr>
@@ -171,6 +172,7 @@ class CreditsCollectibilityReportController extends Controller
                 </tr>";
             } else if($v['collectibility_id'] == 2){
                 $persent2 	= ($total2 / $totaloutstanding) * 100;
+                // $persent2 	= 0;
                 $ppap2 		= ($total2 * $v['collectibility_ppap']) / 100;
                 $export .= "
                 <tr>
@@ -182,6 +184,7 @@ class CreditsCollectibilityReportController extends Controller
                 </tr>";
             } else if($v['collectibility_id'] == 3){
                 $persent3 	= ($total3 / $totaloutstanding) * 100;
+                // $persent3 	= 0;
                 $ppap3 		= ($total3 * $v['collectibility_ppap']) / 100;
                 $export .= "
                 <tr>
@@ -193,6 +196,7 @@ class CreditsCollectibilityReportController extends Controller
                 </tr>";
             } else if($v['collectibility_id'] == 4){
                 $persent4 	= ($total4 / $totaloutstanding) * 100;
+                // $persent4 	= 0;
                 $ppap4 		= ($total4 * $v['collectibility_ppap']) / 100;
                 $export .= "
                 <tr>
@@ -204,6 +208,7 @@ class CreditsCollectibilityReportController extends Controller
                 </tr>";
             } else if($v['collectibility_id'] == 5){
                 $persent5 	= ($total5 / $totaloutstanding) * 100;
+                // $persent5 	= 0;
                 $ppap5 		= ($total5 * $v['collectibility_ppap']) / 100;
                 $export .= "
                 <tr>
