@@ -15,10 +15,10 @@
         <a type="button" href="{{ route('credits-account.detail', $model->credits_account_id) }}" class="btn btn-sm btn-secondary btn-active-light-secondary m-1">
             Detail
         </a>
-        <a type="button" href="{{ route('credits-account.print-schedule-member', $model->credits_account_id) }}" class="btn btn-sm btn-dark btn-active-light-dark m-1">
+        {{-- <a type="button" href="{{ route('credits-account.print-schedule-member', $model->credits_account_id) }}" class="btn btn-sm btn-dark btn-active-light-dark m-1">
             Jadwal Angsuran Untuk Anggota
         </a>
- 
+  --}}
         {{-- <a type="button" href="{{ route('credits-account.print-agunan', $model->credits_account_id) }}" class="btn btn-sm btn-success btn-active-light-success m-1">
             Tanda Terima Jaminan
         </a>  --}}
@@ -38,9 +38,9 @@
         <a type="button" href="{{ route('credits-account.detail', $model->credits_account_id) }}" class="btn btn-sm btn-secondary btn-active-light-secondary m-1">
             Detail
         </a>
-        <a type="button" href="{{ route('credits-account.print-schedule-member', $model->credits_account_id) }}" class="btn btn-sm btn-dark btn-active-light-dark m-1">
+        {{-- <a type="button" href="{{ route('credits-account.print-schedule-member', $model->credits_account_id) }}" class="btn btn-sm btn-dark btn-active-light-dark m-1">
             Jadwal Angsuran Untuk Anggota
-        </a>
+        </a> --}}
         
         {{-- <a type="button" href="{{ route('credits-account.print-agunan', $model->credits_account_id) }}" class="btn btn-sm btn-success btn-active-light-success m-1">
             Tanda Terima Jaminan
@@ -60,9 +60,9 @@
     <a type="button" href="{{ route('credits-account.detail', $model->credits_account_id) }}" class="btn btn-sm btn-secondary btn-active-light-secondary m-1">
         Detail
     </a>
-    <a type="button" href="{{ route('credits-account.print-schedule-member', $model->credits_account_id) }}" class="btn btn-sm btn-dark btn-active-light-dark m-1">
+    {{-- <a type="button" href="{{ route('credits-account.print-schedule-member', $model->credits_account_id) }}" class="btn btn-sm btn-dark btn-active-light-dark m-1">
         Jadwal Angsuran Untuk Anggota
-    </a>
+    </a> --}}
     {{-- <a type="button" href="{{ route('credits-account.print-agunan', $model->credits_account_id) }}" class="btn btn-sm btn-success btn-active-light-success m-1">
         Tanda Terima Jaminan
     </a> --}}

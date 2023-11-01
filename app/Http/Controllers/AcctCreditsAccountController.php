@@ -5497,17 +5497,7 @@ class AcctCreditsAccountController extends Controller
 
     public function printScheduleMember($credits_account_id)
     {
-        $acctcreditsaccount		= AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
-        ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
-        ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
-        ->join('core_member_working', 'acct_credits_account.member_id','=','core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id','=','core_province.province_id')
-        ->join('core_city', 'core_member.city_id','=','core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id','=','core_kecamatan.kecamatan_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_account_id', $credits_account_id)
-        ->first();
+        $acctcreditsaccount		= AcctCreditsAccount::find($credits_account_id);
         $paymenttype 			= Configuration::PaymentType();
         $paymentperiod 			= Configuration::CreditsPaymentPeriod();
         $preferencecompany 		= PreferenceCompany::first();
@@ -5539,7 +5529,7 @@ class AcctCreditsAccountController extends Controller
         $pdf::SetFont('helvetica', 'B', 20);
 
         $pdf::AddPage();
-
+        $pdf::SetTitle('Jadwal Angsuran For Member');
         $pdf::SetFont('helvetica', '', 9);
 
         // <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
@@ -5578,7 +5568,7 @@ class AcctCreditsAccountController extends Controller
                         <div style=\"font-size:12px\";><b>Nama</b></div>
                     </td>
                     <td style=\"text-align:left;\" width=\"45%\">
-                        <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount['member_name']."</b></div>
+                        <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount->member->member_name."</b></div>
                     </td>
                     <td style=\"text-align:left;\" width=\"20%\">
                         <div style=\"font-size:12px\";><b>Jangka Waktu</b></div>
