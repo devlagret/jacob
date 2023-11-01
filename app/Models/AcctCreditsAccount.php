@@ -4,10 +4,11 @@ namespace App\Models;
 
 use App\Scopes\NotDeletedScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AcctCreditsAccount extends Model
 {
-
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -45,8 +46,8 @@ class AcctCreditsAccount extends Model
     public function sourcefund() {
         return $this->belongsTo(AcctSourceFund::class,'source_fund_id','source_fund_id');
     }
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope(new NotDeletedScope);
-    // }
+    protected static function booted()
+    {
+        static::addGlobalScope(new NotDeletedScope);
+    }
 }
