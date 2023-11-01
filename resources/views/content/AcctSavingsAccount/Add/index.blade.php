@@ -316,13 +316,13 @@ if(!isset($coremember['member_gender'])){
                             <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kabupaten') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="city_name" class="form-control form-control-lg form-control-solid" placeholder="Kabupaten" value="{{ old('city_name', $coremember['city_name'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="city_name" class="form-control form-control-lg form-control-solid" placeholder="Kabupaten" value="{{ old('city_name', $coremember->city->city_name ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kecamatan') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="kecamatan_name" class="form-control form-control-lg form-control-solid" placeholder="Kecamatan" value="{{ old('kecamatan_name', $coremember['kecamatan_name'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="kecamatan_name" class="form-control form-control-lg form-control-solid" placeholder="Kecamatan" value="{{ old('kecamatan_name', $coremember->kecamatan->kecamatan_name ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-2">

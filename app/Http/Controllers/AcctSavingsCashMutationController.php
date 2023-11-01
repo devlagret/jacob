@@ -72,6 +72,8 @@ class AcctSavingsCashMutationController extends Controller
             $sessiondata['savings_cash_mutation_amount'] = 0;
             $sessiondata['savings_cash_mutation_amount_adm'] = 0;
             $sessiondata['savings_cash_mutation_last_balance'] = 0;
+            $sessiondata['savings_account_blockir_amount'] = 0;
+            $sessiondata['savings_account_blockir_type'] = 0;
         }
         $sessiondata[$request->name] = $request->value;
         session()->put('data_savingscashmutationadd', $sessiondata);
@@ -92,15 +94,16 @@ class AcctSavingsCashMutationController extends Controller
 
         $acctsavingsaccount = [];
         if (isset($sessiondata['savings_account_id'])) {
-            $acctsavingsaccount = AcctSavingsAccount::select('core_member.member_id', 'core_member.member_name', 'core_member.member_address', 'core_member.member_mother', 'core_member.member_identity_no', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'acct_savings_account.unblock_state', 'acct_savings_account.savings_account_pickup_date', 'acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_id', 'acct_savings_account.savings_account_opening_balance', 'acct_savings_account.savings_account_last_balance', 'acct_savings.savings_name')
+            $acctsavingsaccount = AcctSavingsAccount::select('core_member.member_id', 'core_member.member_name', 'core_member.member_address', 'core_member.member_mother', 'core_member.member_identity_no', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'acct_savings_account.unblock_state', 'acct_savings_account.savings_account_pickup_date', 'acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_id', 'acct_savings_account.savings_account_opening_balance', 'acct_savings_account.savings_account_last_balance', 'acct_savings.savings_name', 'acct_savings_account.savings_account_blockir_status', 'acct_savings_account.savings_account_blockir_amount', 'acct_savings_account_blockir.savings_account_blockir_type')
                 ->join('acct_savings', 'acct_savings.savings_id', '=', 'acct_savings_account.savings_id')
+                ->join('acct_savings_account_blockir', 'acct_savings_account_blockir.savings_id', '=', 'acct_savings_account.savings_id')
                 ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
                 ->join('core_city', 'core_city.city_id', '=', 'core_member.city_id')
                 ->join('core_kecamatan', 'core_kecamatan.kecamatan_id', '=', 'core_member.kecamatan_id')
                 ->where('acct_savings_account.savings_account_id', $sessiondata['savings_account_id'])
                 ->first();
         }
-
+        // dd($sessiondata);
         return view('content.AcctSavingsCashMutation.Add.index', compact('sessiondata', 'membergender', 'memberidentity', 'familyrelationship', 'acctmutation', 'acctsavingsaccount'));
     }
 
@@ -117,6 +120,8 @@ class AcctSavingsCashMutationController extends Controller
             $sessiondata['savings_cash_mutation_amount'] = 0;
             $sessiondata['savings_cash_mutation_amount_adm'] = 0;
             $sessiondata['savings_cash_mutation_last_balance'] = 0;
+            $sessiondata['savings_account_blockir_amount'] = 0;
+            $sessiondata['savings_account_blockir_type'] = 0;
         }
         $sessiondata['savings_account_id'] = $savings_account_id;
         session()->put('data_savingscashmutationadd', $sessiondata);
@@ -139,7 +144,7 @@ class AcctSavingsCashMutationController extends Controller
 
         DB::beginTransaction();
 
-//---------------------------------------------setoran tunai------------------------------------------------------------//
+        //---------------------------------------------setoran tunai------------------------------------------------------------//
         if ($fields['mutation_id'] == 1) {
             try {
                 $data = [
@@ -560,433 +565,442 @@ class AcctSavingsCashMutationController extends Controller
                     'alert' => 'error',
                 ];
             }
-//-------------------------penarikan tunai,koreksi kredit, koreksi debet, tutup rekening-----------------------------------//
+            //-------------------------penarikan tunai,koreksi kredit, koreksi debet, tutup rekening-----------------------------------//
         } elseif ($fields['mutation_id'] == 2 || $fields['mutation_id'] == 3 || $fields['mutation_id'] == 4 || $fields['mutation_id'] == 5) {
-            if ($fields['savings_cash_mutation_amount'] > $request->savings_cash_mutation_last_balance) {
+            //saldo di blokir
+            if ($fields['savings_cash_mutation_amount'] > $request->savings_account_range_amount) {
                 $message = [
                     'pesan' => 'Saldo Tidak Mecukupi.',
                     'alert' => 'error',
                 ];
                 return redirect('savings-cash-mutation/add')->with($message);
             } else {
-                try {
-                    $data = [
-                        'savings_account_id' => $fields['savings_account_id'],
-                        'mutation_id' => $fields['mutation_id'],
-                        'member_id' => $request->member_id,
-                        'savings_id' => $request->savings_id,
-                        'savings_cash_mutation_date' => date('Y-m-d', strtotime($fields['savings_cash_mutation_date'])),
-                        'savings_cash_mutation_opening_balance' => $request->savings_cash_mutation_last_balance,
-                        'savings_cash_mutation_amount' => $fields['savings_cash_mutation_amount'],
-                        'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
-                        'savings_cash_mutation_last_balance' => $request->savings_cash_mutation_last_balance,
-                        'savings_cash_mutation_remark' => $request->savings_cash_mutation_remark,
-                        'branch_id' => auth()->user()->branch_id,
-                        'operated_name' => auth()->user()->username,
-                        'created_id' => auth()->user()->user_id,
-                    ];
-                    AcctSavingsCashMutation::create($data);
-    
-                    $transaction_module_code = 'TTAB';
-                    $transaction_module_id = PreferenceTransactionModule::select('transaction_module_id')
-                        ->where('transaction_module_code', $transaction_module_code)
-                        ->first()->transaction_module_id;
-    
-                    $journal_voucher_period = date('Ym', strtotime($data['savings_cash_mutation_date']));
-    
-                    $acctsavingscash_last = AcctSavingsCashMutation::select('acct_savings_cash_mutation.savings_cash_mutation_id', 'acct_savings_cash_mutation.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_cash_mutation.member_id', 'core_member.member_name')
-                        ->join('acct_savings_account', 'acct_savings_cash_mutation.savings_account_id', '=', 'acct_savings_account.savings_account_id')
-                        ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
-                        ->where('acct_savings_cash_mutation.created_id', $data['created_id'])
-                        ->orderBy('acct_savings_cash_mutation.savings_cash_mutation_id', 'DESC')
-                        ->first();
-    
-                    $data_journal = [
-                        'branch_id' => auth()->user()->branch_id,
-                        'journal_voucher_period' => $journal_voucher_period,
-                        'journal_voucher_date' => date('Y-m-d'),
-                        'journal_voucher_title' => 'MUTASI TUNAI ' . $acctsavingscash_last['member_name'],
-                        'journal_voucher_description' => 'MUTASI TUNAI ' . $acctsavingscash_last['member_name'],
-                        'transaction_module_id' => $transaction_module_id,
-                        'transaction_module_code' => $transaction_module_code,
-                        'transaction_journal_id' => $acctsavingscash_last['savings_cash_mutation_id'],
-                        'transaction_journal_no' => $acctsavingscash_last['savings_account_no'],
-                        'created_id' => $data['created_id'],
-                    ];
-                    AcctJournalVoucher::create($data_journal);
-    
-                    $journal_voucher_id = AcctJournalVoucher::select('journal_voucher_id')
-                        ->where('acct_journal_voucher.created_id', $data['created_id'])
-                        ->orderBy('acct_journal_voucher.journal_voucher_id', 'DESC')
-                        ->first()->journal_voucher_id;
-    
-                    if ($data['mutation_id'] == $preferencecompany['cash_deposit_id']) {
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_debet = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $preferencecompany['account_cash_id'],
-                            'journal_voucher_description' => 'SETORAN TUNAI ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 0,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_debet);
-    
-                        $account_id = AcctSavings::select('account_id')
-                            ->where('savings_id', $data['savings_id'])
-                            ->first()->account_id;
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $account_id)
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_credit = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $account_id,
-                            'journal_voucher_description' => 'SETORAN TUNAI ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 1,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_credit);
-    
-                        if ($data['savings_cash_mutation_amount_adm'] > 0) {
-                            $data_debet = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_cash_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_default_status' => $account_id_default_status,
-                                'account_id_status' => 0,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_debet);
-    
-                            $account_id_default_status = AcctAccount::select('account_default_status')
-                                ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
-                                ->where('acct_account.data_state', 0)
-                                ->first()->account_default_status;
-    
-                            $data_credit = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_mutation_adm_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_status' => 1,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_credit);
-                        }
-                    } elseif ($data['mutation_id'] == 2) {
-                        $account_id = AcctSavings::select('account_id')
-                            ->where('savings_id', $data['savings_id'])
-                            ->first()->account_id;
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $account_id)
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_debet = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $account_id,
-                            'journal_voucher_description' => 'PENARIKAN TUNAI ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 0,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_debet);
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_credit = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $preferencecompany['account_cash_id'],
-                            'journal_voucher_description' => 'PENARIKAN TUNAI ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 1,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_credit);
-    
-                        if ($data['savings_cash_mutation_amount_adm'] > 0) {
-                            $data_debet = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_cash_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_default_status' => $account_id_default_status,
-                                'account_id_status' => 0,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_debet);
-    
-                            $account_id_default_status = AcctAccount::select('account_default_status')
-                                ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
-                                ->where('acct_account.data_state', 0)
-                                ->first()->account_default_status;
-    
-                            $data_credit = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_mutation_adm_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_status' => 1,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_credit);
-                        }
-                    } elseif ($data['mutation_id'] == 3) {
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_debet = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $preferencecompany['account_cash_id'],
-                            'journal_voucher_description' => 'KOREKSI KREDIT ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 0,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_debet);
-    
-                        $account_id = AcctSavings::select('account_id')
-                            ->where('savings_id', $data['savings_id'])
-                            ->first()->account_id;
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $account_id)
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_credit = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $account_id,
-                            'journal_voucher_description' => 'KOREKSI KREDIT ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 1,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_credit);
-    
-                        if ($data['savings_cash_mutation_amount_adm'] > 0) {
-                            $account_id_default_status = AcctAccount::select('account_default_status')
-                                ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
-                                ->where('acct_account.data_state', 0)
-                                ->first()->account_default_status;
-    
-                            $data_debet = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_cash_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_default_status' => $account_id_default_status,
-                                'account_id_status' => 0,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_debet);
-    
-                            $account_id_default_status = AcctAccount::select('account_default_status')
-                                ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
-                                ->where('acct_account.data_state', 0)
-                                ->first()->account_default_status;
-    
-                            $data_credit = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_mutation_adm_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_status' => 1,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_credit);
-                        }
-                    } elseif ($data['mutation_id'] == 4) {
-                        $account_id = AcctSavings::select('account_id')
-                            ->where('savings_id', $data['savings_id'])
-                            ->first()->account_id;
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $account_id)
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_debet = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $account_id,
-                            'journal_voucher_description' => 'KOREKSI DEBET ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 0,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_debet);
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_credit = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $preferencecompany['account_cash_id'],
-                            'journal_voucher_description' => 'KOREKSI DEBET ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 1,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_credit);
-    
-                        if ($data['savings_cash_mutation_amount_adm'] > 0) {
-                            $account_id_default_status = AcctAccount::select('account_default_status')
-                                ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
-                                ->where('acct_account.data_state', 0)
-                                ->first()->account_default_status;
-    
-                            $data_debet = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_cash_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_default_status' => $account_id_default_status,
-                                'account_id_status' => 0,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_debet);
-    
-                            $account_id_default_status = AcctAccount::select('account_default_status')
-                                ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
-                                ->where('acct_account.data_state', 0)
-                                ->first()->account_default_status;
-    
-                            $data_credit = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_mutation_adm_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_status' => 1,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_credit);
-                        }
-                    } else {
-                        $closed_savings_account = AcctSavingsAccount::findOrFail($data['savings_account_id']);
-                        $closed_savings_account->savings_account_status = 1;
-                        $closed_savings_account->save();
-    
-                        $account_id = AcctSavings::select('account_id')
-                            ->where('savings_id', $data['savings_id'])
-                            ->first()->account_id;
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $account_id)
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_debet = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $account_id,
-                            'journal_voucher_description' => 'TUTUP REKENING ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 0,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_debet);
-    
-                        $account_id_default_status = AcctAccount::select('account_default_status')
-                            ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
-                            ->where('acct_account.data_state', 0)
-                            ->first()->account_default_status;
-    
-                        $data_credit = [
-                            'journal_voucher_id' => $journal_voucher_id,
-                            'account_id' => $preferencecompany['account_cash_id'],
-                            'journal_voucher_description' => 'TUTUP REKENING ' . $acctsavingscash_last['member_name'],
-                            'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
-                            'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
-                            'account_id_default_status' => $account_id_default_status,
-                            'account_id_status' => 1,
-                            'created_id' => auth()->user()->user_id,
-                        ];
-                        AcctJournalVoucherItem::create($data_credit);
-    
-                        if ($data['savings_cash_mutation_amount_adm'] > 0) {
-                            $data_debet = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_cash_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_default_status' => $account_id_default_status,
-                                'account_id_status' => 0,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_debet);
-    
-                            $account_id_default_status = AcctAccount::select('account_default_status')
-                                ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
-                                ->where('acct_account.data_state', 0)
-                                ->first()->account_default_status;
-    
-                            $data_credit = [
-                                'journal_voucher_id' => $journal_voucher_id,
-                                'account_id' => $preferencecompany['account_mutation_adm_id'],
-                                'journal_voucher_description' => $data_journal['journal_voucher_title'],
-                                'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
-                                'account_id_status' => 1,
-                                'created_id' => auth()->user()->user_id,
-                            ];
-                            AcctJournalVoucherItem::create($data_credit);
-                        }
-                    }
-    
-                    DB::commit();
+                if ($fields['savings_cash_mutation_amount'] > $request->savings_account_last_balance) {
                     $message = [
-                        'pesan' => 'Tabungan berhasil ditambah',
-                        'alert' => 'success',
-                    ];
-                } catch (\Exception $e) {
-                    DB::rollback();
-                    $message = [
-                        'pesan' => 'Tabungan gagal ditambah',
+                        'pesan' => 'Saldo Tidak Mecukupi.',
                         'alert' => 'error',
                     ];
+                    return redirect('savings-cash-mutation/add')->with($message);
+                } else {
+                    try {
+                        $data = [
+                            'savings_account_id' => $fields['savings_account_id'],
+                            'mutation_id' => $fields['mutation_id'],
+                            'member_id' => $request->member_id,
+                            'savings_id' => $request->savings_id,
+                            'savings_cash_mutation_date' => date('Y-m-d', strtotime($fields['savings_cash_mutation_date'])),
+                            'savings_cash_mutation_opening_balance' => $request->savings_cash_mutation_last_balance,
+                            'savings_cash_mutation_amount' => $fields['savings_cash_mutation_amount'],
+                            'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
+                            'savings_cash_mutation_last_balance' => $request->savings_cash_mutation_last_balance,
+                            'savings_cash_mutation_remark' => $request->savings_cash_mutation_remark,
+                            'branch_id' => auth()->user()->branch_id,
+                            'operated_name' => auth()->user()->username,
+                            'created_id' => auth()->user()->user_id,
+                        ];
+                        AcctSavingsCashMutation::create($data);
+
+                        $transaction_module_code = 'TTAB';
+                        $transaction_module_id = PreferenceTransactionModule::select('transaction_module_id')
+                            ->where('transaction_module_code', $transaction_module_code)
+                            ->first()->transaction_module_id;
+
+                        $journal_voucher_period = date('Ym', strtotime($data['savings_cash_mutation_date']));
+
+                        $acctsavingscash_last = AcctSavingsCashMutation::select('acct_savings_cash_mutation.savings_cash_mutation_id', 'acct_savings_cash_mutation.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_cash_mutation.member_id', 'core_member.member_name')
+                            ->join('acct_savings_account', 'acct_savings_cash_mutation.savings_account_id', '=', 'acct_savings_account.savings_account_id')
+                            ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
+                            ->where('acct_savings_cash_mutation.created_id', $data['created_id'])
+                            ->orderBy('acct_savings_cash_mutation.savings_cash_mutation_id', 'DESC')
+                            ->first();
+
+                        $data_journal = [
+                            'branch_id' => auth()->user()->branch_id,
+                            'journal_voucher_period' => $journal_voucher_period,
+                            'journal_voucher_date' => date('Y-m-d'),
+                            'journal_voucher_title' => 'MUTASI TUNAI ' . $acctsavingscash_last['member_name'],
+                            'journal_voucher_description' => 'MUTASI TUNAI ' . $acctsavingscash_last['member_name'],
+                            'transaction_module_id' => $transaction_module_id,
+                            'transaction_module_code' => $transaction_module_code,
+                            'transaction_journal_id' => $acctsavingscash_last['savings_cash_mutation_id'],
+                            'transaction_journal_no' => $acctsavingscash_last['savings_account_no'],
+                            'created_id' => $data['created_id'],
+                        ];
+                        AcctJournalVoucher::create($data_journal);
+
+                        $journal_voucher_id = AcctJournalVoucher::select('journal_voucher_id')
+                            ->where('acct_journal_voucher.created_id', $data['created_id'])
+                            ->orderBy('acct_journal_voucher.journal_voucher_id', 'DESC')
+                            ->first()->journal_voucher_id;
+
+                        if ($data['mutation_id'] == $preferencecompany['cash_deposit_id']) {
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_debet = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $preferencecompany['account_cash_id'],
+                                'journal_voucher_description' => 'SETORAN TUNAI ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 0,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_debet);
+
+                            $account_id = AcctSavings::select('account_id')
+                                ->where('savings_id', $data['savings_id'])
+                                ->first()->account_id;
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $account_id)
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_credit = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $account_id,
+                                'journal_voucher_description' => 'SETORAN TUNAI ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 1,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_credit);
+
+                            if ($data['savings_cash_mutation_amount_adm'] > 0) {
+                                $data_debet = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_cash_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_default_status' => $account_id_default_status,
+                                    'account_id_status' => 0,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_debet);
+
+                                $account_id_default_status = AcctAccount::select('account_default_status')
+                                    ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
+                                    ->where('acct_account.data_state', 0)
+                                    ->first()->account_default_status;
+
+                                $data_credit = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_mutation_adm_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_status' => 1,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_credit);
+                            }
+                        } elseif ($data['mutation_id'] == 2) {
+                            $account_id = AcctSavings::select('account_id')
+                                ->where('savings_id', $data['savings_id'])
+                                ->first()->account_id;
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $account_id)
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_debet = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $account_id,
+                                'journal_voucher_description' => 'PENARIKAN TUNAI ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 0,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_debet);
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_credit = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $preferencecompany['account_cash_id'],
+                                'journal_voucher_description' => 'PENARIKAN TUNAI ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 1,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_credit);
+
+                            if ($data['savings_cash_mutation_amount_adm'] > 0) {
+                                $data_debet = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_cash_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_default_status' => $account_id_default_status,
+                                    'account_id_status' => 0,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_debet);
+
+                                $account_id_default_status = AcctAccount::select('account_default_status')
+                                    ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
+                                    ->where('acct_account.data_state', 0)
+                                    ->first()->account_default_status;
+
+                                $data_credit = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_mutation_adm_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_status' => 1,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_credit);
+                            }
+                        } elseif ($data['mutation_id'] == 3) {
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_debet = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $preferencecompany['account_cash_id'],
+                                'journal_voucher_description' => 'KOREKSI KREDIT ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 0,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_debet);
+
+                            $account_id = AcctSavings::select('account_id')
+                                ->where('savings_id', $data['savings_id'])
+                                ->first()->account_id;
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $account_id)
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_credit = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $account_id,
+                                'journal_voucher_description' => 'KOREKSI KREDIT ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 1,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_credit);
+
+                            if ($data['savings_cash_mutation_amount_adm'] > 0) {
+                                $account_id_default_status = AcctAccount::select('account_default_status')
+                                    ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
+                                    ->where('acct_account.data_state', 0)
+                                    ->first()->account_default_status;
+
+                                $data_debet = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_cash_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_default_status' => $account_id_default_status,
+                                    'account_id_status' => 0,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_debet);
+
+                                $account_id_default_status = AcctAccount::select('account_default_status')
+                                    ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
+                                    ->where('acct_account.data_state', 0)
+                                    ->first()->account_default_status;
+
+                                $data_credit = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_mutation_adm_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_status' => 1,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_credit);
+                            }
+                        } elseif ($data['mutation_id'] == 4) {
+                            $account_id = AcctSavings::select('account_id')
+                                ->where('savings_id', $data['savings_id'])
+                                ->first()->account_id;
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $account_id)
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_debet = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $account_id,
+                                'journal_voucher_description' => 'KOREKSI DEBET ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 0,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_debet);
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_credit = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $preferencecompany['account_cash_id'],
+                                'journal_voucher_description' => 'KOREKSI DEBET ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 1,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_credit);
+
+                            if ($data['savings_cash_mutation_amount_adm'] > 0) {
+                                $account_id_default_status = AcctAccount::select('account_default_status')
+                                    ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
+                                    ->where('acct_account.data_state', 0)
+                                    ->first()->account_default_status;
+
+                                $data_debet = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_cash_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_default_status' => $account_id_default_status,
+                                    'account_id_status' => 0,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_debet);
+
+                                $account_id_default_status = AcctAccount::select('account_default_status')
+                                    ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
+                                    ->where('acct_account.data_state', 0)
+                                    ->first()->account_default_status;
+
+                                $data_credit = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_mutation_adm_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_status' => 1,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_credit);
+                            }
+                        } else {
+                            $closed_savings_account = AcctSavingsAccount::findOrFail($data['savings_account_id']);
+                            $closed_savings_account->savings_account_status = 1;
+                            $closed_savings_account->save();
+
+                            $account_id = AcctSavings::select('account_id')
+                                ->where('savings_id', $data['savings_id'])
+                                ->first()->account_id;
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $account_id)
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_debet = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $account_id,
+                                'journal_voucher_description' => 'TUTUP REKENING ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 0,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_debet);
+
+                            $account_id_default_status = AcctAccount::select('account_default_status')
+                                ->where('acct_account.account_id', $preferencecompany['account_cash_id'])
+                                ->where('acct_account.data_state', 0)
+                                ->first()->account_default_status;
+
+                            $data_credit = [
+                                'journal_voucher_id' => $journal_voucher_id,
+                                'account_id' => $preferencecompany['account_cash_id'],
+                                'journal_voucher_description' => 'TUTUP REKENING ' . $acctsavingscash_last['member_name'],
+                                'journal_voucher_amount' => $data['savings_cash_mutation_amount'],
+                                'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount'],
+                                'account_id_default_status' => $account_id_default_status,
+                                'account_id_status' => 1,
+                                'created_id' => auth()->user()->user_id,
+                            ];
+                            AcctJournalVoucherItem::create($data_credit);
+
+                            if ($data['savings_cash_mutation_amount_adm'] > 0) {
+                                $data_debet = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_cash_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_debit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_default_status' => $account_id_default_status,
+                                    'account_id_status' => 0,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_debet);
+
+                                $account_id_default_status = AcctAccount::select('account_default_status')
+                                    ->where('acct_account.account_id', $preferencecompany['account_mutation_adm_id'])
+                                    ->where('acct_account.data_state', 0)
+                                    ->first()->account_default_status;
+
+                                $data_credit = [
+                                    'journal_voucher_id' => $journal_voucher_id,
+                                    'account_id' => $preferencecompany['account_mutation_adm_id'],
+                                    'journal_voucher_description' => $data_journal['journal_voucher_title'],
+                                    'journal_voucher_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'journal_voucher_credit_amount' => $data['savings_cash_mutation_amount_adm'],
+                                    'account_id_status' => 1,
+                                    'created_id' => auth()->user()->user_id,
+                                ];
+                                AcctJournalVoucherItem::create($data_credit);
+                            }
+                        }
+
+                        DB::commit();
+                        $message = [
+                            'pesan' => 'Tabungan berhasil ditambah',
+                            'alert' => 'success',
+                        ];
+                    } catch (\Exception $e) {
+                        DB::rollback();
+                        $message = [
+                            'pesan' => 'Tabungan gagal ditambah',
+                            'alert' => 'error',
+                        ];
+                    }
                 }
             }
         }

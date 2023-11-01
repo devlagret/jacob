@@ -12,13 +12,13 @@
     use App\Models\AcctDepositoAccount;
 
     //tgl hari ini
-    $today = Carbon::today()->format('m-d-Y');
+    $today = Carbon::today()->format('d-m-Y');
     // $today = ' 2023-11-28';
 
     //jatuh tempo simp berjangka 
     $depositoAccount = AcctDepositoAccount::select('*')
         ->where('deposito_account_due_date', '<', $today)
-        ->get();
+        ->simplePaginate(3);
 
     $depositoAccountCount = count($depositoAccount);
 @endphp
@@ -62,6 +62,7 @@
                             </tbody>
                         </table>
                     <?php } ?>
+                    {{ $depositoAccount->links() }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

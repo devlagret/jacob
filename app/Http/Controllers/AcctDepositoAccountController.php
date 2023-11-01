@@ -108,11 +108,8 @@ class AcctDepositoAccountController extends Controller
 
         $coremember             = array();
         if(isset($sessiondata['member_id'])){
-            $coremember = CoreMember::select('core_member.member_id', 'core_member.member_no', 'core_member.member_name', 'core_member.member_address', 'core_member.member_date_of_birth', 'core_member.member_gender', 'core_member.member_phone', 'core_member.member_mother', 'core_member.member_identity_no', 'core_member.member_heir', 'core_member.member_heir_address', 'core_member.member_heir_relationship', 'core_city.city_name', 'core_kecamatan.kecamatan_name')
-            ->join('core_city', 'core_city.city_id', '=', 'core_member.city_id')
-            ->join('core_kecamatan', 'core_kecamatan.kecamatan_id', '=', 'core_member.kecamatan_id')
-            ->where('member_id', $sessiondata['member_id'])
-            ->first();
+            $coremember = CoreMember::with('kecamatan','city')
+            ->find($sessiondata['member_id']);
         }
 
         $savingsaccount         = array();

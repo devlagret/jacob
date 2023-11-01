@@ -59,6 +59,8 @@ use App\Http\Controllers\CreditsPaymentDailyReportController;
 use App\Http\Controllers\CreditsPaymentDuePaidReportController;
 use App\Http\Controllers\CreditsPaymentReportController;
 use App\Http\Controllers\DailyCashFlowReportController;
+use App\Http\Controllers\DepositoDailyCashDepositMutationController;
+use App\Http\Controllers\DepositoDailyCashWithdrawalMutationController;
 use App\Http\Controllers\DepositoProfitSharingReportController;
 use App\Http\Controllers\JournalMemorialController;
 use App\Http\Controllers\JournalVoucherController;
@@ -83,6 +85,8 @@ use App\Http\Controllers\preferenceCompanyController;
 use App\Http\Controllers\PreferenceIncomeController;
 use App\Http\Controllers\RestoreDataController;
 use App\Http\Controllers\SampleDataController;
+use App\Http\Controllers\SavingsDailyCashDepositMutationController;
+use App\Http\Controllers\SavingsDailyCashWithdrawalMutationController;
 use App\Http\Controllers\SavingsDailyTransferMutationController;
 use App\Http\Controllers\SavingsMandatoryHasntPaidReportController;
 use App\Http\Controllers\SavingsProfitSharingReportController;
@@ -788,7 +792,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/filter', [AcctSavingsAccountMutationController::class, 'filter'])->name('filter');
         Route::get('/reset-filter', [AcctSavingsAccountMutationController::class, 'resetFilter'])->name('reset-filter');
         Route::get('/modal-savings-account', [AcctSavingsAccountMutationController::class, 'modalSavingsAccount'])->name('modal-savings-account');
-        // Route::get('/select-savings-account/{savings_account_id}', [SavingsAccountMutationController::class, 'selectSavingsAccount'])->name('select-savings-account');
+        Route::get('/select-savings-account/{savings_account_id}', [AcctSavingsAccountMutationController::class, 'selectSavingsAccount'])->name('select-savings-account');
         Route::post('/print', [AcctSavingsAccountMutationController::class, 'processPrinting'])->name('print');
     });
 
@@ -805,6 +809,30 @@ Route::middleware('auth')->group(function () {
     Route::prefix('savings-daily-transfer-mutation')->name('savings-daily-transfer-mutation.')->group(function () {
         Route::get('/', [SavingsDailyTransferMutationController::class, 'index'])->name('index');
         Route::post('/viewport', [SavingsDailyTransferMutationController::class, 'viewport'])->name('viewport');
+    });
+
+    // SavingsDailyCashMutation pages
+    Route::prefix('AcctSavingsDailyCashMutation')->name('AcctSavingsDailyCashMutation.')->group(function () {
+        Route::get('/addCashDeposit', [SavingsDailyCashDepositMutationController::class, 'index'])->name('index');
+        Route::post('/viewport-addCashDeposit', [SavingsDailyCashDepositMutationController::class, 'viewport'])->name('viewport-addCashDeposit');
+    });
+
+    // SavingsDailyCashMutation pages
+    Route::prefix('AcctSavingsDailyCashMutation')->name('AcctSavingsDailyCashMutation.')->group(function () {
+        Route::get('/addCashWithdrawal', [SavingsDailyCashWithdrawalMutationController::class, 'index'])->name('index');
+        Route::post('/viewport', [SavingsDailyCashWithdrawalMutationController::class, 'viewport'])->name('viewport-addCashWithdrawal');
+    });
+
+    // DepositDailyCashMutation pages
+    Route::prefix('AcctDepositoDailyCashMutation')->name('AcctDepositoDailyCashMutation.')->group(function () {
+        Route::get('/addCashDeposit', [DepositoDailyCashDepositMutationController::class, 'index'])->name('index');
+        Route::post('/viewport-add-CashDeposit', [DepositoDailyCashDepositMutationController::class, 'viewport'])->name('viewport-add-CashDeposit');
+    });
+
+     // DepositDailyCashMutation pages
+     Route::prefix('AcctDepositoDailyCashMutation')->name('AcctDepositoDailyCashMutation.')->group(function () {
+        Route::get('/addCashWithdrawal', [DepositoDailyCashWithdrawalMutationController::class, 'index'])->name('index');
+        Route::post('/viewport-add-CashWithdrawal', [DepositoDailyCashWithdrawalMutationController::class, 'viewport'])->name('viewport-add-CashWithdrawal');
     });
 
     // SavingsProfitSharingReport pages
