@@ -3,6 +3,8 @@
 namespace App\DataTables;
 
 use App\Models\AcctCreditsAccount;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -98,24 +100,14 @@ class AcctCreditsAccountMasterDataTable extends DataTable
             $sessiondata['branch_id'] = auth()->user()->branch_id;
         }
 
-        $querydata = $model->newQuery()
-        ->select('acct_credits_account.credits_account_serial', 'acct_credits_account.savings_account_id',  'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 
-        'core_member.member_gender', 'core_member.member_date_of_birth', 'core_member.member_job', 'core_member.member_identity', 'core_member_working.member_working_type', 'core_member_working.member_company_name' ,'core_member.member_identity_no', 
-        'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_principal_amount', 
-        'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_interest', 'acct_credits_account.credits_account_last_balance',
-        'acct_credits_account.credits_id', 'acct_credits.credits_name', 'acct_credits_account.credits_account_provisi', 'acct_credits_account.credits_account_komisi', 'acct_credits_account.credits_account_insurance',
-         'acct_credits_account.credits_account_stash', 'acct_credits_account.credits_account_adm_cost', 'acct_credits_account.credits_account_materai', 'acct_credits_account.credits_account_risk_reserve', 
-         'acct_savings_account.savings_account_no','acct_credits_account.credits_account_principal')
-		->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-		->leftjoin('acct_savings_account', 'acct_credits_account.savings_account_id', '=', 'acct_savings_account.savings_account_id')
-		->join('core_member_working', 'acct_credits_account.member_id', '=', 'core_member_working.member_id')
-		->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
-		->where('acct_credits_account.data_state', 0)
-		->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
-		->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', $sessiondata['branch_id'])->withoutGlobalScopes();
+        $querydata = $model->newQuery()->with('member.working','savingacc','credit')
+		->where('credits_account_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+		->where('credits_account_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->whereHas('member',function (Builder $query) use($sessiondata) {
+            $query->where('branch_id',  $sessiondata['branch_id']??Auth::user()->branch_id);
+        });
         if($sessiondata['credits_id']){
-            $querydata = $querydata->where('acct_credits_account.credits_id', $sessiondata['credits_id']);
+            $querydata = $querydata->where('credits_id', $sessiondata['credits_id']);
         }
 
         return $querydata;
@@ -148,25 +140,25 @@ class AcctCreditsAccountMasterDataTable extends DataTable
     {
     $membergender = Configuration::MemberGender();
         return [
-            Column::make('acct_credits_account.credits_account_id')->title(__('No'))->data('DT_RowIndex'),
-            Column::make('acct_credits_account.credits_account_serial')->title(__('Nomor Akad'))->data('credits_account_serial'),
-            Column::make('acct_savings_account.savings_account_no')->title(__('No Rekening'))->data('savings_account_no'),
-            Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
-            Column::make('core_member.member_gender')->title(__('JNS Kel'))->data('member_gender'),
-            Column::make('core_member.member_address')->title(__('Alamat'))->data('member_address'),
-            Column::make('core_member.member_working_type')->title(__('Pekerjaan'))->data('member_working_type'),
-            Column::make('core_member.member_company_name')->title(__('Perusahaan'))->data('member_company_name'),
-            Column::make('core_member.member_identity_no')->title(__('No Identitas'))->data('member_identity_no'),
-            Column::make('acct_credits.credits_name')->title(__('Jenis Pinjaman'))->data('credits_name'),
-            Column::make('acct_credits_account.credits_account_period')->title(__('Jangka Waktu'))->data('credits_account_period'),
-            Column::make('acct_credits_account.credits_account_date')->title(__('Tanggal Pinjam'))->data('credits_account_date'),
-            Column::make('acct_credits_account.credits_account_due_date')->title(__('Tanggal Jatuh Tempo'))->data('credits_account_due_date'),
-            Column::make('acct_credits_account.credits_account_due_date')->title(__('JML Plasfon'))->data('credits_account_due_date'),
-            Column::make('acct_credits_account.credits_account_amount')->title(__('Pokok'))->data('credits_account_amount'),
-            Column::make('acct_credits_account.credits_account_interest')->title(__('Bunga'))->data('credits_account_interest'),
-            Column::make('acct_credits_account.credits_account_principal_amount')->title(__('Angsuran Pokok'))->data('credits_account_principal_amount'),
-            Column::make('acct_credits_account.credits_account_interest_amount')->title(__('Angsuran Bunga'))->data('credits_account_interest_amount'),
-            Column::make('acct_credits_account.credits_account_last_balance')->title(__('Saldo Pokok'))->data('credits_account_last_balance'),
+            Column::make('credits_account_id')->title(__('No'))->data('DT_RowIndex'),
+            Column::make('credits_account_serial')->title(__('Nomor Akad')),
+            Column::make('savingacc.savings_account_no')->title(__('No Rekening')),
+            Column::make('member.member_name')->title(__('Nama Anggota')),
+            Column::make('member.member_gender')->title(__('JNS Kel')),
+            Column::make('member.member_address')->title(__('Alamat')),
+            Column::make('member.working.member_working_type')->title(__('Pekerjaan')),
+            Column::make('member.working.member_company_name')->title(__('Perusahaan')),
+            Column::make('member.member_identity_no')->title(__('No Identitas')),
+            Column::make('credit.credits_name')->title(__('Jenis Pinjaman')),
+            Column::make('credits_account_period')->title(__('Jangka Waktu')),
+            Column::make('credits_account_date')->title(__('Tanggal Pinjam')),
+            Column::make('credits_account_due_date')->title(__('Tanggal Jatuh Tempo')),
+            Column::make('credits_account_due_date')->title(__('JML Plasfon')),
+            Column::make('credits_account_amount')->title(__('Pokok')),
+            Column::make('credits_account_interest')->title(__('Bunga')),
+            Column::make('credits_account_principal_amount')->title(__('Angsuran Pokok')),
+            Column::make('credits_account_interest_amount')->title(__('Angsuran Bunga')),
+            Column::make('credits_account_last_balance')->title(__('Saldo Pokok')),
             
         ];
     }

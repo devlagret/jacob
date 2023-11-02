@@ -49,6 +49,9 @@ class AcctCreditsAccount extends Model
     public function anggunan() {
         return $this->hasMany(AcctCreditsAgunan::class,'credits_account_id','credits_account_id');
     }
+    public function savingacc() {
+        return $this->belongsTo(AcctSavingsAccount::class,'savings_account_id','savings_account_id');
+    }
     protected static function booted()
     {
         static::addGlobalScope(new NotDeletedScope);

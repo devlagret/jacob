@@ -3,6 +3,8 @@
 namespace App\DataTables;
 
 use App\Models\AcctCreditsAccount;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -60,17 +62,13 @@ class AcctCreditsAccountHistoryDataTable extends DataTable
             $sessiondata['branch_id'] = auth()->user()->branch_id;
         }
 
-        $querydata = $model->newQuery()
-        ->select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.savings_account_id',  'acct_credits_account.member_id', 'core_member.member_name', 'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_id', 'acct_credits.credits_name', 'acct_credits_account.credits_account_status', 'acct_source_fund.source_fund_name')
-		->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-		->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
-		->join('acct_source_fund', 'acct_credits_account.source_fund_id', '=', 'acct_source_fund.source_fund_id')
-		->where('acct_credits_account.data_state', 0)
-		->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
-		->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', $sessiondata['branch_id'])->withoutGlobalScopes();
+        $querydata = $model->newQuery()->with('member','credit','sourcefund')->where('credits_account_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+		->where('credits_account_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->whereHas('member',function (Builder $query) use($sessiondata) {
+            $query->where('branch_id',  $sessiondata['branch_id']??Auth::user()->branch_id);
+        });
         if($sessiondata['credits_id']){
-            $querydata = $querydata->where('acct_credits_account.credits_id', $sessiondata['credits_id']);
+            $querydata = $querydata->where('credits_id', $sessiondata['credits_id']);
         }
 
         return $querydata;
@@ -102,14 +100,14 @@ class AcctCreditsAccountHistoryDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::make('acct_credits_account.credits_account_id')->title(__('No'))->data('DT_RowIndex'),
-            Column::make('acct_credits_account.credits_account_serial')->title(__('No Rekening'))->data('credits_account_serial'),
-            Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
-            Column::make('acct_credits.credits_name')->title(__('Jenis Pinjaman'))->data('credits_name'),
-            Column::make('acct_credits.source_fund_name')->title(__('Sumber Dana'))->data('source_fund_name'),
-            Column::make('acct_credits_account.credits_account_date')->title(__('Tanggal Pinjam'))->data('credits_account_date'),
-            Column::make('acct_credits_account.credits_account_amount')->title(__('Pokok'))->data('credits_account_amount'),
-            Column::make('acct_credits_account.credits_account_status')->title(__('Status'))->data('credits_account_status'),
+            Column::make('credits_account_id')->title(__('No'))->data('DT_RowIndex'),
+            Column::make('credits_account_serial')->title(__('No Rekening')),
+            Column::make('member.member_name')->title(__('Nama Anggota')),
+            Column::make('credit.credits_name')->title(__('Jenis Pinjaman')),
+            Column::make('sourcefund.source_fund_name')->title(__('Sumber Dana')),
+            Column::make('credits_account_date')->title(__('Tanggal Pinjam')),
+            Column::make('credits_account_amount')->title(__('Pokok')),
+            Column::make('credits_account_status')->title(__('Status')),
             Column::computed('action')
                     ->title(__('Aksi'))
                     ->exportable(false)

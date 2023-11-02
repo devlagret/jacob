@@ -46,6 +46,9 @@ class CoreMember extends Model
     public function savingacc() {
         return $this->hasMany(AcctSavingsAccount::class,'member_id','member_id');
     }
+    public function working() {
+        return $this->hasOne(CoreMemberWorking::class,'member_id','member_id');
+    }
     protected static function booted()
     {
         static::addGlobalScope(new NotDeletedScope);

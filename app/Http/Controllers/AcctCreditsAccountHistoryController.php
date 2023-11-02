@@ -64,7 +64,6 @@ class AcctCreditsAccountHistoryController extends Controller
     }
 
     public function detail($credits_account_id){
-        $config                 = theme()->getOption('page', 'view');
         $memberidentity         = array_filter(Configuration::MemberIdentity());
         $paymenttype            = array_filter(Configuration::PaymentType());
 
@@ -106,7 +105,7 @@ class AcctCreditsAccountHistoryController extends Controller
         ->where('acct_credits_payment.credits_account_id', $credits_account_id)
         ->get();
         
-        $pdf = new TCPDF('P', PDF_UNIT, 'A4', true, 'UTF-8', false);
+        $pdf = new TCPDF(['P', PDF_UNIT, 'A4', true, 'UTF-8', false]);
 
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
