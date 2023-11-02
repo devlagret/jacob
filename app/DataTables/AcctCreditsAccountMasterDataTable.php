@@ -113,7 +113,7 @@ class AcctCreditsAccountMasterDataTable extends DataTable
 		->where('acct_credits_account.data_state', 0)
 		->where('acct_credits_account.credits_account_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
 		->where('acct_credits_account.credits_account_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', $sessiondata['branch_id']);
+        ->where('core_member.branch_id', $sessiondata['branch_id'])->withoutGlobalScopes();
         if($sessiondata['credits_id']){
             $querydata = $querydata->where('acct_credits_account.credits_id', $sessiondata['credits_id']);
         }
