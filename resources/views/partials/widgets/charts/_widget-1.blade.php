@@ -154,7 +154,6 @@
                 //     ],
                 // },
             ]
-    console.log("@php for($c = 1; $c <= collect($data->getDataKolektibilitas())->count();$c++){ echo $c; } @endphp");
         var options2 = {
             series:[
               @php
@@ -178,13 +177,15 @@
                 },
                 zoom: {
                     enabled: true
-                }
+                },
             },
             plotOptions: {
                 bar: {
                     horizontal: false,
-                    columnWidth: ['70%'],
-                    borderRadius: 4
+                    columnWidth: '70%',
+                    borderRadius: 4,
+                    hideZeroBarsWhenGrouped: true,
+                    endingShape: 'rounded'
                 },
             },
             legend: {
@@ -216,7 +217,8 @@
                         fontSize: '10px'
                     }
                 },
-                tickPlacement: 'on'
+                tickPlacement: 'on',
+                min:0,max:5
             },
             yaxis: {
                 labels: {
@@ -263,10 +265,10 @@
                     }
                 }
             },
-            colors: [baseColor2, secondaryColor2],
+            colors: ['#2E93fA', '#66DA26',  '#FF9800','#E91E63'],
             grid: {
                 borderColor: borderColor2,
-                strokeDashArray: 4,
+                strokeDashArray: 1,
                 yaxis: {
                     lines: {
                         show: true
@@ -274,6 +276,7 @@
                 }
             }
         };
+        // colors: [baseColor2, secondaryColor2],
 
         var chart2 = new ApexCharts(element2, options2);
         chart2.render();
