@@ -139,8 +139,8 @@ class AcctCreditsAccountController extends Controller
             return redirect('credits-account/detail')->with(['pesan' => 'Data Credit Berjangka berhasil ditambah -','alert' => 'success']);
         }
         $token = Session::get('credit-token');
-        dump(date('Y-m-d', strtotime($request->credit_account_due_date)));
-        dd($request->all());
+        // dump(date('Y-m-d', strtotime($request->credit_account_due_date)));
+        // dd($request->all());
         $daftaragunan = session()->get('array_creditsaccountangunan');
         $data = array (
             "credits_account_date" 						=> date('Y-m-d', strtotime($request->credit_account_date)),
@@ -245,7 +245,7 @@ class AcctCreditsAccountController extends Controller
                 'pesan' => 'Data Credit Berjangka berhasil ditambah',
                 'alert' => 'success',
             );
-            return redirect()->route('credits-account.detail',$acctcreditsaccount_last->credits_account_id)->with($message);
+            return redirect('credits-account')->with($message);
         } catch (\Exception $e) {
             DB::rollback();
             dd($e);
@@ -445,16 +445,17 @@ class AcctCreditsAccountController extends Controller
             );
             AcctJournalVoucherItem::create($data_credit);
 
+            // biaya provisi
             if($provisi != '' && $provisi > 0){
 
-                $account_id_default_status 			= AcctAccount::where('account_id',$preferencecompany['account_cash_id'])
+                $account_id_default_status 			= AcctAccount::where('account_id',$preferencecompany['account_provision_income_id'])
                 ->where('data_state',0)
                 ->first()
                 ->account_default_status;
 
                 $data_debet = array (
                     'journal_voucher_id'			=> $journal_voucher_id,
-                    'account_id'					=> $preferencecompany['account_cash_id'],
+                    'account_id'					=> $preferencecompany['account_provision_income_id'],
                     'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
                     'journal_voucher_amount'		=> $provisi,
                     'journal_voucher_debit_amount'	=> $provisi,
@@ -525,15 +526,17 @@ class AcctCreditsAccountController extends Controller
 
             }
 
+            //biaya admin
             if($acctcreditsaccount['credits_account_adm_cost'] != '' && $acctcreditsaccount['credits_account_adm_cost'] > 0){
-                $account_id_default_status 			= AcctAccount::where('account_id',$preferencecompany['account_cash_id'])
+                
+                $account_id_default_status 			= AcctAccount::where('account_id',$preferenceinventory['inventory_adm_id'])
                 ->where('data_state',0)
                 ->first()
                 ->account_default_status;
 
                 $data_debet = array (
                     'journal_voucher_id'			=> $journal_voucher_id,
-                    'account_id'					=> $preferencecompany['account_cash_id'],
+                    'account_id'					=> $preferencecompany['account_mutation_adm_id'],
                     'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
                     'journal_voucher_amount'		=> $acctcreditsaccount['credits_account_adm_cost'],
                     'journal_voucher_debit_amount'	=> $acctcreditsaccount['credits_account_adm_cost'],
@@ -544,7 +547,7 @@ class AcctCreditsAccountController extends Controller
 
                 AcctJournalVoucherItem::create($data_debet);
 
-                $account_id_default_status 			= AcctAccount::where('account_id',$preferenceinventory['inventory_adm_id'])
+                $account_id_default_status 			= AcctAccount::where('account_id',$preferencecompany['account_mutation_adm_id'])
                 ->where('data_state',0)
                 ->first()
                 ->account_default_status;
