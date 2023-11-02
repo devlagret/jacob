@@ -25,12 +25,9 @@ class CreditsCollectibilityReportController extends Controller
         $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
         
         $preferencecollectibility   = PreferenceCollectibility::get();
-        $acctcreditsaccount			= AcctCreditsAccount::select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_principal_amount', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_last_payment_date', 'acct_credits_account.credits_account_payment_date', 'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_period')
-        ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-        ->where('acct_credits_account.credits_account_last_balance', '>=', 1)
-        ->where('acct_credits_account.credits_approve_status', 1)
-        ->where('acct_credits_account.data_state', 0)
-        ->orderBy('acct_credits_account.credits_account_serial', 'ASC')	
+        $acctcreditsaccount			= AcctCreditsAccount::with('member')->where('credits_account_last_balance', '>=', 1)
+        ->where('credits_approve_status', 1)
+        ->orderBy('credits_account_serial', 'ASC')	
         ->get();
 
         $pdf = new TCPDF('L', PDF_UNIT, 'A4', true, 'UTF-8', false);
@@ -117,11 +114,11 @@ class CreditsCollectibilityReportController extends Controller
             <tr>
                 <td width=\"3%\"><div style=\"text-align: left;\">".$no."</div></td>
                 <td width=\"10%\"><div style=\"text-align: left;\">".$val['credits_account_serial']."</div></td>
-                <td width=\"18%\"><div style=\"text-align: left;\">".$val['member_name']."</div></td>
-                <td width=\"20%\"><div style=\"text-align: left;\">".$val['member_address']."</div></td>
+                <td width=\"18%\"><div style=\"text-align: left;\">{$val->member->member_name}</div></td>
+                <td width=\"20%\"><div style=\"text-align: left;\">{$val->member->member_address}</div></td>
                 <td width=\"12%\"><div style=\"text-align: right;\">".number_format($val['credits_account_last_balance'], 2)."</div></td>
-                <td width=\"10%\"><div style=\"text-align: right;\">".$credits_account_payment_to." / ".$val['credits_account_period']."</div></td>
-                <td width=\"15%\"><div style=\"text-align: right;\">".$collectibility_name."</div></td>
+                <td width=\"10%\"><div style=\"text-align: right;\">{$credits_account_payment_to} / ".$val['credits_account_period']."</div></td>
+                <td width=\"15%\"><div style=\"text-align: right;\">{$collectibility_name}</div></td>
             </tr>";
 
             $no++;
