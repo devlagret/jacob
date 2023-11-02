@@ -63,7 +63,7 @@
                 <!--begin::Symbol-->
                 <div class="symbol symbol-50px me-5">
                     <span class="symbol-label bg-light-{{ $row['color'] }}">
-                        {!! theme()->getSvgIcon($row['icon'], "svg-icon-2x svg-icon-" . $row['color']); !!}
+                        {!! theme()->getSvgIcon($row['icon'], "svg-icon-2x svg-icon-" . $row['color']) !!}
                     </span>
                 </div>
                 <!--end::Symbol-->

@@ -33,7 +33,7 @@
             <span class="btn-label">
                 Docs & Components
             </span>
-            {!! theme()->getSvgIcon("icons/duotune/general/gen005.svg", "btn-icon svg-icon-2"); !!}
+            {!! theme()->getSvgIcon("icons/duotune/general/gen005.svg", "btn-icon svg-icon-2") !!}
         </a>
     </div>
     <!--end::Footer-->

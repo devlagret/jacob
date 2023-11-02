@@ -95,7 +95,6 @@ class AcctCreditsPaymentBankController extends Controller
 
     public function add()
     {
-        $config                 = theme()->getOption('page', 'view');
         $sessiondata            = session()->get('data_creditspaymentbankadd');
 
         $acctbankaccount        = AcctBankAccount::select('bank_account_name', 'bank_account_id')
@@ -467,7 +466,7 @@ class AcctCreditsPaymentBankController extends Controller
         ->first()
         ->branch_city;
 
-        $pdf = new TCPDF('L', PDF_UNIT, 'A4', true, 'UTF-8', false);
+        $pdf = new TCPDF(['L', PDF_UNIT, 'A4', true, 'UTF-8', false]);
 
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);

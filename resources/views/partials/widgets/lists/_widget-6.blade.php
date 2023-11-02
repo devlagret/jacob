@@ -48,7 +48,7 @@
             <div class="d-flex align-items-center bg-light-{{ $row['color'] }} rounded p-5 {{ util()->putIf(next($listRows), 'mb-7') }}">
                 <!--begin::Icon-->
                 <span class="svg-icon svg-icon-{{ $row['color'] }} me-5">
-                    {!! theme()->getSvgIcon($row['icon'], "svg-icon-1"); !!}
+                    {!! theme()->getSvgIcon($row['icon'], "svg-icon-1") !!}
                 </span>
                 <!--end::Icon-->
 

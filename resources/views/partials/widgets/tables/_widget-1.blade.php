@@ -133,7 +133,7 @@
 
                             <td class="text-end">
                                 <a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary">
-                                    {!! theme()->getSvgIcon("icons/duotune/arrows/arr064.svg", "svg-icon-2"); !!}
+                                    {!! theme()->getSvgIcon("icons/duotune/arrows/arr064.svg", "svg-icon-2") !!}
                                 </a>
                             </td>
                         </tr>

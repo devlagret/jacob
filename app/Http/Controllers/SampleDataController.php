@@ -43,7 +43,7 @@ class SampleDataController extends Controller
         //     return [$months[Carbon::parse($key)->format('n')] => $data];
         // });
 
-        $d = array(
+        $d = collect([
             "Januari" => [
                 "profit" => $this->getProfitLossAmount(1),
             ],
@@ -80,7 +80,7 @@ class SampleDataController extends Controller
             "Desember" => [
                 "profit" => $this->getProfitLossAmount(12)
             ],
-        );
+        ]);
 
         return $d;
     }

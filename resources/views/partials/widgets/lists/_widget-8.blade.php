@@ -80,7 +80,7 @@
                         </div>
 
                         <a href="#" class="btn btn-icon btn-light btn-sm border-0">
-                            {!! theme()->getSvgIcon("icons/duotune/arrows/arr064.svg", "svg-icon-2 svg-icon-primary"); !!}
+                            {!! theme()->getSvgIcon("icons/duotune/arrows/arr064.svg", "svg-icon-2 svg-icon-primary") !!}
                         </a>
                     </div>
                     <!--end::Section-->

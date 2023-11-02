@@ -36,7 +36,7 @@
                         <!--begin::Symbol-->
                         <div class="symbol symbol-50px me-3">
                             <div class="symbol-label bg-light-info">
-                                {!! theme()->getSvgIcon("icons/duotune/art/art007.svg", "svg-icon-1 svg-icon-info"); !!}
+                                {!! theme()->getSvgIcon("icons/duotune/art/art007.svg", "svg-icon-1 svg-icon-info") !!}
                             </div>
                         </div>
                         <!--end::Symbol-->
@@ -57,7 +57,7 @@
                         <!--begin::Symbol-->
                         <div class="symbol symbol-50px me-3">
                             <div class="symbol-label bg-light-danger">
-                                {!! theme()->getSvgIcon("icons/duotune/abstract/abs027.svg", "svg-icon-1 svg-icon-danger"); !!}
+                                {!! theme()->getSvgIcon("icons/duotune/abstract/abs027.svg", "svg-icon-1 svg-icon-danger") !!}
                             </div>
                         </div>
                         <!--end::Symbol-->
@@ -82,7 +82,7 @@
                         <!--begin::Symbol-->
                         <div class="symbol symbol-50px me-3">
                             <div class="symbol-label bg-light-success">
-                                {!! theme()->getSvgIcon("icons/duotune/ecommerce/ecm002.svg", "svg-icon-1 svg-icon-success"); !!}
+                                {!! theme()->getSvgIcon("icons/duotune/ecommerce/ecm002.svg", "svg-icon-1 svg-icon-success") !!}
                             </div>
                         </div>
                         <!--end::Symbol-->
