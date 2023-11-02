@@ -11,7 +11,6 @@
         "anlutro/l4-settings": "^1.0",
         "elibyy/tcpdf-laravel": "^9.1",
         "fideloper/proxy": "^4.4",
-        "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "jackiedo/log-reader": "^2.1",
         "laravel/framework": "^9.0",
