@@ -125,7 +125,7 @@ class SampleDataController extends Controller
 
     public static function getDataUser()
     {
-        
+
         $user = User::select('system_user_group.user_group_name','system_user.username','system_user.avatar','system_user.user_id')
         ->join('system_user_group','system_user_group.user_group_id','=','system_user.user_group_id')
         ->where('system_user.user_group_id','!=',1)
@@ -217,15 +217,12 @@ class SampleDataController extends Controller
 
     public function getDataKolektibilitas()
     {
-
-        $now 	= date('Y-m-d');
         $signupdate=date('Y-m-01');
         $signupweek=date("W",strtotime($signupdate));
         $year=date("Y",strtotime($signupdate));
         $currentweek = date("W");
         $coll	= PreferenceCollectibility::get();
         $currentweek = $signupweek + $coll->count()-1;
-        
         $no=0;
         $index=0;
         for($i=$signupweek;$i<=$currentweek;$i++)
@@ -248,21 +245,6 @@ class SampleDataController extends Controller
             for($v = 1; $v <= $collectibility->count() ; $v++){
                 $total[$v]=0;
             }
-            $total1 = 0;
-            $total2	= 0;
-            $total3	= 0;
-            $total4	= 0;
-            $total5	= 0;
-
-            foreach ($creditsaccount as $key => $val) {
-                $date1 = date_create($date['end']);
-                $date2 = date_create($val['credits_account_payment_date']);
-
-                $interval    = $date1->diff($date2);
-                $tunggakan2  = $interval->days;
-            }
-                $tunggakan = $tunggakan2??'';
-
             foreach ($creditsaccount as $key => $val) {
 
                 $date1 = date_create($date['end']);
@@ -271,12 +253,11 @@ class SampleDataController extends Controller
                 $interval    = $date1->diff($date2);
                 $tunggakan   = $interval->days;
 
-                $interval    = $date1->diff($date2);
-                $tunggakan   = $interval->days;
                 if($date2 >= $date1){
                     $tunggakan2 = 0;
                 }else{
                     $tunggakan2 = $tunggakan;
+                    // dump([$val,$tunggakan]);
                 }
                 foreach ($collectibility as $k => $v) {
                     if($tunggakan2 >= $v['collectibility_bottom'] && $tunggakan2 <= $v['collectibility_top']){
@@ -286,11 +267,9 @@ class SampleDataController extends Controller
                         $collectibility_id = $collectibility->sortByDesc('collectibility_id')->first()->collectibility_id;
                     }
                 }
-                // return $collectibility;
-
                 for($v = 1; $v <= $collectibility->count() ; $v++){
                     if($collectibility_id==$v){
-                    $total[$v]=$total[$v]+$val['credits_account_last_balance'];
+                    $total[$v]+=$val['credits_account_last_balance'];
                 }
                 }
 
