@@ -136,8 +136,8 @@ class NominativeMemberReportController extends Controller
                     <td width=\"15%\"><div style=\"text-align: left;\">".$val['member_name']."</div></td>
                     <td width=\"20%\"><div style=\"text-align: left;\">".$val['member_address']."</div></td>
                     <td width=\"15%\"><div style=\"text-align: right;\">".number_format($val['member_principal_savings_last_balance'], 2)."</div></td>
-                    <td width=\"15%\"><div style=\"text-align: right;\">".number_format($val['member_special_savings_last_balance'], 2)."</div></td>
                     <td width=\"15%\"><div style=\"text-align: right;\">".number_format($val['member_mandatory_savings_last_balance'], 2)."</div></td>
+                    <td width=\"15%\"><div style=\"text-align: right;\">".number_format($val['member_special_savings_last_balance'], 2)."</div></td>
                 </tr>
             ";
 
