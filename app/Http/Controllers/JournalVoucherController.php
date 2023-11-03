@@ -12,6 +12,8 @@ use App\Models\PreferenceCompany;
 use App\Models\PreferenceTransactionModule;
 use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class JournalVoucherController extends Controller
 {
@@ -19,6 +21,7 @@ class JournalVoucherController extends Controller
     {
         session()->forget('data_journalvoucher');
         session()->forget('array_journalvoucher');
+        Session::forget('journal-token');
         $session = session()->get('filter_journalvoucher');
         if (empty($session['start_date'])) {
             $start_date = date('Y-m-d');
@@ -53,6 +56,9 @@ class JournalVoucherController extends Controller
 
     public function add()
     {
+        if(empty(Session::get('journal-token'))){
+            Session::put('journal-token',Str::uuid());
+        }
         $accountstatus = Configuration::AccountStatus();
         $acctaccount = AcctAccount::select('account_id','account_code','account_name')
         ->where('data_state',0)
@@ -65,6 +71,10 @@ class JournalVoucherController extends Controller
 
     public function processAdd(Request $request)
     {
+        if(empty(Session::get('journal-token'))){
+            return redirect('journal-voucher')->with(['pesan' => 'Data Jurnal Umum berhasil ditambah -','alert' => 'success']);
+        }
+        $token = Session::get('journal-token');
         $journal_voucher_period = date("Ym", strtotime($request->journal_voucher_date));
         $acctjournalvoucheritem = session()->get('array_journalvoucher');
         $transaction_module_code = "JU";
@@ -80,6 +90,7 @@ class JournalVoucherController extends Controller
             'transaction_module_id'			=> $transaction_module_id,
             'transaction_module_code'		=> $transaction_module_code,
             'created_id'					=> auth()->user()->user_id,
+            'journal_voucher_token'         => $token,
         );
 
         DB::beginTransaction();
@@ -89,6 +100,7 @@ class JournalVoucherController extends Controller
             AcctJournalVoucher::create($data);
 
             $journal_voucher_id = AcctJournalVoucher::where('created_id', auth()->user()->user_id)
+            ->where('journal_voucher_token',$token)
             ->orderBy('journal_voucher_id','DESC')
             ->first()
             ->journal_voucher_id;
@@ -131,9 +143,11 @@ class JournalVoucherController extends Controller
                 'pesan' => 'Data Jurnal Umum berhasil ditambah',
                 'alert' => 'success',
             );
+            Session::forget('journal-token');
             return redirect('journal-voucher')->with($message);
         } catch (\Exception $e) {
             DB::rollback();
+            Session::forget('journal-token');
             $message = array(
                 'pesan' => 'Data Jurnal Umum gagal ditambah',
                 'alert' => 'error'
