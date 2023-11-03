@@ -215,18 +215,15 @@ class MemberSavingsTransferMutationController extends Controller
 
     public function selectMember($member_id)
     {
-        $coremember = CoreMember::where('member_id', $member_id)
-        ->join('core_city','core_city.city_id','=','core_member.city_id')
-        ->join('core_kecamatan','core_kecamatan.kecamatan_id','=','core_member.kecamatan_id')
-        ->first();
+        $coremember = CoreMember::with('city','kecamatan')->find($member_id);
 
         $data = array(
             'member_id'                             => $coremember->member_id,
             'member_no'                             => $coremember->member_no,
             'member_name'                           => $coremember->member_name,
             'member_address'                        => $coremember->member_address,
-            'city_name'                             => $coremember->city_name,
-            'kecamatan_name'                        => $coremember->kecamatan_name,
+            'city_name'                             => $coremember->city->city_name,
+            'kecamatan_name'                        => $coremember->kecamatan->kecamatan_name,
             'member_mandatory_savings_last_balance' => $coremember->member_mandatory_savings_last_balance,
         );
 

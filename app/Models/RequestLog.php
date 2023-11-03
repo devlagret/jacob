@@ -22,10 +22,10 @@ class RequestLog extends Model
     ];
     public function prunable()
     {
-        return static::where('created_at', '<=', now()->subWeek());
+        return static::where('created_at', '<=', now()->subDays(2));
     }
     protected function pruning()
     {
-        Storage::put('logs/requestLog-'.Carbon::now()->format("Y-m-d-His").'.json', $this->where('created_at', '<=', now()->subWeek())->get());
+        Storage::put('logs/requestLog-'.Carbon::now()->format("Y-m-d-His").'.json', $this->where('created_at', '<=', now()->subDays(2))->get());
     }
 }

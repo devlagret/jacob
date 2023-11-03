@@ -33,9 +33,7 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(CoreMember $model)
     {
-        return $model->newQuery()
-        ->select('member_no','member_name','member_address','member_id')
-        ->where('data_state', 0);
+        return $model->newQuery();
     }
 
     /**

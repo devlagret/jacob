@@ -20,13 +20,13 @@ var validator = FormValidation.formValidation(
                     }
                 }
             },
-            // 'member_character': {
-            //     validators: {
-            //         notEmpty: {
-            //             message: 'Sifat Anggota harus diisi'
-            //         }
-            //     }
-            // },
+            'mutation_id': {
+                validators: {
+                    notEmpty: {
+                        message: 'Sandi harus diisi'
+                    }
+                }
+            },
             'province_id': {
                 validators: {
                     notEmpty: {
@@ -83,6 +83,32 @@ var validator = FormValidation.formValidation(
                     }
                 }
             },
+            mutation :{
+                selector: '.mutation-input',
+                validators: {
+                    callback: {
+                        message: 'Setidaknya masukan satu mutasi',
+                        callback: function(input) {
+                            let isEmpty = true;
+                            const emailElements = validator.getElements('mutation');
+                            for (const i in emailElements) {
+                                if (emailElements[i].value !== '') {
+                                    isEmpty = false;
+                                    break;
+                                }
+                            }
+
+                            if (!isEmpty) {
+                                // Update the status of callback validator for all fields
+                                fv.updateFieldStatus('mutation', 'Valid', 'callback');
+                                return true;
+                            }
+
+                            return false;
+                        }
+                    },
+                },
+            }
         },
 
         plugins: {
@@ -121,13 +147,27 @@ function mutation_function(){
     var arr = {  @foreach($acctmutation as $key => $value)  {{$value['mutation_id']}} : '{{$value['mutation_function']}}', @endforeach}
     return arr[$('#mutation_id').val()];
 }
+var al = true;
 function calcMutation(viwe_el,el,last_balance,input_balance){
     if(mutation_function() == '+'){
 			new_balance = parseFloat(last_balance) + parseFloat(input_balance==''?0:input_balance);
 		} else if(mutation_function() == '-'){
 			new_balance = parseFloat(last_balance) - parseFloat(input_balance==''?0:input_balance);
 		} else {
-			alert("Sandi masih kosong");
+            toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-center",
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "30000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+            }
+            toastr["error"]("Sandi Masih Kosong !", "Peringatan")
 				return false;
 		}
         $(viwe_el).val(toRp(new_balance));
@@ -146,7 +186,6 @@ function calcMutation(viwe_el,el,last_balance,input_balance){
     }
 
 	function calMandatorySavings(member_mandatory_savings = 0){
-        console.log(member_mandatory_savings);
 		var member_mandatory_savings_last_balance	= $('#member_mandatory_savings_last_balance').val();
 		var member_mandatory_savings_last_balance_origin	= $('#member_mandatory_savings_last_balance_origin').val();
         calcMutation('#member_mandatory_savings_last_balance_view','#member_mandatory_savings_last_balance',member_mandatory_savings_last_balance_origin,member_mandatory_savings);
@@ -175,32 +214,47 @@ $(document).ready(function(){
 
     $('#member_principal_savings_view').change(function(){
         var member_principal_savings = $('#member_principal_savings_view').val();
-        calPrincipalSavings(member_principal_savings);
-        calSpecialSavings($('#member_special_savings').val());
-        calMandatorySavings( $('#member_mandatory_savings').val());
-        function_elements_add('member_principal_savings', member_principal_savings);
-        $('#member_principal_savings').val(member_principal_savings);
-        $('#member_principal_savings_view').val(toRp(member_principal_savings));
+        if(member_principal_savings!=''&&Number.isInteger(parseInt(member_principal_savings))){
+            calPrincipalSavings(member_principal_savings);
+            calSpecialSavings($('#member_special_savings').val());
+            calMandatorySavings( $('#member_mandatory_savings').val());
+            function_elements_add('member_principal_savings', member_principal_savings);
+            $('#member_principal_savings').val(member_principal_savings);
+            $('#member_principal_savings_view').val(toRp(member_principal_savings));
+        }else{
+            $('#member_principal_savings_view').val('');
+            $('#member_principal_savings').val('');
+        }
     });
 
     $('#member_special_savings_view').change(function(){
         var member_special_savings = $('#member_special_savings_view').val();
+        if(member_special_savings!=''&&Number.isInteger(parseInt(member_special_savings))){
         calSpecialSavings(member_special_savings);
         calPrincipalSavings($('#member_principal_savings').val());
         calMandatorySavings( $('#member_mandatory_savings').val());
         function_elements_add('member_special_savings', member_special_savings);
         $('#member_special_savings').val(member_special_savings);
         $('#member_special_savings_view').val(toRp(member_special_savings));
+        }else{
+            $('#member_special_savings_view').val('');
+            $('#member_special_savings').val('');
+        }
     });
 
     $('#member_mandatory_savings_view').change(function(){
         var member_mandatory_savings = $('#member_mandatory_savings_view').val();
+        if(member_mandatory_savings!=''&&Number.isInteger(parseInt(member_mandatory_savings))){
         calMandatorySavings(member_mandatory_savings);
         calPrincipalSavings($('#member_principal_savings').val());
         calSpecialSavings($('#member_special_savings').val());
         function_elements_add('member_mandatory_savings', member_mandatory_savings);
         $('#member_mandatory_savings').val(member_mandatory_savings);
         $('#member_mandatory_savings_view').val(toRp(member_mandatory_savings));
+        }else{
+            $('#member_mandatory_savings_view').val('');
+            $('#member_mandatory_savings').val('');
+        }
     });
 
     $('#kt_member_savings_payment_reset').click(function(){
@@ -463,9 +517,9 @@ function function_elements_add(name, value){
                                 <b class="col-lg-12 fw-bold fs-3 text-primary">Input Simpanan</b>
                             </div>
                             <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Sandi') }}</label>
+                                <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Sandi') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <select name="mutation_id" id="mutation_id" data-control="select2" data-placeholder="{{ __('Pilih Sandi') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg" onchange="changeMutation(this.name, this.value)">
+                                    <select name="mutation_id" id="mutation_id" data-control="select2" data-placeholder="{{ __('Pilih Sandi') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg " required onchange="changeMutation(this.name, this.value)">
                                         <option value="">{{ __('Pilih') }}</option>
                                         @foreach($acctmutation as $key => $value)
                                             <option data-kt-flag="{{ $value['mutation_id'] }}" value="{{ $value['mutation_id'] }}" {{ $value['mutation_id'] == old('mutation_id', empty($datases['mutation_id']) ? '' : $datases['mutation_id'] ?? '') ? 'selected' :'' }}>{{ $value['mutation_name'] }}</option>
@@ -476,21 +530,21 @@ function function_elements_add(name, value){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Simpanan Pokok') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_principal_savings_view" id="member_principal_savings_view" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Pokok" value="{{ old('member_principal_savings_view', empty($datases['member_principal_savings']) ? '' : number_format($datases['member_principal_savings'],2) ?? '') }}" autocomplete="off"/>
+                                    <input type="text" name="member_principal_savings_view" id="member_principal_savings_view" class="form-control mutation-input form-control-lg form-control-solid" placeholder="Simpanan Pokok" value="{{ old('member_principal_savings_view', empty($datases['member_principal_savings']) ? '' : number_format($datases['member_principal_savings'],2) ?? '') }}" autocomplete="off"/>
                                     <input type="hidden" name="member_principal_savings" id="member_principal_savings" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Pokok" value="{{ old('member_principal_savings', empty($datases['member_principal_savings']) ? '' : $datases['member_principal_savings'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Simpanan Wajib') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_mandatory_savings_view" id="member_mandatory_savings_view" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Wajib" value="{{ old('member_mandatory_savings_view', empty($datases['member_mandatory_savings']) ? '' : number_format($datases['member_mandatory_savings'],2) ?? '') }}" autocomplete="off"/>
+                                    <input type="text" name="member_mandatory_savings_view" id="member_mandatory_savings_view" class="form-control mutation-input form-control-lg form-control-solid" placeholder="Simpanan Wajib" value="{{ old('member_mandatory_savings_view', empty($datases['member_mandatory_savings']) ? '' : number_format($datases['member_mandatory_savings'],2) ?? '') }}" autocomplete="off"/>
                                     <input type="hidden" name="member_mandatory_savings" id="member_mandatory_savings" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Wajib" value="{{ old('member_mandatory_savings', empty($datases['member_mandatory_savings']) ? '' : $datases['member_mandatory_savings'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Simpanan Khusus') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_special_savings_view" id="member_special_savings_view" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Khusus" value="{{ old('member_special_savings_view', empty($datases['member_special_savings']) ? '' : number_format($datases['member_special_savings'],2) ?? '') }}" autocomplete="off"/>
+                                    <input type="text" name="member_special_savings_view" id="member_special_savings_view" class="form-control mutation-input form-control-lg form-control-solid" placeholder="Simpanan Khusus" value="{{ old('member_special_savings_view', empty($datases['member_special_savings']) ? '' : number_format($datases['member_special_savings'],2) ?? '') }}" autocomplete="off"/>
                                     <input type="hidden" name="member_special_savings" id="member_special_savings" class="form-control form-control-lg form-control-solid" placeholder="Simpanan Khusus" value="{{ old('member_special_savings', empty($datases['member_special_savings']) ? '' : $datases['member_special_savings'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>

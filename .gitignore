@@ -16,3 +16,4 @@ _ide_helper_models.php
 testDiagram.drawio
 debug.log
 settings.json
+.vscode/settings.json
