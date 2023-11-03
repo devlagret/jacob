@@ -212,8 +212,8 @@ if(empty($sessiondata)){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jenis Tabungan') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="savings_name" class="form-control form-control-lg form-control-solid" placeholder="Jenis Tabungan" value="{{ old('savings_name', $acctsavingsaccount['savings_name'] ?? '') }}" autocomplete="off" readonly/>
-                                    <input type="hidden" name="savings_id" class="form-control form-control-lg form-control-solid" placeholder="Jenis Tabungan" value="{{ old('savings_id', $acctsavingsaccount['savings_id'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="savings_name" class="form-control form-control-lg form-control-solid" placeholder="Jenis Tabungan" value="{{ old('savings_name', $acctsavingsaccount->savingdata->savings_name ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="hidden" name="savings_id" class="form-control form-control-lg form-control-solid" placeholder="Jenis Tabungan" value="{{ old('savings_id', $acctsavingsaccount->savingdata->savings_id ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
@@ -222,38 +222,38 @@ if(empty($sessiondata)){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_name" class="form-control form-control-lg form-control-solid" placeholder="Nama" value="{{ old('member_name', $acctsavingsaccount['member_name'] ?? '') }}" autocomplete="off" readonly/>
-                                    <input type="hidden" name="member_id" class="form-control form-control-lg form-control-solid" placeholder="Nama" value="{{ old('member_id', $acctsavingsaccount['member_id'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="member_name" class="form-control form-control-lg form-control-solid" placeholder="Nama" value="{{ old('member_name', $acctsavingsaccount->member->member_name ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="hidden" name="member_id" class="form-control form-control-lg form-control-solid" placeholder="Nama" value="{{ old('member_id', $acctsavingsaccount->member->member_id ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Alamat') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <textarea id="member_address" name="member_address" class="form-control form-control form-control-solid" data-kt-autosize="true" placeholder="Alamat Sesuai KTP" readonly>{{ old('member_address', $acctsavingsaccount['member_address'] ?? '') }}</textarea>
+                                    <textarea id="member_address" name="member_address" class="form-control form-control form-control-solid" data-kt-autosize="true" placeholder="Alamat Sesuai KTP" readonly>{{ old('member_address', $acctsavingsaccount->member->member_address ?? '') }}</textarea>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kabupaten') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="city_name" class="form-control form-control-lg form-control-solid" placeholder="Kabupaten" value="{{ old('city_name', $acctsavingsaccount['city_name'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="city_name" class="form-control form-control-lg form-control-solid" placeholder="Kabupaten" value="{{ old('city_name', $acctsavingsaccount->member->city->city_name?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kecamatan') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="kecamatan_name" class="form-control form-control-lg form-control-solid" placeholder="Kecamatan" value="{{ old('kecamatan_name', $acctsavingsaccount['kecamatan_name'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="kecamatan_name" class="form-control form-control-lg form-control-solid" placeholder="Kecamatan" value="{{ old('kecamatan_name', $acctsavingsaccount->member->kecamatan->kecamatan_name ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama Ibu') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_mother" class="form-control form-control-lg form-control-solid" placeholder="Nama Ibu" value="{{ old('member_mother', $acctsavingsaccount['member_mother'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="member_mother" class="form-control form-control-lg form-control-solid" placeholder="Nama Ibu" value="{{ old('member_mother', $acctsavingsaccount->member->member_mother ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('No Identitas') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_identity_no" class="form-control form-control-lg form-control-solid" placeholder="No Identitas" value="{{ old('member_identity_no', $acctsavingsaccount['member_identity_no'] ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="member_identity_no" class="form-control form-control-lg form-control-solid" placeholder="No Identitas" value="{{ old('member_identity_no', $acctsavingsaccount->member->member_identity_no ?? '') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                         </div>

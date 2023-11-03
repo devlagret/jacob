@@ -22,7 +22,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
-use App\Helpers\JournalHelper;
 use Elibyy\TCPDF\Facades\TCPDF;
 
 class AcctSavingsAccountController extends Controller

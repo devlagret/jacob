@@ -94,16 +94,8 @@ class AcctSavingsCashMutationController extends Controller
 
         $acctsavingsaccount = [];
         if (isset($sessiondata['savings_account_id'])) {
-            $acctsavingsaccount = AcctSavingsAccount::select('core_member.member_id', 'core_member.member_name', 'core_member.member_address', 'core_member.member_mother', 'core_member.member_identity_no', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'acct_savings_account.unblock_state', 'acct_savings_account.savings_account_pickup_date', 'acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_id', 'acct_savings_account.savings_account_opening_balance', 'acct_savings_account.savings_account_last_balance', 'acct_savings.savings_name', 'acct_savings_account.savings_account_blockir_status', 'acct_savings_account.savings_account_blockir_amount', 'acct_savings_account_blockir.savings_account_blockir_type')
-                ->join('acct_savings', 'acct_savings.savings_id', '=', 'acct_savings_account.savings_id')
-                ->join('acct_savings_account_blockir', 'acct_savings_account_blockir.savings_id', '=', 'acct_savings_account.savings_id')
-                ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
-                ->join('core_city', 'core_city.city_id', '=', 'core_member.city_id')
-                ->join('core_kecamatan', 'core_kecamatan.kecamatan_id', '=', 'core_member.kecamatan_id')
-                ->where('acct_savings_account.savings_account_id', $sessiondata['savings_account_id'])
-                ->first();
+            $acctsavingsaccount = AcctSavingsAccount::with('savingdata','member.city','member.kecamatan')->find($sessiondata['savings_account_id']);
         }
-        // dd($sessiondata);
         return view('content.AcctSavingsCashMutation.Add.index', compact('sessiondata', 'membergender', 'memberidentity', 'familyrelationship', 'acctmutation', 'acctsavingsaccount'));
     }
 
@@ -145,7 +137,7 @@ class AcctSavingsCashMutationController extends Controller
         DB::beginTransaction();
 
         //---------------------------------------------setoran tunai------------------------------------------------------------//
-        if ($fields['mutation_id'] == 1) {
+        if ($fields['mutation_id'] == 1|| $fields['mutation_id'] == 3) {
             try {
                 $data = [
                     'savings_account_id' => $fields['savings_account_id'],
@@ -566,7 +558,7 @@ class AcctSavingsCashMutationController extends Controller
                 ];
             }
             //-------------------------penarikan tunai,koreksi kredit, koreksi debet, tutup rekening-----------------------------------//
-        } elseif ($fields['mutation_id'] == 2 || $fields['mutation_id'] == 3 || $fields['mutation_id'] == 4 || $fields['mutation_id'] == 5) {
+        } elseif ($fields['mutation_id'] == 2  || $fields['mutation_id'] == 4 || $fields['mutation_id'] == 5) {
             //saldo di blokir
             if ($fields['savings_cash_mutation_amount'] > $request->savings_account_range_amount) {
                 $message = [
