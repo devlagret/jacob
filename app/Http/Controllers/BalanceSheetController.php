@@ -410,13 +410,10 @@ class BalanceSheetController extends Controller
                                             }
                                         }
 
-                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $total_account_amount1;
+                                        $grand_total_account_amount1 =  $total_account_amount1;
 
                                         $tblitem_left5 = "
-                                            <tr>
-                                                <td><div style=\"font-weight:".$report_bold1."\">".$report_tab1."".$valLeft['account_name1']."</div></td>
-                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold1."\">".number_format($grand_total_account_amount1, 2)."</div></td>
-                                            </tr>";
+                                           ";
                                     } else {
                                         $tblitem_left5 = "";
                                     }
@@ -550,13 +547,10 @@ class BalanceSheetController extends Controller
                                             }
                                         }
 
-                                        $grand_total_account_amount2 = $grand_total_account_amount2 + $total_account_amount2;
+                                        $grand_total_account_amount2 =  $total_account_amount2;
 
                                         $tblitem_right5 = "
-                                            <tr>
-                                                <td><div style=\"font-weight:".$report_bold2."\">".$report_tab2."".$valRight['account_name2']."</div></td>
-                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($grand_total_account_amount2, 2)."</div></td>
-                                            </tr>";
+                                            ";
                                     } else {
                                         $tblitem_right5 = "";
                                     }
