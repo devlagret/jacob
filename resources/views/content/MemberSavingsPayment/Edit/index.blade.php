@@ -186,7 +186,6 @@ function calcMutation(viwe_el,el,last_balance,input_balance){
     }
 
 	function calMandatorySavings(member_mandatory_savings = 0){
-        console.log(member_mandatory_savings);
 		var member_mandatory_savings_last_balance	= $('#member_mandatory_savings_last_balance').val();
 		var member_mandatory_savings_last_balance_origin	= $('#member_mandatory_savings_last_balance_origin').val();
         calcMutation('#member_mandatory_savings_last_balance_view','#member_mandatory_savings_last_balance',member_mandatory_savings_last_balance_origin,member_mandatory_savings);
@@ -215,32 +214,47 @@ $(document).ready(function(){
 
     $('#member_principal_savings_view').change(function(){
         var member_principal_savings = $('#member_principal_savings_view').val();
-        calPrincipalSavings(member_principal_savings);
-        calSpecialSavings($('#member_special_savings').val());
-        calMandatorySavings( $('#member_mandatory_savings').val());
-        function_elements_add('member_principal_savings', member_principal_savings);
-        $('#member_principal_savings').val(member_principal_savings);
-        $('#member_principal_savings_view').val(toRp(member_principal_savings));
+        if(member_principal_savings!=''&&Number.isInteger(parseInt(member_principal_savings))){
+            calPrincipalSavings(member_principal_savings);
+            calSpecialSavings($('#member_special_savings').val());
+            calMandatorySavings( $('#member_mandatory_savings').val());
+            function_elements_add('member_principal_savings', member_principal_savings);
+            $('#member_principal_savings').val(member_principal_savings);
+            $('#member_principal_savings_view').val(toRp(member_principal_savings));
+        }else{
+            $('#member_principal_savings_view').val('');
+            $('#member_principal_savings').val('');
+        }
     });
 
     $('#member_special_savings_view').change(function(){
         var member_special_savings = $('#member_special_savings_view').val();
+        if(member_special_savings!=''&&Number.isInteger(parseInt(member_special_savings))){
         calSpecialSavings(member_special_savings);
         calPrincipalSavings($('#member_principal_savings').val());
         calMandatorySavings( $('#member_mandatory_savings').val());
         function_elements_add('member_special_savings', member_special_savings);
         $('#member_special_savings').val(member_special_savings);
         $('#member_special_savings_view').val(toRp(member_special_savings));
+        }else{
+            $('#member_special_savings_view').val('');
+            $('#member_special_savings').val('');
+        }
     });
 
     $('#member_mandatory_savings_view').change(function(){
         var member_mandatory_savings = $('#member_mandatory_savings_view').val();
+        if(member_mandatory_savings!=''&&Number.isInteger(parseInt(member_mandatory_savings))){
         calMandatorySavings(member_mandatory_savings);
         calPrincipalSavings($('#member_principal_savings').val());
         calSpecialSavings($('#member_special_savings').val());
         function_elements_add('member_mandatory_savings', member_mandatory_savings);
         $('#member_mandatory_savings').val(member_mandatory_savings);
         $('#member_mandatory_savings_view').val(toRp(member_mandatory_savings));
+        }else{
+            $('#member_mandatory_savings_view').val('');
+            $('#member_mandatory_savings').val('');
+        }
     });
 
     $('#kt_member_savings_payment_reset').click(function(){
