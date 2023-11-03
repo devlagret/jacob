@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
+use App\Helpers\JournalHelper;
 use Elibyy\TCPDF\Facades\TCPDF;
 
 class AcctSavingsAccountController extends Controller
@@ -151,8 +152,6 @@ class AcctSavingsAccountController extends Controller
                 'savings_account_first_deposit_amount'  => $fields['savings_account_first_deposit_amount'],
                 'savings_account_last_balance'          => $fields['savings_account_first_deposit_amount'],
                 'savings_account_date'                  => date('Y-m-d', strtotime($fields['savings_account_date'])),
-                'savings_account_pickup_date'           => $pickup_date ,
-                'saving_account_period'                 => $period,
                 'savings_account_adm_amount'		    => $preferencecompany['savings_account_administration'],
                 'savings_member_heir'                   => $request->savings_member_heir,
                 'savings_member_heir_address'           => $request->savings_member_heir_address,
@@ -161,27 +160,27 @@ class AcctSavingsAccountController extends Controller
                 'operated_name'                         => auth()->user()->username,
                 'created_id'                            => auth()->user()->user_id,
             );
-            $minSaving = AcctSavings::find($fields['savings_id'])->minimum_first_deposit_amount;
-            if($fields['savings_account_first_deposit_amount']<$minSaving&&$minSaving!=0){
-                $message = array(
-                    'pesan' => 'Setoran awal minimal Rp'.number_format($minSaving,2),
-                    'alert' => 'error'
-                );
-                $sessiondata = session()->get('data_savingsaccountadd');
-                if(!$sessiondata || $sessiondata == ""){
-                    $sessiondata['savings_id']                              = null;
-                    $sessiondata['savings_interest_rate']                   = 0;
-                    $sessiondata['office_id']                               = null;
-                    $sessiondata['savings_account_first_deposit_amount']    = 0;
-                }
-                $sessiondata['member_id'] = $fields['member_id'];
-                session()->put('data_savingsaccountadd', $sessiondata);
-                return redirect('savings-account/add')->with($message);
-            }
+            // $minSaving = AcctSavings::find($fields['savings_id'])->minimum_first_deposit_amount;
+            // if($fields['savings_account_first_deposit_amount']<$minSaving&&$minSaving!=0){
+            //     $message = array(
+            //         'pesan' => 'Setoran awal minimal Rp'.number_format($minSaving,2),
+            //         'alert' => 'error'
+            //     );
+            //     $sessiondata = session()->get('data_savingsaccountadd');
+            //     if(!$sessiondata || $sessiondata == ""){
+            //         $sessiondata['savings_id']                              = null;
+            //         $sessiondata['savings_interest_rate']                   = 0;
+            //         $sessiondata['office_id']                               = null;
+            //         $sessiondata['savings_account_first_deposit_amount']    = 0;
+            //     }
+            //     $sessiondata['member_id'] = $fields['member_id'];
+            //     session()->put('data_savingsaccountadd', $sessiondata);
+            //     return redirect('savings-account/add')->with($message);
+            // }
             AcctSavingsAccount::create($data);
-
             $transaction_module_code 	= "TAB";
 			$transaction_module_id 		= PreferenceTransactionModule::select('transaction_module_id')
+            ->where('transaction_module_code',$transaction_module_code)
             ->first()
             ->transaction_module_id;
 
