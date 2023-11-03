@@ -18,6 +18,7 @@ use App\Models\PreferenceTransactionModule;
 use App\Helpers\Configuration;
 use Illuminate\Support\Facades\DB;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Facades\Session;
 
 class MemberSavingsPaymentController extends Controller
 {
@@ -33,8 +34,8 @@ class MemberSavingsPaymentController extends Controller
         ->where('data_state', 0)
         ->where('mutation_module', 'TAB')
         ->get();
-        $memberses = session()->get('memberses');
-        $datases = session()->get('datases');
+        $memberses = Session::get('memberses');
+        $datases = Session::get('datases');
         return view('content.MemberSavingsPayment.Edit.index',compact('membercharacter','memberidentity','membergender','coreprovince','acctmutation','memberses','datases'));
     }
 
@@ -45,9 +46,7 @@ class MemberSavingsPaymentController extends Controller
 
     public function selectMember($member_id)
     {
-        $data_member = CoreMember::where('data_state', 0)
-        ->where('member_id', $member_id)
-        ->first();
+        $data_member = CoreMember::find($member_id);
 
         $memberses = array(
             'member_id'                                 => $data_member['member_id'],
