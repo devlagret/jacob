@@ -2,8 +2,11 @@
 namespace App\Helpers;
 use App\Models\AcctAccount;
 use App\Models\AcctAccountSetting;
+use App\Models\AcctCreditsAccount;
+use App\Models\AcctDepositoAccount;
 use App\Models\AcctJournalVoucher as JournalVoucher;
 use App\Models\AcctJournalVoucherItem as JournalVoucherItem;
+use App\Models\AcctSavingsAccount;
 use App\Models\PreferenceTransactionModule;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -12,33 +15,173 @@ use Illuminate\Support\Str;
 
 class JournalHelper
 {
+    protected static $journal_voucher_description;
+    protected static $journal_voucher_title;
+    protected static $transaction_journal_id;
+    protected static $transaction_journal_no;
+    protected static $journal_period;
+    protected static $journal_date;
+    protected static $journal_token;
+    protected static $transaction_module_code;
 
     /**
-     * Make journal voucher and journal voucher item
+     * Set Journal Description (and Title)
      *
-     * @param [type] token
+     * @param mixed $description
+     * @param mixed $title
+     * @return JournalHelper
+     */
+    public static function description($description,$title=null) {
+         self::$journal_voucher_description = $description;
+         if(!is_null($title)||!empty($title)){
+             self::$journal_voucher_title = $title;
+         }
+         return new JournalHelper();
+    }
+    /**
+     * Set Transaction Journal id (and no)
+     *
+     * @param int $id
+     * @param int $no
+     * @return JournalHelper
+     */
+    public static function journalId($id,$no=null) {
+         self::$transaction_journal_id = $id;
+         if(!is_null($no)||!empty($no)){
+             self::$transaction_journal_no = $no;
+         }
+         return new JournalHelper();
+    }
+    /**
+     * Set Transaction Journal no (and id)
+     *
+     * @param int $id
+     * @param int $no
+     * @return JournalHelper
+     */
+    public static function journalNo($no,$id=null) {
+         self::$transaction_journal_no = $no;
+         if(!is_null($id)||!empty($id)){
+             self::$transaction_journal_id = $id;
+         }
+         return new JournalHelper();
+    }
+    /**
+     * Set Journal Title (and Description)
+     *
+     * @param mixed $title
+     * @param mixed $description
+     * @return JournalHelper
+     */
+    public static function title($title,$description=null) {
+        self::$journal_voucher_title = $title;
+        if(!is_null($description)||!empty($description)){
+            self::$journal_voucher_description = $description;
+        }
+        return new JournalHelper();
+    }
+    /**
+     * Set credit account data to be used
+     * used to set transaction id and no
+     * @param int $credits_account_id
+     * @return JournalHelper
+     */
+    public static function credit($credits_account_id) {
+        $data = AcctCreditsAccount::find($credits_account_id);
+        self::$transaction_journal_id = $credits_account_id;
+        self::$transaction_journal_no = $data->credits_account_serial;
+        return new JournalHelper();
+    }
+    /**
+     * Set credit account data to be used
+     * used to set transaction id and no
+     * @param int $savings_account_id
+     * @return JournalHelper
+     */
+    public static function saving($savings_account_id) {
+        $data = AcctSavingsAccount::find($savings_account_id);
+        self::$transaction_journal_id = $savings_account_id;
+        self::$transaction_journal_no = $data->savings_account_no;
+        return new JournalHelper();
+    }
+    /**
+     * Set credit account data to be used
+     * used to set transaction id and no
+     * @param int $deposito_account_id
+     * @return JournalHelper
+     */
+    public static function deposito($deposito_account_id) {
+        $data = AcctDepositoAccount::find($deposito_account_id);
+        self::$transaction_journal_id = $deposito_account_id;
+        self::$transaction_journal_no = $data->deposito_account_no;
+        return new JournalHelper();
+    }
+    public static function token($token=null) {
+        self::$journal_token=$token;
+        if(empty($token)||is_null($token)){
+            $token = Str::uuid();
+        }
+        return new JournalHelper();
+    }
+    /**
+     * Set Transaction Module Code
+     *
+     * @param mixed|string $transaction_module_code
+     * @return JournalHelper
+     */
+    public static function code($transaction_module_code) {
+         self::$transaction_module_code = $transaction_module_code;
+         return new JournalHelper();
+    }
+      /**
+     * Make journal voucher and journal voucher item
+     * if journal title not set, description will used as title
+     *
+     * @param [uuid] token
      * @param string $journal_voucher_description
      * @param array $account_setting_name
      * @param integer $total_amount
      * @param string|null $transaction_module_code
      * @return void
      */
-    public static function make(string $journal_voucher_description, array $account_setting_name,int $total_amount,string $transaction_module_code = null,$token = null,$date=null){
+    public static function make(array $account_setting_name,int $total_amount,string $transaction_module_code = null,string $journal_voucher_description=null,int $transaction_journal_id=null,int $transaction_journal_no=null,$token = null,$date=null){
         if(is_null($transaction_module_code)){
-            $transaction_module_code = preg_replace('/[^A-Z]/', '',$journal_voucher_description);
+            if(is_null(self::$transaction_module_code)||empty(self::$transaction_module_code)){
+                $transaction_module_code = preg_replace('/[^A-Z]/', '',$journal_voucher_description);
+            }else{
+                $transaction_module_code = self::$transaction_module_code;
+            }
         }
         if(is_null($token)){
-            $token = Str::uuid();
+            self::token();
+            $token = self::$journal_token;
+        }
+        if(is_null($journal_voucher_description)){
+            $journal_voucher_description=self::$journal_voucher_description;
+        }
+        $journal_voucher_title = self::$journal_voucher_title;
+        if(is_null($journal_voucher_title)){
+            $journal_voucher_title=$journal_voucher_description;
+        }
+        $date = (is_null($date)?Carbon::now()->format('Y-m-d'):Carbon::parse($date)->format('Y-m-d'));
+        if(!is_null(self::$journal_date)||!empty(self::$journal_date)){
+            $date = self::$journal_date;
+        }
+        $period = (is_null($date)?Carbon::now()->format('Ym'):Carbon::parse($date)->format('Ym'));
+        if(!is_null(self::$journal_period)||!empty(self::$journal_period)){
+            $period = self::$journal_period;
         }
         JournalVoucher::create([
-            'company_id'                    => Auth::user()->company_id,
+            'branch_id'                     => Auth::user()->branch_id,
             'journal_voucher_status'        => 1,
             'journal_voucher_description'   => $journal_voucher_description,
-            'journal_voucher_title'         => self::getTransactionModule($transaction_module_code)->name??'',
+            'journal_voucher_title'         => $journal_voucher_title,
             'transaction_module_id'         => self::getTransactionModule($transaction_module_code)->id??'',
             'transaction_module_code'       => $transaction_module_code,
-            'journal_voucher_date'          => (is_null($date)?Carbon::now()->format('Y-m-d'):Carbon::parse($date)->format('Y-m-d')),
-            'journal_voucher_period'        => (is_null($date)?Carbon::now()->format('Ym'):Carbon::parse($date)->format('Ym')),
+            'transaction_journal_id' 		=> $transaction_journal_id,
+            'transaction_journal_no' 		=> $transaction_journal_no,
+            'journal_voucher_date'          => $date,
+            'journal_voucher_period'        => $period,
             'created_id'                    => Auth::id(),
             'journal_voucher_token'         => $token,
         ]);
@@ -112,7 +255,7 @@ class JournalHelper
             'created_id' => Auth::id()
         ]);
         }
-        $journal->items()->update(['acct_journal_voucher_item.reverse_state' => 1]);
+        return $journal->items()->update(['acct_journal_voucher_item.reverse_state' => 1]);
     }
      /**
      * Get Transaction Module
