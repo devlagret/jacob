@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Str;
 
 class CoreMemberPrintBookController extends Controller
 {
@@ -30,18 +31,10 @@ class CoreMemberPrintBookController extends Controller
         $preferencecompany	        = PreferenceCompany::select('logo_koperasi')->first();
         $path                       = public_path('storage/'.$preferencecompany['logo_koperasi']);
 
-        $coremember = CoreMember::select('core_member.*', 'core_branch.branch_name', 'core_province.province_name', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'core_member_working.member_company_job_title', 'core_member_working.member_company_name')
-        ->join('core_member_working','core_member.member_id', '=', 'core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id', '=', 'core_province.province_id')
-        ->join('core_city', 'core_member.city_id', '=', 'core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id', '=', 'core_kecamatan.kecamatan_id')
-        ->join('core_branch', 'core_member.branch_id', '=', 'core_branch.branch_id')
-        ->where('core_member.member_id', $member_id)
-        ->where('core_member.data_state', 0)
-        ->first();
+        $coremember = CoreMember::with('branch')->find($member_id);
 
 
-        $pdf = new TCPDF('P', PDF_UNIT, 'A4', true, 'UTF-8', false);
+        $pdf = new TCPDF(['P', PDF_UNIT, 'A4', true, 'UTF-8', false]);
 
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
@@ -56,8 +49,7 @@ class CoreMemberPrintBookController extends Controller
         }
 
         $pdf::SetFont('helvetica', 'B', 20);
-
-        $pdf::AddPage('P');
+        $pdf::AddPage('P','A4');
 
         $pdf::SetFont('helvetica', '', 9);
 
@@ -111,6 +103,7 @@ class CoreMemberPrintBookController extends Controller
         $pdf::setCellHeightRatio(1);
 
         $filename = 'Cover Buku '.$coremember['member_name'].'.pdf';
+        $pdf::setTitle(Str::title($filename));
         $pdf::Output($filename, 'I');
 
     }
