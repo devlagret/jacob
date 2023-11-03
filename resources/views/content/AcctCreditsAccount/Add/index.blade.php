@@ -254,36 +254,8 @@ $(document).ready(function(){
 
             // if (payment_type_id == 1 || payment_type_id == 3 || payment_type_id == 4) {
             //     if (interest > 0 || interest != '') {
-                    // hitungbungaflat();
-                    var jumlah_angsuran = $("#credit_account_payment_amount").val();
-                    var angsuranpokok   = $("#credits_account_principal_amount").val();
-                    var pinjaman        = $("#credits_account_last_balance_principal").val();
-                    var period          = $("#credit_account_period").val();    
-                    var interest        = $("#credits_account_interest_amount_view").val();
-                    var angsuranbunga   = parseInt(jumlah_angsuran) - parseInt(angsuranpokok);
-                    var bunga           = (parseInt(angsuranbunga) * 12) / parseInt(pinjaman);
-                    var bunga_perbulan  = (parseInt(bunga) * 100) / 12;
-                    var bungafix        = bunga_perbulan.toFixed(3);
-
-
-                    var jumlah_angsuran2 = $("#credit_account_payment_amount_view").val();
-                    var angsuranpokok2   = $("#credits_account_principal_amount_view").val();
-                    var pinjaman2        = $("#credits_account_last_balance_principal_view").val();
-                    var period2          = $("#credit_account_period").val();    
-                    var interest2        = $("#credits_account_interest_amount_view").val();
-                    var angsuranbunga2   = parseInt(jumlah_angsuran2) - parseInt(angsuranpokok2);
-                    var bunga2           = (parseInt(angsuranbunga2) * 12) / parseInt(pinjaman2);
-                    var bunga_perbulan2  = (parseInt(bunga2) * 100) / 12;
-                    var bungafix2        = bunga_perbulan2.toFixed(3);
-
-                    console.log(bunga2);
-
-                    var name    = 'credit_account_interest';
-                    var name3   = 'credits_account_interest_amount';
-                    $("#credits_account_interest_amount_view").val(bunga2);
-
-                    function_elements_add(name, bunga2);
-                    function_elements_add(name3, angsuranbunga);
+                    hitungbungaflat();
+  
                 // }
             // } else if (payment_type_id == 2) {
             //     if (interest > 0 || interest != '') {
@@ -635,26 +607,35 @@ function receivedamount() {
 }
 
 function hitungbungaflat() {
-    var jumlah_angsuran = $("#credit_account_payment_amount").val();
-    var angsuranpokok   = $("#credits_account_principal_amount").val();
-    var pinjaman        = $("#credits_account_last_balance_principal").val();
-    var period          = $("#credit_account_period").val();
-    var interest        = $("#credits_account_interest_amount").val();
-    var angsuranbunga   = parseInt(jumlah_angsuran) - parseInt(angsuranpokok);
-    var bunga           = (parseInt(angsuranbunga) * 12) / parseInt(pinjaman);
-    var bunga_perbulan  = (parseInt(bunga) * 100) / 12;
-    var bungafix        = bunga_perbulan.toFixed(3);
-    console.log(jumlah_angsuran);
+                    var jumlah_angsuran = $("#credit_account_payment_amount").val();
+                    var angsuranpokok   = $("#credits_account_principal_amount").val();
+                    var pinjaman        = $("#credits_account_last_balance_principal").val();
+                    var period          = $("#credit_account_period").val();    
+                    var interest        = $("#credits_account_interest_amount_view").val();
+                    var angsuranbunga   = parseInt(jumlah_angsuran) - parseInt(angsuranpokok);
+                    var bunga           = (parseInt(angsuranbunga) * 12) / parseInt(pinjaman);
+                    var bunga_perbulan  = (parseInt(bunga) * 100) / 12;
+                    var bungafix        = bunga_perbulan.toFixed(3);
 
-    $('#credit_account_interest').val(bungafix);
-    $('#credits_account_interest_amount').val(angsuranbunga);
-    $('#credits_account_interest_amount_view').val(toRp(angsuranbunga));
 
-    var name    = 'credit_account_interest';
-    var name3   = 'credits_account_interest_amount';
+                    var jumlah_angsuran2 = $("#credit_account_payment_amount_view").val();
+                    var angsuranpokok2   = $("#credits_account_principal_amount_view").val();
+                    var pinjaman2        = $("#credits_account_last_balance_principal_view").val();
+                    var period2          = $("#credit_account_period").val();    
+                    var interest2        = $("#credits_account_interest_amount_view").val();
+                    var angsuranbunga2   = parseInt(jumlah_angsuran2) - parseInt(angsuranpokok2);
+                    var bunga2           = (parseInt(angsuranbunga2) * 12) / 100;
 
-    function_elements_add(name, bungafix);
-    function_elements_add(name3, angsuranbunga);
+                    console.log(bunga2);
+                    $("#credit_account_interest").val(bunga2);
+                    $("#credits_account_interest_amount_view").val(toRp(angsuranbunga));
+                     $("#credits_account_interest_amount").val(angsuranbunga);
+
+                    var name    = 'credit_account_interest';
+                    var name3   = 'credits_account_interest_amount';
+                    
+                    function_elements_add(name, bunga2);
+                    function_elements_add(name3, angsuranbunga);
 }
 
 function hitungbungaflatanuitas() {
@@ -843,14 +824,14 @@ function change_payment_type_id(value) {
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Angsuran Pokok') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="credits_account_principal_amount_view" id="credits_account_principal_amount_view" class="form-control form-control-lg form-control-solid" placeholder="Angsuran Pokok" value="{{ old('credits_account_principal_amount_view', empty($datasession['credits_account_principal_amount']) ? '' : number_format($datasession['credits_account_principal_amount'],2) ?? '') }}" autocomplete="off" readonly/>
-                                    <input type="" name="credits_account_principal_amount" id="credits_account_principal_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credits_account_principal_amount', $datasession['credits_account_principal_amount'] ?? '') }}"/>
+                                    <input type="hidden" name="credits_account_principal_amount" id="credits_account_principal_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credits_account_principal_amount', $datasession['credits_account_principal_amount'] ?? '') }}"/>
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jumlah Angsuran') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="credit_account_payment_amount_view" id="credit_account_payment_amount_view" class="form-control form-control-lg form-control-solid" placeholder="Jumlah Angsuran" value="{{ old('credit_account_payment_amount_view', empty($datasession['credit_account_payment_amount']) ? '' : number_format($datasession['credit_account_payment_amount'],2) ?? '') }}" autocomplete="off"/>
-                                    <input type="" name="credit_account_payment_amount" id="credit_account_payment_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_payment_amount', $datasession['credit_account_payment_amount'] ?? '') }}"/>
+                                    <input type="hidden" name="credit_account_payment_amount" id="credit_account_payment_amount" class="form-control form-control-lg form-control-solid" value="{{ old('credit_account_payment_amount', $datasession['credit_account_payment_amount'] ?? '') }}"/>
                                 </div>
                             </div>
                             <div class="row mb-6">
