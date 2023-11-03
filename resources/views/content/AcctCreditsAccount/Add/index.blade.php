@@ -250,15 +250,18 @@ $(document).ready(function(){
 
             function_elements_add('credit_account_payment_amount', credit_account_payment_amount);
 
-            if (payment_type_id == 1 || payment_type_id == 3 || payment_type_id == 4) {
-                if (interest > 0 || interest != '') {
+            console.log(credit_account_payment_amount);
+
+            // if (payment_type_id == 1 || payment_type_id == 3 || payment_type_id == 4) {
+            //     if (interest > 0 || interest != '') {
                     hitungbungaflat();
-                }
-            } else if (payment_type_id == 2) {
-                if (interest > 0 || interest != '') {
-                    hitungbungaflatanuitas();
-                }
-            }
+  
+                // }
+            // } else if (payment_type_id == 2) {
+            //     if (interest > 0 || interest != '') {
+            //         hitungbungaflatanuitas();
+            //     }
+            // }
         // } else {
         //     loop_payment = 1;
         //     return;
@@ -604,25 +607,35 @@ function receivedamount() {
 }
 
 function hitungbungaflat() {
-    var jumlah_angsuran = $("#credit_account_payment_amount").val();
-    var angsuranpokok   = $("#credits_account_principal_amount").val();
-    var pinjaman        = $("#credits_account_last_balance_principal").val();
-    var period          = $("#credit_account_period").val();
-    var interest        = $("#credits_account_interest_amount").val();
-    var angsuranbunga   = parseInt(jumlah_angsuran) - parseInt(angsuranpokok);
-    var bunga           = (parseInt(angsuranbunga) * 12) / parseInt(pinjaman);
-    var bunga_perbulan  = (parseInt(bunga) * 100) / 12;
-    var bungafix        = bunga_perbulan.toFixed(3);
+                    var jumlah_angsuran = $("#credit_account_payment_amount").val();
+                    var angsuranpokok   = $("#credits_account_principal_amount").val();
+                    var pinjaman        = $("#credits_account_last_balance_principal").val();
+                    var period          = $("#credit_account_period").val();    
+                    var interest        = $("#credits_account_interest_amount_view").val();
+                    var angsuranbunga   = parseInt(jumlah_angsuran) - parseInt(angsuranpokok);
+                    var bunga           = (parseInt(angsuranbunga) * 12) / parseInt(pinjaman);
+                    var bunga_perbulan  = (parseInt(bunga) * 100) / 12;
+                    var bungafix        = bunga_perbulan.toFixed(3);
 
-    $('#credit_account_interest').val(bungafix);
-    $('#credits_account_interest_amount').val(angsuranbunga);
-    $('#credits_account_interest_amount_view').val(toRp(angsuranbunga));
 
-    var name    = 'credit_account_interest';
-    var name3   = 'credits_account_interest_amount';
+                    var jumlah_angsuran2 = $("#credit_account_payment_amount_view").val();
+                    var angsuranpokok2   = $("#credits_account_principal_amount_view").val();
+                    var pinjaman2        = $("#credits_account_last_balance_principal_view").val();
+                    var period2          = $("#credit_account_period").val();    
+                    var interest2        = $("#credits_account_interest_amount_view").val();
+                    var angsuranbunga2   = parseInt(jumlah_angsuran2) - parseInt(angsuranpokok2);
+                    var bunga2           = (parseInt(angsuranbunga2) * 12) / 100;
 
-    function_elements_add(name, bungafix);
-    function_elements_add(name3, angsuranbunga);
+                    console.log(bunga2);
+                    $("#credit_account_interest").val(bunga2);
+                    $("#credits_account_interest_amount_view").val(toRp(angsuranbunga));
+                     $("#credits_account_interest_amount").val(angsuranbunga);
+
+                    var name    = 'credit_account_interest';
+                    var name3   = 'credits_account_interest_amount';
+                    
+                    function_elements_add(name, bunga2);
+                    function_elements_add(name3, angsuranbunga);
 }
 
 function hitungbungaflatanuitas() {
