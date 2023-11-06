@@ -64,6 +64,7 @@ class ApiController extends Controller
         }
     }
 
+    //data simpanan
     public function getDataSavings(){
         $data = AcctSavingsAccount::with('member')
         ->get();
@@ -71,14 +72,18 @@ class ApiController extends Controller
         return json_encode($data);
     }
 
+    //data simpanan berjangka
     public function getDataDeposito(){
-        $data = AcctDepositoAccount::get();
+        $data = AcctDepositoAccount::with('member')
+        ->get();
 
         return json_encode($data);
     }
 
+    //pinjaman
     public function getDataCredit(){
-        $data = AcctCreditsAccount::get();
+        $data = AcctCreditsAccount::with('member')
+        ->get();
 
         return json_encode($data);
     }
