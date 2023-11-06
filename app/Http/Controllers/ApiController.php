@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AcctAccount;
 use App\Models\AcctAccountSetting;
+use App\Models\AcctCreditsAccount;
+use App\Models\AcctDeposito;
+use App\Models\AcctDepositoAccount;
+use App\Models\AcctDepositoAccrual;
 use App\Models\AcctProfitLossReport;
+use App\Models\AcctSavings;
+use App\Models\AcctSavingsAccount;
 use App\Models\CloseCashierLog;
 use App\Models\CoreEmployee;
 use App\Models\CoreMemberKopkar;
@@ -56,5 +62,23 @@ class ApiController extends Controller
                 'message' => 'Username atau Password Tidak Ditemukan!'
             ]);
         }
+    }
+
+    public function getDataSavings(){
+        $data = AcctSavingsAccount::get();
+
+        return json_encode($data);
+    }
+
+    public function getDataDeposito(){
+        $data = AcctDepositoAccount::get();
+
+        return json_encode($data);
+    }
+
+    public function getDataCredit(){
+        $data = AcctCreditsAccount::get();
+
+        return json_encode($data);
     }
 }

@@ -23,4 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'profits'])->name('profits');
 // Route::get('/kolektibilitas', [\App\Http\Controllers\SampleDataController::class, 'kolektibilitas'])->name('kolektibilitas');
 Route::post('login', [ApiController::class, 'login']);
+Route::get('getSavingsAccount', [ApiController::class, 'getDataSavings']);
+Route::get('getDepositoAccount', [ApiController::class, 'getDataDeposito']);
+Route::get('getcreditsAccount', [ApiController::class, 'getDataCredit']);
 
