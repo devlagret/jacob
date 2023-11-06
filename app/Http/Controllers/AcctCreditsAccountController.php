@@ -6347,4 +6347,14 @@ class AcctCreditsAccountController extends Controller
         $filename = 'Pola_Angsuran_'.$acctcreditsaccount['credits_account_serial'].'.pdf';
         $pdf::Output($filename, 'I');
     }
+
+
+    public function getMemberName($member_id){
+        $coremember = CoreMember::select('*')
+        ->where('member_id',$member_id)
+        ->where('data_state',0)
+        ->first();
+
+        return $coremember['member_name'];
+    }
 }

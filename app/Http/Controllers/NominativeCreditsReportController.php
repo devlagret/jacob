@@ -295,8 +295,8 @@ class NominativeCreditsReportController extends Controller
                 }
                 $acctcreditsaccount_credits = $acctcreditsaccount_credits->orderby('credits_account_serial', 'ASC')
                 ->orderBy('member_id', 'ASC')
-                ->orderBy('member_name', 'ASC')
-                ->orderBy('member_address', 'ASC')
+                // ->orderBy('member_name', 'ASC')
+                // ->orderBy('member_address', 'ASC')
                 ->orderBy('credits_account_last_balance', 'ASC')
                 ->orderBy('credits_account_date', 'ASC')
                 ->orderBy('credits_account_due_date', 'ASC')
@@ -427,8 +427,8 @@ class NominativeCreditsReportController extends Controller
                 }
                 $acctcreditsaccount_sourcefund = $acctcreditsaccount_sourcefund->orderBy('credits_account_serial', 'ASC')
                 ->orderBy('member_id', 'ASC')
-                ->orderBy('member_name', 'ASC')
-                ->orderBy('member_address', 'ASC')
+                // ->orderBy('member_name', 'ASC')
+                // ->orderBy('member_address', 'ASC')
                 ->orderBy('credits_account_date', 'ASC')
                 ->orderBy('credits_account_due_date', 'ASC')
                 ->orderBy('credits_account_interest', 'ASC')
@@ -780,8 +780,8 @@ class NominativeCreditsReportController extends Controller
                     }
                     $acctcreditsaccount_credits = $acctcreditsaccount_credits->orderby('acct_credits_account.credits_account_serial', 'ASC')
                     ->orderBy('acct_credits_account.member_id', 'ASC')
-                    ->orderBy('core_member.member_name', 'ASC')
-                    ->orderBy('core_member.member_address', 'ASC')
+                    // ->orderBy('core_member.member_name', 'ASC')
+                    // ->orderBy('core_member.member_address', 'ASC')
                     ->orderBy('acct_credits_account.credits_account_last_balance', 'ASC')
                     ->orderBy('acct_credits_account.credits_account_date', 'ASC')
                     ->orderBy('acct_credits_account.credits_account_due_date', 'ASC')
@@ -932,8 +932,8 @@ class NominativeCreditsReportController extends Controller
                     }
                     $acctcreditsaccount_sourcefund = $acctcreditsaccount_sourcefund->orderBy('acct_credits_account.credits_account_serial', 'ASC')
                     ->orderBy('acct_credits_account.member_id', 'ASC')
-                    ->orderBy('core_member.member_name', 'ASC')
-                    ->orderBy('core_member.member_address', 'ASC')
+                    // ->orderBy('core_member.member_name', 'ASC')
+                    // ->orderBy('core_member.member_address', 'ASC')
                     ->orderBy('acct_credits_account.credits_account_date', 'ASC')
                     ->orderBy('acct_credits_account.credits_account_due_date', 'ASC')
                     ->orderBy('acct_credits_account.credits_account_interest', 'ASC')
