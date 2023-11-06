@@ -65,7 +65,8 @@ class ApiController extends Controller
     }
 
     public function getDataSavings(){
-        $data = AcctSavingsAccount::get();
+        $data = AcctSavingsAccount::with('member')
+        ->get();
 
         return json_encode($data);
     }
