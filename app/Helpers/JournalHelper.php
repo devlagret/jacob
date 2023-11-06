@@ -23,7 +23,7 @@ class JournalHelper
     protected static $journal_date;
     protected static $journal_token;
     protected static $transaction_module_code;
-
+    protected static $saving_data;
     /**
      * Set Journal Description (and Title)
      *
@@ -100,6 +100,7 @@ class JournalHelper
      */
     public static function saving($savings_account_id) {
         $data = AcctSavingsAccount::find($savings_account_id);
+        self::$saving_data=$data;
         self::$transaction_journal_id = $savings_account_id;
         self::$transaction_journal_no = $data->savings_account_no;
         return new JournalHelper();
