@@ -169,7 +169,7 @@
         @csrf
             <div class="text-center my-10">
                 <h1 class="text-dark mb-3">
-                    {{ __('Koperasi Jacob Jaya Mandiri') }}
+                    {{ __('Koperasi Jacop Jaya Mandiri') }}
                 </h1>
             </div>
             <div class="fv-row mb-10">
