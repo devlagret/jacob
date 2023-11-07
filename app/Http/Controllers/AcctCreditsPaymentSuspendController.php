@@ -36,7 +36,7 @@ class AcctCreditsPaymentSuspendController extends Controller
         ->where('data_state', 0)
         ->get();
 
-        return $dataTable->render('content.AcctCreditsAcquittance.List.index', compact('sessiondata', 'acctcredits'));
+        return $dataTable->render('content.AcctCreditsAcquittance.List.index'   , compact('sessiondata', 'acctcredits'));
     }
 
     public function filter(Request $request){

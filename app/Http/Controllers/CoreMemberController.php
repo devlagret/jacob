@@ -44,7 +44,8 @@ class CoreMemberController extends Controller
         $businessscale          = array_filter(Configuration::BusinessScale());
         $businessowner          = array_filter(Configuration::BusinessOwner());
         $familyrelationship     = array_filter(Configuration::FamilyRelationship());
-        $coreprovince           = CoreProvince::select('province_name', 'province_id')
+        $coreprovince           = CoreProvince::withoutGlobalScopes()
+        ->select('province_name', 'province_id')
         ->where('data_state', 0)
         ->get();
 
@@ -156,7 +157,8 @@ class CoreMemberController extends Controller
             );
             CoreMember::create($member);
 
-            $member_id = CoreMember::select('member_id')
+            $member_id = CoreMember::withoutGlobalScopes()
+        ->select('member_id')
             ->where('created_id', auth()->user()->user_id)
             ->orderBy('member_id', 'DESC')
             ->first()
@@ -281,22 +283,27 @@ class CoreMemberController extends Controller
         $businessowner          = array_filter(Configuration::BusinessOwner());
         $familyrelationship     = array_filter(Configuration::FamilyRelationship());
         $paymentpreference      = array_filter(Configuration::PaymentPreference());
-        $coreprovince           = CoreProvince::select('province_name', 'province_id')
+        $coreprovince           = CoreProvince::withoutGlobalScopes()
+        ->select('province_name', 'province_id')
         ->where('data_state', 0)
         ->get();
-        $corecity               = CoreCity::select('city_name', 'city_id')
+        $corecity               = CoreCity::withoutGlobalScopes()
+        ->select('city_name', 'city_id')
         ->where('province_id', $member['province_id'])
         ->where('data_state', 0)
         ->get();
-        $corekecamatan          = CoreKecamatan::select('kecamatan_name', 'kecamatan_id')
+        $corekecamatan          = CoreKecamatan::withoutGlobalScopes()
+        ->select('kecamatan_name', 'kecamatan_id')
         ->where('city_id', $member['city_id'])
         ->where('data_state', 0)
         ->get();
-        $corekelurahan          = CoreKelurahan::select('kelurahan_name', 'kelurahan_id')
+        $corekelurahan          = CoreKelurahan::withoutGlobalScopes()
+        ->select('kelurahan_name', 'kelurahan_id')
         ->where('kecamatan_id', $member['kecamatan_id'])
         ->where('data_state', 0)
         ->get();
-        $acctsavingsaccount     = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no')
+        $acctsavingsaccount     = AcctSavingsAccount::withoutGlobalScopes()
+        ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no')
         ->join('acct_savings', 'acct_savings_account.savings_id','=','acct_savings.savings_id')
         ->where('acct_savings_account.member_id', $member_id)
         ->where('acct_savings.savings_status', 0)
@@ -478,7 +485,8 @@ class CoreMemberController extends Controller
         $membergender			= Configuration::MemberGender();
         $membercharacter		= Configuration::MemberCharacter();
 
-        $coremember				= CoreMember::select('core_member.*', 'core_branch.branch_name', 'core_province.province_name', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'core_member_working.member_company_job_title', 'core_member_working.member_company_name')
+        $coremember				= CoreMember::withoutGlobalScopes()
+        ->select('core_member.*', 'core_branch.branch_name', 'core_province.province_name', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'core_member_working.member_company_job_title', 'core_member_working.member_company_name')
         ->join('core_member_working','core_member.member_id', '=', 'core_member_working.member_id')
         ->join('core_province', 'core_member.province_id', '=', 'core_province.province_id')
         ->join('core_city', 'core_member.city_id', '=', 'core_city.city_id')
@@ -488,14 +496,16 @@ class CoreMemberController extends Controller
         ->where('core_member.data_state', 0)
         ->first();
 
-        $acctsavingsaccount		= AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings.savings_name')
+        $acctsavingsaccount		= AcctSavingsAccount::withoutGlobalScopes()
+        ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings.savings_name')
         ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
         ->where('acct_savings_account.member_id', $member_id)
         ->where('acct_savings.savings_status', 0)
         ->where('acct_savings_account.data_state', 0)
         ->get();
 
-        $acctcreditsaccount		= AcctCreditsAccount::select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits.credits_name')
+        $acctcreditsaccount		= AcctCreditsAccount::withoutGlobalScopes()
+        ->select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits.credits_name')
         ->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
         ->where('acct_credits_account.member_id', $member_id)
         ->where('acct_credits_account.data_state', 0)
@@ -599,17 +609,20 @@ class CoreMemberController extends Controller
     }
 
     public static function getMenuMapping($id){
-        $id_menu = SystemMenu::select('id_menu')
+        $id_menu = SystemMenu::withoutGlobalScopes()
+        ->select('id_menu')
         ->where('id', $id)
         ->first()
         ->id_menu;
 
-        $user_group_level = SystemUserGroup::select('user_group_level')
+        $user_group_level = SystemUserGroup::withoutGlobalScopes()
+        ->select('user_group_level')
         ->where('user_group_id', auth()->user()->user_group_id)
         ->first()
         ->user_group_level;
 
-        $menumapping = SystemMenuMapping::select('*')
+        $menumapping = SystemMenuMapping::withoutGlobalScopes()
+        ->select('*')
         ->where('id_menu', $id_menu)
         ->where('user_group_level', $user_group_level)
         ->first();
@@ -624,13 +637,15 @@ class CoreMemberController extends Controller
     public function getCity(Request $request){
         $data = '';
 
-        $corecity = CoreCity::select('city_name', 'city_id')
+        $corecity = CoreCity::withoutGlobalScopes()
+        ->select('city_name', 'city_id')
         ->where('province_id', $request->province_id)
         ->where('data_state', 0)
         ->get();
 
         foreach ($corecity as $val){
-            $data .= "<option value='$val[city_id]' ". ($request->last_city_id==$val['city_id'] ?'selected':$request->last_city_id).">$val[city_name]</option>\n";
+            $data .= "<option value='$val[city_id]' ". ($request->last_city_id==$val['city_id'] ?'withoutGlobalScopes()
+        ->selected':$request->last_city_id).">$val[city_name]</option>\n";
         }
 
         return $data;
@@ -639,13 +654,15 @@ class CoreMemberController extends Controller
     public function getKecamatan(Request $request){
         $data = '';
 
-        $corekecamatan = CoreKecamatan::select('kecamatan_name', 'kecamatan_id')
+        $corekecamatan = CoreKecamatan::withoutGlobalScopes()
+        ->select('kecamatan_name', 'kecamatan_id')
         ->where('city_id', $request->city_id)
         ->where('data_state', 0)
         ->get();
 
         foreach ($corekecamatan as $val){
-            $data .= "<option value='$val[kecamatan_id]' ".($request->last_kecamatan_id==$val['kecamatan_id']?'selected':'').">$val[kecamatan_name]</option>\n";
+            $data .= "<option value='$val[kecamatan_id]' ".($request->last_kecamatan_id==$val['kecamatan_id']?'withoutGlobalScopes()
+        ->selected':'').">$val[kecamatan_name]</option>\n";
         }
 
         return $data;
@@ -654,20 +671,23 @@ class CoreMemberController extends Controller
     public function getKelurahan(Request $request){
         $data = '';
 
-        $corekelurahan = CoreKelurahan::select('kelurahan_name', 'kelurahan_id')
+        $corekelurahan = CoreKelurahan::withoutGlobalScopes()
+        ->select('kelurahan_name', 'kelurahan_id')
         ->where('kecamatan_id', $request->kecamatan_id)
         ->where('data_state', 0)
         ->get();
 
         foreach ($corekelurahan as $val){
-            $data .= "<option value='$val[kelurahan_id]' ".($request->last_kelurahan_id==$val['kelurahan_id']?'selected':'').">$val[kelurahan_name]</option>\n";
+            $data .= "<option value='$val[kelurahan_id]' ".($request->last_kelurahan_id==$val['kelurahan_id']?'withoutGlobalScopes()
+        ->selected':'').">$val[kelurahan_name]</option>\n";
         }
 
         return $data;
     }
 
     public function getMemberName($member_id){
-        $member_name = CoreMember::select('*')
+        $member_name = CoreMember::withoutGlobalScopes()
+        ->select('*')
         ->where('member_id',$member_id)
         ->first();
         return $member_name['member_name'];
@@ -680,10 +700,12 @@ class CoreMemberController extends Controller
         $membergender		= Configuration::MemberGender();
         $membercharacter	= Configuration::MemberCharacter();
         $memberidentity 	= Configuration::MemberIdentity();
-        $preferencecompany	= PreferenceCompany::select('company_name')->first();
+        $preferencecompany	= PreferenceCompany::withoutGlobalScopes()
+        ->select('company_name')->first();
         $spreadsheet        = new Spreadsheet();
 
-        $coremember         = CoreMember::select('core_member.member_id', 'core_member.branch_id', 'core_branch.branch_name', 'core_member.member_no', 'core_member.member_name',
+        $coremember         = CoreMember::withoutGlobalScopes()
+        ->select('core_member.member_id', 'core_member.branch_id', 'core_branch.branch_name', 'core_member.member_no', 'core_member.member_name',
         'core_member.member_active_status', 'core_member.member_gender', 'core_member.member_place_of_birth', 'core_member.member_date_of_birth', 'core_member.member_address',
         'core_member.province_id', 'core_province.province_name', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name',
         'core_member.member_phone', 'core_member.member_job', 'core_member.member_identity', 'core_member.member_identity_no', 'core_member.member_postal_code', 'core_member.member_mother',
