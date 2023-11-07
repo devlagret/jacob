@@ -216,30 +216,30 @@ Route::middleware(['auth','loged'])->group(function () {
     });
 
     // AcctCreditsPaymentSuspend pages
-    // Route::prefix('credits-payment-suspend')->name('credits-payment-suspend.')->group(function () {
-    //     Route::get('/', [AcctCreditsAcquittanceController::class, 'index'])->name('index');
-    //     Route::post('/filter', [AcctCreditsAcquittanceController::class, 'filter'])->name('filter');
-    //     Route::get('/filter-reset', [AcctCreditsAcquittanceController::class, 'filterReset'])->name('filter-reset');
-    //     Route::get('/add', [AcctCreditsAcquittanceController::class, 'add'])->name('add');
-    //     Route::get('/modal-credits-account', [AcctCreditsAcquittanceController::class, 'modalAcctCreditsAccount'])->name('modal-credits-account');
-    //     Route::get('/select-credits-account/{credits_account_id}', [AcctCreditsAcquittanceController::class, 'selectAcctCreditsAccount'])->name('select-credits-account');
-    //     Route::post('/elements-add', [AcctCreditsAcquittanceController::class, 'elementsAdd'])->name('elements-add');
-    //     Route::post('/process-add', [AcctCreditsAcquittanceController::class, 'processAdd'])->name('process-add');
-    //     Route::get('/print-note/{savings_cash_mutation_id}', [AcctCreditsAcquittanceController::class, 'printNote'])->name('print-note');
-    // });
+    Route::prefix('credits-payment-suspend')->name('credits-payment-suspend.')->group(function () {
+        Route::get('/', [AcctCreditsAcquittanceController::class, 'index'])->name('index');
+        Route::post('/filter', [AcctCreditsAcquittanceController::class, 'filter'])->name('filter');
+        Route::get('/filter-reset', [AcctCreditsAcquittanceController::class, 'filterReset'])->name('filter-reset');
+        Route::get('/add', [AcctCreditsAcquittanceController::class, 'add'])->name('add');
+        Route::get('/modal-credits-account', [AcctCreditsAcquittanceController::class, 'modalAcctCreditsAccount'])->name('modal-credits-account');
+        Route::get('/select-credits-account/{credits_account_id}', [AcctCreditsAcquittanceController::class, 'selectAcctCreditsAccount'])->name('select-credits-account');
+        Route::post('/elements-add', [AcctCreditsAcquittanceController::class, 'elementsAdd'])->name('elements-add');
+        Route::post('/process-add', [AcctCreditsAcquittanceController::class, 'processAdd'])->name('process-add');
+        Route::get('/print-note/{savings_cash_mutation_id}', [AcctCreditsAcquittanceController::class, 'printNote'])->name('print-note');
+    });
 
 
     // AcctCreditsPaymentCash pages
     Route::prefix('credits-payment-cash')->name('credits-payment-cash.')->group(function () {
-        Route::get('/', [AcctCreditsPaymentCashController::class, 'index'])->name('index');
-        Route::post('/filter', [AcctCreditsPaymentCashController::class, 'filter'])->name('filter');
-        Route::get('/filter-reset', [AcctCreditsPaymentCashController::class, 'filterReset'])->name('filter-reset');
-        Route::get('/add', [AcctCreditsPaymentCashController::class, 'add'])->name('add');
-        Route::get('/modal-credits-account', [AcctCreditsPaymentCashController::class, 'modalAcctCreditsAccount'])->name('modal-credits-account');
-        Route::get('/select-credits-account/{credits_account_id}', [AcctCreditsPaymentCashController::class, 'selectAcctCreditsAccount'])->name('select-credits-account');
-        Route::post('/elements-add', [AcctCreditsPaymentCashController::class, 'elementsAdd'])->name('elements-add');
-        Route::post('/process-add', [AcctCreditsPaymentCashController::class, 'processAdd'])->name('process-add');
-        Route::get('/print-note/{payment_cash_id}', [AcctCreditsPaymentCashController::class, 'printNote'])->name('print-note');
+        Route::get('/', [AcctCreditsPaymentSuspendController::class, 'index'])->name('index');
+        Route::post('/filter', [AcctCreditsPaymentSuspendController::class, 'filter'])->name('filter');
+        Route::get('/filter-reset', [AcctCreditsPaymentSuspendController::class, 'filterReset'])->name('filter-reset');
+        Route::get('/add', [AcctCreditsPaymentSuspendController::class, 'add'])->name('add');
+        Route::get('/modal-credits-account', [AcctCreditsPaymentSuspendController::class, 'modalAcctCreditsAccount'])->name('modal-credits-account');
+        Route::get('/select-credits-account/{credits_account_id}', [AcctCreditsPaymentSuspendController::class, 'selectAcctCreditsAccount'])->name('select-credits-account');
+        Route::post('/elements-add', [AcctCreditsPaymentSuspendController::class, 'elementsAdd'])->name('elements-add');
+        Route::post('/process-add', [AcctCreditsPaymentSuspendController::class, 'processAdd'])->name('process-add');
+        Route::get('/print-note/{payment_cash_id}', [AcctCreditsPaymentSuspendController::class, 'printNote'])->name('print-note');
     });
 
     // AcctCreditsPaymentBank pages
