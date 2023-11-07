@@ -47,14 +47,15 @@ class ApiController extends Controller
         $login = Auth::Attempt($request->all());
         if ($login) {
             $user = Auth::user();
-            // $user->api_token = Str::random(100);
+            $api_token = Str::random(100);
             $user->save();
             // $user->makeVisible('api_token');
 
             return response()->json([
                 'response_code' => 200,
                 'message' => 'Login Berhasil',
-                'conntent' => $user
+                'content' => $user,
+                'token' => $api_token
             ]);
         }else{
             return response()->json([
