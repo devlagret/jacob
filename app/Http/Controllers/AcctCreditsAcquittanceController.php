@@ -89,15 +89,19 @@ class AcctCreditsAcquittanceController extends Controller
 
         $acctcreditsaccount     = array();
         $acctcreditspayment     = array();
+        $credits_account_interest_last_balance = 0; 
         if(isset($sessiondata['credits_account_id'])){
             $acctcreditsaccount = AcctCreditsAccount::with('member','credit')->find($sessiondata['credits_account_id']);
 
             $acctcreditspayment = AcctCreditsPayment::select('credits_payment_date', 'credits_payment_principal', 'credits_payment_interest', 'credits_principal_last_balance', 'credits_interest_last_balance')
             ->where('credits_account_id', $sessiondata['credits_account_id'])
             ->get();
+
+            $credits_account_interest_last_balance = ($acctcreditsaccount['credits_account_interest_amount'] * $acctcreditsaccount['credits_account_period']) - ($acctcreditsaccount['credits_account_payment_to'] * $acctcreditsaccount['credits_account_interest_amount']);
         }
 
-        return view('content.AcctCreditsAcquittance.Add.index', compact('sessiondata', 'penaltytype', 'acctcreditsaccount', 'acctcreditspayment'));
+        // dd($credits_account_interest_last_balance);
+        return view('content.AcctCreditsAcquittance.Add.index', compact('sessiondata', 'penaltytype', 'acctcreditsaccount', 'acctcreditspayment','credits_account_interest_last_balance'));
     }
 
     public function modalAcctCreditsAccount(AcctCreditsAccountDataTable $dataTable)

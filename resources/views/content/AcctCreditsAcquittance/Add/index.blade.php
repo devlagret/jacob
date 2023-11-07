@@ -279,12 +279,12 @@ if(empty($sessiondata)){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Sisa Bunga') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="credits_account_interest_last_balance_view" id="credits_account_interest_last_balance_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('credits_account_interest_last_balance_view', number_format($acctcreditsaccount['credits_account_interest_last_balance'], 2) ?? '') }}" autocomplete="off" readonly/>
+                                    <input type="text" name="credits_account_interest_last_balance_view" id="credits_account_interest_last_balance_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('credits_account_interest_last_balance_view', number_format($credits_account_interest_last_balance, 2) ?? '') }}" autocomplete="off" readonly/>
                                     <input type="hidden" name="credits_account_interest_last_balance" id="credits_account_interest_last_balance" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('credits_account_interest_last_balance', $acctcreditsaccount['credits_account_interest_last_balance'] ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
                             <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Akumulasi Sanksi') }}</label>
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Akumulasi Denda') }}</label>
                                 <div class="col-lg-8 fv-row">
                                     <input type="text" name="credits_account_accumulated_fines_view" id="credits_account_accumulated_fines_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('credits_account_accumulated_fines_view', number_format($acctcreditsaccount['credits_account_accumulated_fines'], 2) ?? '') }}" autocomplete="off" readonly/>
                                     <input type="hidden" name="credits_account_accumulated_fines" id="credits_account_accumulated_fines" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('credits_account_accumulated_fines', $acctcreditsaccount['credits_account_accumulated_fines'] ?? '') }}" autocomplete="off"/>
