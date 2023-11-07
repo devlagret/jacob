@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use App\Helpers\Configuration;
+use Auth;
 
 class CoreMemberDataTable extends DataTable
 {
