@@ -44,6 +44,7 @@ class ApiController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate(['username'=>'required','password'=>'required']);
         $login = Auth::Attempt($request->all());
         if ($login) {
             $user = Auth::user();

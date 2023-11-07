@@ -81,11 +81,7 @@ class AcctCreditsAccountMasterController extends Controller
 		$membergender 	                = Configuration::MemberGender();
 		$memberidentity                 = Configuration::MemberIdentity();
 		$memberjobtype 	                = Configuration::WorkingType();
-		$acctcreditsaccountmasterdata	= AcctCreditsAccount::select('acct_credits_account.credits_account_serial', 'acct_credits_account.savings_account_id', 'core_member_working.member_working_type', 'core_member_working.member_company_name', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'core_member.member_gender', 'core_member.member_date_of_birth', 'core_member.member_job', 'core_member.member_identity', 'core_member.member_identity_no', 'acct_credits_account.credits_account_period', 'core_member.member_phone' ,'acct_credits_account.credits_account_date', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_principal_amount', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_interest', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_id', 'acct_credits.credits_name')
-		->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
-		->join('core_member_working', 'acct_credits_account.member_id', '=', 'core_member_working.member_id')
-		->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
-		->where('acct_credits_account.data_state', 0);
+		$acctcreditsaccountmasterdata	= AcctCreditsAccount::with('member.working','credit');
 		if ($branch_id && $branch_id != '') {
 			$acctcreditsaccountmasterdata = $acctcreditsaccountmasterdata->where('acct_credits_account.branch_id', $branch_id);
 		}
@@ -200,15 +196,15 @@ class AcctCreditsAccountMasterController extends Controller
                 $spreadsheet->getActiveSheet()->setCellValue('B' . $row, $no);
                 $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $val['credits_account_serial']);
                 $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $savings_account_no);
-                $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val['member_name']);
-                $spreadsheet->getActiveSheet()->setCellValue('F' . $row, $membergender[$val['member_gender']]);
-                $spreadsheet->getActiveSheet()->setCellValue('G' . $row, date('d-m-Y', strtotime($val['member_date_of_birth'])));
-                $spreadsheet->getActiveSheet()->setCellValue('H' . $row, $val['member_address']);
-                $spreadsheet->getActiveSheet()->setCellValue('I' . $row, $memberjobtype[$val['member_working_type']]);
-                $spreadsheet->getActiveSheet()->setCellValue('J' . $row, $val['member_company_name']);
-                $spreadsheet->getActiveSheet()->setCellValue('K' . $row, $val['member_identity_no']);
-                $spreadsheet->getActiveSheet()->setCellValue('L' . $row, $val['member_phone']);
-                $spreadsheet->getActiveSheet()->setCellValue('M' . $row, $val['credits_name']);
+                $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $val->member->member_name);
+                $spreadsheet->getActiveSheet()->setCellValue('F' . $row, $membergender[$val->member->member_gender]);
+                $spreadsheet->getActiveSheet()->setCellValue('G' . $row, date('d-m-Y', strtotime($val->member->member_date_of_birth)));
+                $spreadsheet->getActiveSheet()->setCellValue('H' . $row, $val->member->member_address);
+                $spreadsheet->getActiveSheet()->setCellValue('I' . $row, $memberjobtype[$val->member->working->member_working_type]);
+                $spreadsheet->getActiveSheet()->setCellValue('J' . $row, $val->member->member_company_name);
+                $spreadsheet->getActiveSheet()->setCellValue('K' . $row, $val->member->member_identity_no);
+                $spreadsheet->getActiveSheet()->setCellValue('L' . $row, $val->member->member_phone);
+                $spreadsheet->getActiveSheet()->setCellValue('M' . $row, $val->credit->credits_name);
                 $spreadsheet->getActiveSheet()->setCellValue('N' . $row, $val['credits_account_period']);
                 $spreadsheet->getActiveSheet()->setCellValue('O' . $row, date('d-m-Y', strtotime($val['credits_account_date'])));
                 $spreadsheet->getActiveSheet()->setCellValue('P' . $row, date('d-m-Y', strtotime($val['credits_account_due_date'])));
@@ -223,7 +219,7 @@ class AcctCreditsAccountMasterController extends Controller
 			}
             
             ob_clean();
-            $filename='Master Data Pinjaman.xls';
+            $filename='Master Data Pinjaman-'.date('dmYhis').'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="'.$filename.'"');
             header('Cache-Control: max-age=0');
