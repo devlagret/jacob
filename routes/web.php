@@ -203,6 +203,7 @@ Route::middleware(['auth','loged'])->group(function () {
         Route::post('/process-add', [AcctCreditsAcquittanceController::class, 'processAdd'])->name('process-add');
         Route::get('/print-note/{savings_cash_mutation_id}', [AcctCreditsAcquittanceController::class, 'printNote'])->name('print-note');
     });
+    
 
     // AcctCreditsAgunan pages
     Route::prefix('credits-agunan')->name('credits-agunan.')->group(function () {
@@ -213,6 +214,20 @@ Route::middleware(['auth','loged'])->group(function () {
         Route::get('/update-status/{credits_agunan_id}', [AcctCreditsAgunanController::class, 'updateStatus'])->name('update-status');
         Route::get('/print-receipt/{credits_agunan_id}', [AcctCreditsAgunanController::class, 'printReceipt'])->name('print-receipt');
     });
+
+    // AcctCreditsPaymentSuspend pages
+    Route::prefix('credits-payment-suspend')->name('credits-payment-suspend.')->group(function () {
+        Route::get('/', [AcctCreditsAcquittanceController::class, 'index'])->name('index');
+        Route::post('/filter', [AcctCreditsAcquittanceController::class, 'filter'])->name('filter');
+        Route::get('/filter-reset', [AcctCreditsAcquittanceController::class, 'filterReset'])->name('filter-reset');
+        Route::get('/add', [AcctCreditsAcquittanceController::class, 'add'])->name('add');
+        Route::get('/modal-credits-account', [AcctCreditsAcquittanceController::class, 'modalAcctCreditsAccount'])->name('modal-credits-account');
+        Route::get('/select-credits-account/{credits_account_id}', [AcctCreditsAcquittanceController::class, 'selectAcctCreditsAccount'])->name('select-credits-account');
+        Route::post('/elements-add', [AcctCreditsAcquittanceController::class, 'elementsAdd'])->name('elements-add');
+        Route::post('/process-add', [AcctCreditsAcquittanceController::class, 'processAdd'])->name('process-add');
+        Route::get('/print-note/{savings_cash_mutation_id}', [AcctCreditsAcquittanceController::class, 'printNote'])->name('print-note');
+    });
+
 
     // AcctCreditsPaymentCash pages
     Route::prefix('credits-payment-cash')->name('credits-payment-cash.')->group(function () {
