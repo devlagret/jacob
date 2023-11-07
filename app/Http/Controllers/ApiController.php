@@ -48,14 +48,15 @@ class ApiController extends Controller
         $login = Auth::Attempt($request->all());
         if ($login) {
             $user = Auth::user();
-            // $user->api_token = Str::random(100);
+            $api_token = Str::random(100);
             $user->save();
             // $user->makeVisible('api_token');
 
             return response()->json([
                 'response_code' => 200,
                 'message' => 'Login Berhasil',
-                'conntent' => $user
+                'conntent' => $user,
+                'token' => $api_token
             ]);
         }else{
             return response()->json([
@@ -65,6 +66,7 @@ class ApiController extends Controller
         }
     }
 
+    //data simpanan
     public function getDataSavings(){
         $data = AcctSavingsAccount::with('member')
         ->get();
@@ -72,14 +74,18 @@ class ApiController extends Controller
         return json_encode($data);
     }
 
+    //data simpanan berjangka
     public function getDataDeposito(){
-        $data = AcctDepositoAccount::get();
+        $data = AcctDepositoAccount::with('member')
+        ->get();
 
         return json_encode($data);
     }
 
+    //pinjaman
     public function getDataCredit(){
-        $data = AcctCreditsAccount::get();
+        $data = AcctCreditsAccount::with('member')
+        ->get();
 
         return json_encode($data);
     }

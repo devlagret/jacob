@@ -15,8 +15,8 @@ return array(
 
     // Meta
     'meta'    => array(
-        'title'       => 'Koperasi JJM | Jacob Jaya Mandiri',
-        'description' => 'Aplikasi koperasi untuk Jacob Jaya Mandiri.',
+        'title'       => 'Koperasi JJM | Jacop Jaya Mandiri',
+        'description' => 'Aplikasi koperasi untuk Jacop Jaya Mandiri.',
         'keywords'    => 'Arthabima, Koperasi Arthabima',
         'canonical'   => 'https://preview.keenthemes.com/metronic8',
     ),

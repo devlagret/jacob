@@ -145,10 +145,10 @@ class CreditsPaymentReportController extends Controller
                 <td width=\"8%\"><div style=\"text-align: right;\">".number_format($val['credits_account_principal_amount'], 2)."</div></td>
                 <td width=\"8%\"><div style=\"text-align: right;\">".number_format($val['credits_account_interest_amount'], 2)."</div></td>
                 <td width=\"8%\"><div style=\"text-align: right;\">".number_format($val['credits_account_payment_amount'], 2)."</div></td>
-                <td width=\"6%\"><div style=\"text-align: right;\">".($val['credits_account_payment_date'])."</div></td>
+                <td width=\"6%\"><div style=\"text-align: right;\">".date('d-m-Y',strtotime($val['credits_account_payment_date']))."</div></td>
                 <td width=\"6%\"><div style=\"text-align: right;\">".number_format($val['credits_account_accumulated_fines'], 2)."</div></td>
                 <td width=\"5%\"><div style=\"text-align: right;\">".$val['credits_account_payment_to']." / ".$val['credits_account_period']."</div></td>
-                <td width=\"7%\"><div style=\"text-align: right;\">".($val['credits_account_last_payment_date'])."</div></td>
+                <td width=\"7%\"><div style=\"text-align: right;\">".date('d-m-Y',strtotime($val['credits_account_last_payment_date']))."</div></td>
                 </tr>";
                 
                 $totalplafon += $val['credits_account_amount'];
