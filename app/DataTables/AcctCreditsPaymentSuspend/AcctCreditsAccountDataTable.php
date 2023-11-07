@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataTables\AcctCreditsAcquittance;
+namespace App\DataTables\AcctCreditsPaymentSuspend;
 
 use App\Models\AcctCreditsAccount;
 use Yajra\DataTables\Html\Button;

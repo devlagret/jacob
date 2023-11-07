@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\AcctCreditsDataTable;
+use App\DataTables\AcctCreditsPaymentCash\AcctCreditsAccountDataTable as AcctCreditsPaymentCashAcctCreditsAccountDataTable;
+use App\DataTables\AcctCreditsPaymentDebet\AcctCreditsAccountDataTable as AcctCreditsPaymentDebetAcctCreditsAccountDataTable;
 use App\Models\User;
 use App\Models\AcctAccount;
 use App\Models\AcctJournalVoucher;
@@ -15,8 +18,8 @@ use App\Models\CoreMember;
 use App\Models\AcctMutation;
 use App\Models\PreferenceCompany;
 use App\Models\PreferenceTransactionModule;
-use App\DataTables\AcctCreditsAcquittance\AcctCreditsAcquittanceDataTable;
-use App\DataTables\AcctCreditsAcquittance\AcctCreditsAccountDataTable;
+use App\DataTables\AcctCreditsPaymentSuspendDataTable\AcctCreditsAccountDataTable;
+use App\DataTables\AcctCreditsPaymentSuspendDataTable\AcctCreditsPaymentSuspendDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
@@ -24,10 +27,10 @@ use Elibyy\TCPDF\Facades\TCPDF;
 
 class AcctCreditsPaymentSuspendController extends Controller
 {
-    public function index(AcctCreditsAcquittanceDataTable $dataTable)
+    public function index(AcctCreditsPaymentSuspendDataTable $dataTable)
     {
-        session()->forget('data_creditsacquittanceadd');
-        $sessiondata = session()->get('filter_creditsacquittance');
+        session()->forget('data_creditspaymentsuspendadd');
+        $sessiondata = session()->get('filter_creditspaymentsuspend');
 
         $acctcredits = AcctCredits::select('credits_name', 'credits_id')
         ->where('data_state', 0)
@@ -55,15 +58,15 @@ class AcctCreditsPaymentSuspendController extends Controller
             'credits_id' => $request->credits_id
         );
 
-        session()->put('filter_creditsacquittance', $sessiondata);
+        session()->put('filter_creditspaymentsuspend', $sessiondata);
 
-        return redirect('credits-acquittance');
+        return redirect('credits-payment-suspend');
     }
 
     public function filterReset(){
-        session()->forget('filter_creditsacquittance');
+        session()->forget('filter_creditspaymentsuspend');
 
-        return redirect('credits-acquittance');
+        return redirect('credits-payment-suspend');
     }
 
     public function elementsAdd(Request $request)
@@ -104,7 +107,7 @@ class AcctCreditsPaymentSuspendController extends Controller
         return view('content.AcctCreditsAcquittance.Add.index', compact('sessiondata', 'penaltytype', 'acctcreditsaccount', 'acctcreditspayment','credits_account_interest_last_balance'));
     }
 
-    public function modalAcctCreditsAccount(AcctCreditsAccountDataTable $dataTable)
+    public function modalAcctCreditsAccount(AcctCreditsPaymentCashAcctCreditsAccountDataTable $dataTable)
     {
         return $dataTable->render('content.AcctCreditsAcquittance.Add.AcctCreditsAccountModal.index');
     }
@@ -123,7 +126,7 @@ class AcctCreditsPaymentSuspendController extends Controller
         $sessiondata['credits_account_id'] = $credits_account_id;
         session()->put('data_creditsacquittanceadd', $sessiondata);
 
-        return redirect('credits-acquittance/add');
+        return redirect('credits-payment-suspend/add');
     }
 
     

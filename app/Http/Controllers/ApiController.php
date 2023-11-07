@@ -68,7 +68,9 @@ class ApiController extends Controller
 
     //data simpanan
     public function getDataSavings(){
-        $data = AcctSavingsAccount::with('member')
+        $data = AcctSavingsAccount::withoutGlobalScopes()
+        ->join('core_member','acct_savings_account.member_id','core_member.member_id')
+        ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
         ->get();
 
         return response()->json([
@@ -79,7 +81,9 @@ class ApiController extends Controller
 
     //data simpanan berjangka
     public function getDataDeposito(){
-        $data = AcctDepositoAccount::with('member')
+        $data = AcctDepositoAccount::withoutGlobalScopes()
+        ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
+        ->join('acct_deposito','acct_deposito.deposito_id','acct_deposito_account.deposito_id')
         ->get();
         return response()->json([
             'data' => $data,
@@ -89,7 +93,9 @@ class ApiController extends Controller
 
     //pinjaman
     public function getDataCredit(){
-        $data = AcctCreditsAccount::with('member')
+        $data = AcctCreditsAccount::withoutGlobalScopes()
+        ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
+        ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
         ->get();
         return response()->json([
             'data' => $data,
