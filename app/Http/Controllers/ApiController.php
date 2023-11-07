@@ -32,7 +32,10 @@ use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
 use App\Models\SystemLoginLog;
 use Auth;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Str;
 
 class ApiController extends Controller
@@ -44,20 +47,21 @@ class ApiController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate(['username'=>'required','password'=>'required']);
-        $login = Auth::Attempt($request->all());
+
+        $validator = Validator::make($request->all(), ['username'=>'required', 'password'=>'required'],[  'required' => 'The :attribute field is required.']);
+        if ($validator->fails()) {
+            return 'username and/or password required';
+        }
+        $login = Auth::Attempt($validator->validated());
         if ($login) {
             $user = Auth::user();
-            $api_token = Str::random(100);
             $user->save();
-            // $user->makeVisible('api_token');
-
+            $token = $user->createToken('token-name')->plainTextToken;
             return response()->json([
-                'response_code' => 200,
                 'message' => 'Login Berhasil',
                 'conntent' => $user,
-                'token' => $api_token
-            ]);
+                'token' => $token
+            ],201);
         }else{
             return response()->json([
                 'response_code' => 404,
@@ -65,7 +69,10 @@ class ApiController extends Controller
             ]);
         }
     }
-
+    public function tst(Request $request) {
+        
+        return response(['mesage'=>'test']);
+    }
     //data simpanan
     public function getDataSavings(){
         $data = AcctSavingsAccount::with('member')

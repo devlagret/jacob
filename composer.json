@@ -14,6 +14,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "jackiedo/log-reader": "^2.1",
         "laravel/framework": "^9.0",
+        "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
