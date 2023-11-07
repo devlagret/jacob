@@ -71,22 +71,29 @@ class ApiController extends Controller
         $data = AcctSavingsAccount::with('member')
         ->get();
 
-        return json_encode($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
     }
 
     //data simpanan berjangka
     public function getDataDeposito(){
         $data = AcctDepositoAccount::with('member')
         ->get();
-
-        return json_encode($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
     }
 
     //pinjaman
     public function getDataCredit(){
         $data = AcctCreditsAccount::with('member')
         ->get();
-
-        return json_encode($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
     }
 }
