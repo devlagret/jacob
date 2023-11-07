@@ -54,7 +54,7 @@ class ApiController extends Controller
             return response()->json([
                 'response_code' => 200,
                 'message' => 'Login Berhasil',
-                'content' => $user,
+                'conntent' => $user,
                 'token' => $api_token
             ]);
         }else{
