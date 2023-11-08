@@ -67,7 +67,8 @@ class AcctCreditsAccountHistoryController extends Controller
         $memberidentity         = array_filter(Configuration::MemberIdentity());
         $paymenttype            = array_filter(Configuration::PaymentType());
 
-        $acctcreditsaccount     = AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'acct_credits.credits_id', 'core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_member.member_phone', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
+        $acctcreditsaccount     = AcctCreditsAccount::withoutGlobalScopes()
+        ->select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'acct_credits.credits_id', 'core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_member.member_phone', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
         ->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
         ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
         ->join('core_member_working', 'acct_credits_account.member_id', '=', 'core_member_working.member_id')
@@ -75,7 +76,8 @@ class AcctCreditsAccountHistoryController extends Controller
         ->where('acct_credits_account.credits_account_id', $credits_account_id)
         ->first();
 
-        $acctcreditspayment     = AcctCreditsPayment::select('acct_credits_payment.credits_payment_date', 'acct_credits_payment.credits_payment_amount', 'acct_credits_payment.credits_payment_principal', 'acct_credits_payment.credits_payment_interest', 'acct_credits_payment.credits_principal_last_balance', 'acct_credits_payment.credits_interest_last_balance', 'acct_credits_payment.credits_payment_fine', 'acct_credits_payment.credits_payment_fine_last_balance')
+        $acctcreditspayment     = AcctCreditsPayment::withoutGlobalScopes()
+        ->select('acct_credits_payment.credits_payment_date', 'acct_credits_payment.credits_payment_amount', 'acct_credits_payment.credits_payment_principal', 'acct_credits_payment.credits_payment_interest', 'acct_credits_payment.credits_principal_last_balance', 'acct_credits_payment.credits_interest_last_balance', 'acct_credits_payment.credits_payment_fine', 'acct_credits_payment.credits_payment_fine_last_balance')
         ->join('acct_credits_account','acct_credits_payment.credits_account_id', '=', 'acct_credits_account.credits_account_id')
         ->where('acct_credits_payment.data_state', 0)
         ->where('acct_credits_payment.credits_account_id', $credits_account_id)
@@ -315,7 +317,8 @@ class AcctCreditsAccountHistoryController extends Controller
         $total                  = 0;
         $datapola               = array();
         
-        $acctcreditsaccount     = AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'acct_credits.credits_id', 'core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_member.member_phone', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
+        $acctcreditsaccount     = AcctCreditsAccount::withoutGlobalScopes()
+        ->select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'acct_credits.credits_id', 'core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_member.member_phone', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
         ->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
         ->join('core_member', 'acct_credits_account.member_id', '=', 'core_member.member_id')
         ->join('core_member_working', 'acct_credits_account.member_id', '=', 'core_member_working.member_id')
