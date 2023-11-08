@@ -32,10 +32,12 @@ use App\Models\PreferenceVoucher;
 use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
 use App\Models\SystemLoginLog;
+use App\Models\User;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Str;
 
@@ -133,5 +135,32 @@ class ApiController extends Controller
             'data' => $data,
         ]);
         // return json_encode($data);
+    }
+
+     //data simpanan by no simpanan
+     public function PostSavingsByNo($savings_account_no){
+        $data = AcctSavingsAccount::withoutGlobalScopes()
+        ->join('core_member','acct_savings_account.member_id','core_member.member_id')
+        ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
+        ->where('acct_savings_account.savings_account_no','LIKE',$savings_account_no)
+        ->first();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+
+    public function logout(Request $request){
+        $user = auth()->user();
+        $user_state = User::findOrFail($user['user_id']);
+        $user_state->save();
+
+        auth()->user()->tokens()->delete();
+    
+        return [
+            'message' => 'Logged Out'
+        ];
     }
 }
