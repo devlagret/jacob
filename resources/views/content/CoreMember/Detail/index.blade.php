@@ -48,19 +48,19 @@ const form = document.getElementById('kt_member_detail_view_form');
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Provinsi') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="province_name" class="form-control form-control-lg form-control-solid" placeholder="Provinsi" value="{{ $coremember['province_name'] }}" autocomplete="off" readonly/>
+                                <input type="text" name="province_name" class="form-control form-control-lg form-control-solid" placeholder="Provinsi" value="{{ $coremember->province->province_name }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kabupaten') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="city_name" class="form-control form-control-lg form-control-solid" placeholder="Kabupaten" value="{{ $coremember['city_name'] }}" autocomplete="off" readonly/>
+                                <input type="text" name="city_name" class="form-control form-control-lg form-control-solid" placeholder="Kabupaten" value="{{ $coremember->city->city_name }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Kecamatan') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="kecamatan_name" class="form-control form-control-lg form-control-solid" placeholder="Kecamatan" value="{{ $coremember['kecamatan_name'] }}" autocomplete="off" readonly/>
+                                <input type="text" name="kecamatan_name" class="form-control form-control-lg form-control-solid" placeholder="Kecamatan" value="{{ $coremember->kecamatan->kecamatan_name }}" autocomplete="off" readonly/>
                             </div>
                         </div>
                         <div class="row mb-6">
@@ -129,8 +129,8 @@ const form = document.getElementById('kt_member_detail_view_form');
                 </div>
                 <div class="table-responsive"> 
                     <div class="row mb-6"> 
-                        <div class="col-lg-6">
-                            <table class="table table-rounded border gy-7 gs-7 show-border">
+                        <div class="col-lg-4">
+                            <table class="table table-rounded border gy-4 gs-4 show-border">
                                 <thead>
                                     <tr align="center">
                                         <th colspan="3"><b>Daftar Tabungan</b></th>
@@ -143,19 +143,44 @@ const form = document.getElementById('kt_member_detail_view_form');
                                 </thead>
                                 <tbody>
                                     <?php $no = 1; ?>
-                                    @foreach($acctsavingsaccount as $key => $val)
+                                    @foreach($coremember->savingacc as $key => $val)
                                         <tr>
                                             <th style="text-align: center">{{ $no }}</th>
                                             <th>{{ $val['savings_account_no'] }}</th>
-                                            <th>{{ $val['savings_name'] }}</th>
+                                            <th>{{ $val->savingdata->savings_name }}</th>
                                         </tr>
                                     <?php $no++ ?>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-lg-6">
-                            <table class="table table-rounded border gy-7 gs-7 show-border">
+                        <div class="col-lg-4">
+                            <table class="table table-rounded border gy-4 gs-4 show-border">
+                                <thead>
+                                    <tr align="center">
+                                        <th colspan="3"><b>Daftar Tabungan Deposito</b></th>
+                                    </tr>
+                                    <tr align="center">
+                                        <th align="center"><b>No</b></th>
+                                        <th><b>No Rek Tabungan</b></th>
+                                        <th><b>Jenis Tabungan</b></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $no = 1; ?>
+                                    @foreach($coremember->depositoacc as $key => $val)
+                                        <tr>
+                                            <th style="text-align: center">{{ $no }}</th>
+                                            <th>{{ $val['savings_account_no'] }}</th>
+                                            <th>{{ $val->deposito->savings_name }}</th>
+                                        </tr>
+                                    <?php $no++ ?>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-4">
+                            <table class="table table-rounded border gy-4 gs-4 show-border">
                                 <thead>
                                     <tr align="center">
                                         <th colspan="3"><b>Daftar Pinjaman</b></th>
@@ -168,11 +193,11 @@ const form = document.getElementById('kt_member_detail_view_form');
                                 </thead>
                                 <tbody>
                                     <?php $no = 1; ?>
-                                    @foreach($acctcreditsaccount as $key => $val)
+                                    @foreach($coremember->creditacc as $key => $val)
                                         <tr>
                                             <th style="text-align: center">{{ $no }}</th>
                                             <th>{{ $val['credits_account_serial'] }}</th>
-                                            <th>{{ $val['credits_name'] }}</th>
+                                            <th>{{ $val->credit->credits_name }}</th>
                                         </tr>
                                     <?php $no++ ?>
                                     @endforeach

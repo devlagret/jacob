@@ -40,7 +40,7 @@ class CoreMemberDataTable extends DataTable
         return $model->newQuery()
         ->where('member_status', 1)
         ->where('data_state', 0)
-        ->where('branch_id',$sessiondata['branch_id']??Auth::user()->branch_id);
+        ->where('branch_id',Auth::user()->branch_id);
     }
 
     public function html()
