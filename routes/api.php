@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // Sample API route
-Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'profits'])->name('profits');
+// Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'profits'])->name('profits');
 // Route::get('/kolektibilitas', [\App\Http\Controllers\SampleDataController::class, 'kolektibilitas'])->name('kolektibilitas');
 Route::post('login', [ApiController::class, 'login']);
 Route::post('getSavingsAccount', [ApiController::class, 'getDataSavings']);
