@@ -20,9 +20,15 @@ class AcctDepositoAccountMasterController extends Controller
     {
         $sessiondata = session()->get('filter_depositoaccountmaster');
 
-        $corebranch = CoreBranch::select('branch_id', 'branch_name')
-        ->where('data_state', 0)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->get();
+        }else{
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get();
+        }
 
         $acctdeposito = AcctDeposito::select('deposito_id', 'deposito_name')
         ->where('data_state', 0)
