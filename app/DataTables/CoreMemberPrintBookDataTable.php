@@ -9,6 +9,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use App\Helpers\Configuration;
+use Auth;
 
 class CoreMemberPrintBookDataTable extends DataTable
 {
@@ -27,8 +28,15 @@ class CoreMemberPrintBookDataTable extends DataTable
 
     public function query(CoreMember $model)
     {
-        return $model->newQuery()
+        // return $model->newQuery()
+        // ->where('data_state', 0);
+
+        $model = $model->newQuery()->with('branch')
         ->where('data_state', 0);
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
 
     public function html()

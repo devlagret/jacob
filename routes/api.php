@@ -26,6 +26,7 @@ Route::post('test', [ApiController::class, 'tst']);
 Route::post('getSavingsAccount', [ApiController::class, 'getDataSavings']);
 Route::post('getDepositoAccount', [ApiController::class, 'getDataDeposito']);
 Route::post('getCreditsAccount', [ApiController::class, 'getDataCredit']);
+Route::post('getMembers', [ApiController::class, 'getDataMembers']);
 });
 
 Route::post('login', [ApiController::class, 'login']);

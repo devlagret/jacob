@@ -30,10 +30,19 @@ class MemberSavingsTransferMutationController extends Controller
         session()->forget('datases_transfermutation');
         session()->forget('session_savingsaccount');
         $sessiondata = session()->get('filter_membersavingstransfermutation');
-        $coremember = CoreMember::select('member_id','member_name','member_no')
-        ->where('data_state',0)
-        ->get();
-
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $coremember = CoreMember::select('member_id','member_name','member_no')
+            ->where('data_state',0)
+            ->get();
+        }else{
+            $coremember = CoreMember::select('member_id','member_name','member_no')
+            ->where('data_state',0)
+            ->where('branch_id', $branch_id)
+            ->get();
+    
+        }
+       
         return $dataTable->render('content.MemberSavingsTransferMutation.List.index',compact('sessiondata','coremember'));
     }
 
