@@ -15,15 +15,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 // Sample API route
+Route::group(['middleware'=> ['auth:sanctum']], function(){
 // Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'profits'])->name('profits');
-// Route::get('/kolektibilitas', [\App\Http\Controllers\SampleDataController::class, 'kolektibilitas'])->name('kolektibilitas');
-Route::post('login', [ApiController::class, 'login']);
+Route::post('test', [ApiController::class, 'tst']);
 Route::post('getSavingsAccount', [ApiController::class, 'getDataSavings']);
 Route::post('getDepositoAccount', [ApiController::class, 'getDataDeposito']);
 Route::post('getCreditsAccount', [ApiController::class, 'getDataCredit']);
+});
 
+Route::post('login', [ApiController::class, 'login']);
