@@ -19,8 +19,20 @@ class CreditsPaymentReportController extends Controller
 {
     public function index()
     {
-        $corebranch = CoreBranch::where('data_state', 0)->get();
-        $coreoffice = CoreOffice::where('data_state', 0)->get()->pluck('office_name','office_id');
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->get();
+            $coreoffice = CoreOffice::where('data_state', 0)->get()->pluck('office_name','office_id');
+        }else{
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get();
+            $coreoffice = CoreOffice::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get()->pluck('office_name','office_id');
+        }
+        
 
         return view('content.CreditsPaymentReport.index', compact('corebranch','coreoffice'));
     }

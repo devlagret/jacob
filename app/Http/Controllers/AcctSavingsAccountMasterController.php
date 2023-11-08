@@ -20,9 +20,15 @@ class AcctSavingsAccountMasterController extends Controller
     {
         $sessiondata = session()->get('filter_savingsaccountmaster');
 
-        $corebranch = CoreBranch::select('branch_id', 'branch_name')
-        ->where('data_state', 0)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->get();
+        }else{
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get();
+        }
 
         $acctsavings = AcctSavings::select('savings_id', 'savings_name')
         ->where('savings_status', 0)

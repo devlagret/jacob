@@ -21,7 +21,15 @@ class DepositoDailyCashWithdrawalMutationController extends Controller
 {
     public function index()
     {
-        $corebranch = CoreBranch::where('data_state', 0)->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->get();
+        }else{
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get();
+        }
 
         return view('content.DepositoDailyCashMutation.addCashWithdrawal.index', compact('corebranch'));
     }

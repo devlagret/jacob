@@ -19,17 +19,19 @@ use DateTime;
 class OfficerCreditsAccountReportController extends Controller
 {
     public function index()
-    {
+    {  
         $branch_id          = auth()->user()->branch_id;
         if($branch_id == 0){
             $corebranch         = CoreBranch::where('data_state', 0)
             ->get();
+            $coreoffice = CoreOffice::where('data_state', 0)->get();
         }else{
             $corebranch         = CoreBranch::where('data_state', 0)
             ->where('branch_id', $branch_id)
             ->get();
+            $coreoffice = CoreOffice::where('branch_id', $branch_id)
+            ->where('data_state', 0)->get();
         }
-        $coreoffice = CoreOffice::where('data_state', 0)->get();
 
         return view('content.OfficerCreditsAccountReport.index', compact('corebranch', 'coreoffice'));
     }
