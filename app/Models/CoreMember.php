@@ -43,8 +43,17 @@ class CoreMember extends Model
     public function kecamatan() {
         return $this->belongsTo(CoreKecamatan::class,'kecamatan_id','kecamatan_id');
     }
+    public function province() {
+        return $this->belongsTo(CoreProvince::class,'province_id','province_id');
+    }
     public function savingacc() {
         return $this->hasMany(AcctSavingsAccount::class,'member_id','member_id');
+    }
+    public function creditacc() {
+        return $this->hasMany(AcctCreditsAccount::class,'member_id','member_id');
+    }
+    public function depositoacc() {
+        return $this->hasMany(AcctDepositoAccount::class,'member_id','member_id');
     }
     public function working() {
         return $this->hasOne(CoreMemberWorking::class,'member_id','member_id');

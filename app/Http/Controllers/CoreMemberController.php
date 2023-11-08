@@ -480,38 +480,14 @@ class CoreMemberController extends Controller
 
     public function detail($member_id)
     {
-        $config                 = theme()->getOption('page', 'member-detail');
         $memberidentity			= Configuration::MemberIdentity();
         $membergender			= Configuration::MemberGender();
         $membercharacter		= Configuration::MemberCharacter();
 
-        $coremember				= CoreMember::withoutGlobalScopes()
-        ->select('core_member.*', 'core_branch.branch_name', 'core_province.province_name', 'core_city.city_name', 'core_kecamatan.kecamatan_name', 'core_member_working.member_company_job_title', 'core_member_working.member_company_name')
-        ->join('core_member_working','core_member.member_id', '=', 'core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id', '=', 'core_province.province_id')
-        ->join('core_city', 'core_member.city_id', '=', 'core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id', '=', 'core_kecamatan.kecamatan_id')
-        ->join('core_branch', 'core_member.branch_id', '=', 'core_branch.branch_id')
-        ->where('core_member.member_id', $member_id)
-        ->where('core_member.data_state', 0)
-        ->first();
+        $coremember				= CoreMember::with('city','kecamatan','province','savingacc.savingdata','creditacc.credit','depositoacc.deposito')->find($member_id);
 
-        $acctsavingsaccount		= AcctSavingsAccount::withoutGlobalScopes()
-        ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings.savings_name')
-        ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
-        ->where('acct_savings_account.member_id', $member_id)
-        ->where('acct_savings.savings_status', 0)
-        ->where('acct_savings_account.data_state', 0)
-        ->get();
 
-        $acctcreditsaccount		= AcctCreditsAccount::withoutGlobalScopes()
-        ->select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits.credits_name')
-        ->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
-        ->where('acct_credits_account.member_id', $member_id)
-        ->where('acct_credits_account.data_state', 0)
-        ->get();
-
-        return view('content.CoreMember.Detail.index', compact('coremember', 'acctsavingsaccount', 'acctcreditsaccount', 'memberidentity', 'membergender', 'membercharacter'));
+        return view('content.CoreMember.Detail.index', compact('coremember', 'memberidentity', 'membergender', 'membercharacter'));
     }
 
     public function delete($member_id)
