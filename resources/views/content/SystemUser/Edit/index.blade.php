@@ -161,7 +161,7 @@ submitButton.addEventListener('click', function (e) {
                     </div>
                 </div>
                         <input hidden type="branch_id" name="branch_id" id="branch_id" class="form-control form-control-lg form-control-solid" value="{{ $user->branch_id }}" autocomplete="off"/>
-                    {{-- <div class="row mb-6">
+                    <div class="row mb-6">
                         <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Cabang') }}</label>
                         <div class="col-lg-8 fv-row">
                             <select name="branch_id" id="branch_id" aria-label="{{ __('Pilih Cabang') }}" data-control="select2" data-placeholder="{{ __('Pilih cabang..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg">
@@ -171,7 +171,7 @@ submitButton.addEventListener('click', function (e) {
                                 @endforeach
                             </select>
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end py-6 px-9">
                     <button type="reset" class="btn btn-white btn-active-light-primary me-2">{{ __('Batal') }}</button>
