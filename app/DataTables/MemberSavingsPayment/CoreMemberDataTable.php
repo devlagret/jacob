@@ -3,6 +3,7 @@
 namespace App\DataTables\MemberSavingsPayment;
 
 use App\Models\CoreMember;
+use Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -33,9 +34,13 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(CoreMember $model)
     {
-        return $model->newQuery()
-        ->select('member_id','member_name','member_no','member_address')
-        ->where('data_state', 0);
+        $model = $model->newQuery()->with('branch')
+        ->where('member_status', 1)
+        ->orderBy('member_no', 'ASC');
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
 
     /**

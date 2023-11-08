@@ -3,6 +3,7 @@
 namespace App\DataTables\MemberSavingsTransferMutation;
 
 use App\Models\CoreMember;
+use Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -33,7 +34,13 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(CoreMember $model)
     {
-        return $model->newQuery();
+        $model = $model->newQuery()->with('branch')
+        ->where('member_status', 1)
+        ->orderBy('member_no', 'ASC');
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
 
     /**

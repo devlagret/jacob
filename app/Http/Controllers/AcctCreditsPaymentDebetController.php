@@ -37,9 +37,15 @@ class AcctCreditsPaymentDebetController extends Controller
         ->where('data_state', 0)
         ->get();
 
-        $corebranch = CoreBranch::select('branch_name', 'branch_id')
-        ->where('data_state', 0)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->get();
+        }else{
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get();
+        }
 
         return $dataTable->render('content.AcctCreditsPaymentDebet.List.index', compact('sessiondata', 'acctcredits', 'corebranch'));
     }
