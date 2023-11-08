@@ -33,9 +33,15 @@ class JournalVoucherController extends Controller
         } else {
             $end_date = date('Y-m-d', strtotime($session['end_date']));
         }
-        $corebranch = CoreBranch::select('branch_id', 'branch_name')
-        ->where('data_state',0)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->get();
+        }else{
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get();
+        }
         $acctjournalvoucher = AcctJournalVoucherItem::select('acct_journal_voucher_item.journal_voucher_item_id', 'acct_journal_voucher_item.journal_voucher_description', 'acct_journal_voucher_item.journal_voucher_debit_amount', 'acct_journal_voucher_item.journal_voucher_credit_amount', 'acct_journal_voucher_item.account_id', 'acct_account.account_code', 'acct_account.account_name', 'acct_journal_voucher_item.account_id_status', 'acct_journal_voucher.transaction_module_code', 'acct_journal_voucher.journal_voucher_date', 'acct_journal_voucher.journal_voucher_id')
         ->join('acct_journal_voucher','acct_journal_voucher_item.journal_voucher_id','=','acct_journal_voucher.journal_voucher_id')
         ->join('acct_account','acct_journal_voucher_item.account_id','=','acct_account.account_id')

@@ -23,9 +23,15 @@ class BalanceSheetController extends Controller
         $session = session()->get('filter_balencesheet');
         $preferencecompany = PreferenceCompany::first();
         $monthlist = Configuration::Month();
-        $corebranch = CoreBranch::select('branch_id','branch_name')
-        ->where('data_state',0)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->get();
+        }else{
+            $corebranch         = CoreBranch::where('data_state', 0)
+            ->where('branch_id', $branch_id)
+            ->get();
+        }
 
         // dd($session);
         $acctbalancesheetreport_left = AcctBalanceSheetReport::select('acct_balance_sheet_report.balance_sheet_report_id', 'acct_balance_sheet_report.report_no', 'acct_balance_sheet_report.account_id1', 'acct_balance_sheet_report.account_code1', 'acct_balance_sheet_report.account_name1', 'acct_balance_sheet_report.report_formula1', 'acct_balance_sheet_report.report_operator1', 'acct_balance_sheet_report.report_type1', 'acct_balance_sheet_report.report_tab1', 'acct_balance_sheet_report.report_bold1', 'acct_balance_sheet_report.report_formula3', 'acct_balance_sheet_report.report_operator3')

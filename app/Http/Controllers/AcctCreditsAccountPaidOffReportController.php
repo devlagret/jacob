@@ -23,7 +23,8 @@ class AcctCreditsAccountPaidOffReportController extends Controller
         $preferencecompany	= PreferenceCompany::select('logo_koperasi', 'company_name', 'savings_profit_sharing_id')->first();
         $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
         
-        $acctcreditspayment	= AcctCreditsAccount::select('acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_principal_amount', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_last_balance')
+        $acctcreditspayment	= AcctCreditsAccount::withoutGlobalScopes()
+        ->select('acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_principal_amount', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_due_date', 'acct_credits_account.credits_account_last_balance')
         ->join('core_member', 'acct_credits_account.member_id', '=' ,'core_member.member_id')
         ->where('acct_credits_account.data_state', 0)
         ->where('acct_credits_account.credits_approve_status', 1)
