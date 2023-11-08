@@ -1,8 +1,9 @@
 <?php
 
-namespace App\DataTables\AcctCreditsPaymentSuspendDataTable;
+namespace App\DataTables\AcctCreditsPaymentSuspend;
 
 use App\Models\AcctCreditsPaymentSuspend;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -20,18 +21,17 @@ class AcctCreditsPaymentSuspendDataTable extends DataTable
      */
     public function dataTable($query)
     {
+        $period=Configuration::CreditsPaymentPeriod();
         return datatables()
             ->eloquent($query)
             ->addIndexColumn()
-            ->editColumn('credits_payment_suspend_date', function (AcctCreditsPaymentSuspend $model) {
-                return date('d-m-Y', strtotime($model->credits_payment_suspend_date));
-            })
+            ->editColumn('credits_payment_period', fn($model)=>$period[$model->credits_payment_period])
             ->editColumn('credits_payment_date_old', function (AcctCreditsPaymentSuspend $model) {
                 return date('d-m-Y', strtotime($model->credits_payment_date_old));
-            }) 
+            })
             ->editColumn('credits_payment_date_new', function (AcctCreditsPaymentSuspend $model) {
                 return date('d-m-Y', strtotime($model->credits_payment_date_new));
-            }) 
+            })
             ->addColumn('action', 'content.AcctCreditsPaymentSuspend.List._action-menu');
     }
 
@@ -43,23 +43,11 @@ class AcctCreditsPaymentSuspendDataTable extends DataTable
      */
     public function query(AcctCreditsPaymentSuspend $model)
     {
-        $sessiondata = session()->get('filter_creditsacquittance');
-        if(!$sessiondata){
-            $sessiondata = array(
-                'start_date'    => date('Y-m-d'),
-                'end_date'      => date('Y-m-d'),
-                'credits_id'    => null,
-            );
-        }
+        $sessiondata = Session::get('filter-credit-p-suspend');
 
-        $querydata = $model->newQuery()
-        ->join('core_member','acct_credits_acquittance.member_id', '=', 'core_member.member_id')
-        ->join('acct_credits','acct_credits_acquittance.credits_id', '=', 'acct_credits.credits_id')
-        ->join('acct_credits_account','acct_credits_acquittance.credits_account_id', '=', 'acct_credits_account.credits_account_id')
-        ->where('acct_credits_acquittance.credits_acquittance_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
-        ->where('acct_credits_acquittance.credits_acquittance_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])));
-        if($sessiondata['credits_id'] != null || $sessiondata['credits_id'] != ''){
-            $querydata = $querydata->where('acct_credits_acquittance.credits_id', $sessiondata['credits_id']);
+        $querydata = $model->newQuery()->with('member','account','credit');
+        if(!empty($sessiondata['credits_id'])){
+            $querydata = $querydata->where('credits_id', $sessiondata['credits_id']);
         }
 
         return $querydata;
@@ -91,17 +79,15 @@ class AcctCreditsPaymentSuspendDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::make('acct_credits_account.savings_account_id')->title(__('No'))->data('DT_RowIndex'),
-            Column::make('acct_credits_account.credits_account_serial')->title(__('No Akad Pinjaman'))->data('credits_account_serial'),
-            Column::make('core_member.member_name')->title(__('Nama Anggota'))->data('member_name'),
-            Column::make('acct_credits.credits_name')->title(__('Jenis Pinjaman'))->data('credits_name'),
-            Column::make('acct_credits_account.credits_acquittance_date')->title(__('Tanggal Pelunasan'))->data('credits_acquittance_date'),
-            Column::make('acct_mutation.credits_acquittance_principal')->title(__('Pelunasan Sisa Pokok'))->data('credits_acquittance_principal'),
-            Column::make('acct_credits_account.credits_acquittance_interest')->title(__('Pelunasan Sisa Bunga'))->data('credits_acquittance_interest'),
-            Column::make('acct_credits_account.credits_acquittance_fine')->title(__('Pelunasan Akm. Sanksi'))->data('credits_acquittance_fine'),
-            Column::make('acct_credits_account.credits_acquittance_penalty')->title(__('Jumlah Penalti'))->data('credits_acquittance_penalty'),
-            Column::make('acct_credits_account.credits_acquittance_amount')->title(__('Total Pelunasan'))->data('credits_acquittance_amount'),
-            Column::computed('action') 
+            Column::make('credits_payment_suspend_id')->title(__('No'))->data('DT_RowIndex'),
+            Column::make('account.credits_account_serial')->title(__('No Akad Pinjaman')),
+            Column::make('member.member_name')->title(__('Nama Anggota')),
+            Column::make('credit.credits_name')->title(__('Jenis Pinjaman')),
+            Column::make('credits_payment_period')->title(__('Angsuran')),
+            Column::make('credits_grace_period')->title(__('Penundaan Angsuran')),
+            Column::make('credits_payment_date_old')->title(__('Tanggal Angsuran Lama')),
+            Column::make('credits_payment_date_new')->title(__('Tanggal Angsuran Baru')),
+            Column::computed('action')
                     ->title(__('Aksi'))
                     ->exportable(false)
                     ->printable(false)
@@ -117,6 +103,6 @@ class AcctCreditsPaymentSuspendDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Pelunasan_Pinjaman_' . date('YmdHis');
+        return 'Penundaan_angsuran' . date('YmdHis');
     }
 }

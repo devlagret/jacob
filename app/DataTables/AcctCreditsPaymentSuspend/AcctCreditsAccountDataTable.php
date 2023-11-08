@@ -28,7 +28,7 @@ class AcctCreditsAccountDataTable extends DataTable
             ->editColumn('credits_account_due_date', function (AcctCreditsAccount $model) {
                 return date('d-m-Y', strtotime($model->credits_account_due_date));
             })
-            ->addColumn('action', 'content.AcctCreditsAcquittance.Add.AcctCreditsAccountModal._action-menu');
+            ->addColumn('action', 'content.AcctCreditsPaymentSuspend.Add.AcctCreditsAccountModal._action-menu');
     }
 
     /**
