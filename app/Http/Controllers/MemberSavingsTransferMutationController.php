@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AppHelper;
 use Illuminate\Http\Request;
 use App\DataTables\MemberSavingsTransferMutation\MemberSavingsTransferMutationDataTable;
 use App\DataTables\MemberSavingsTransferMutation\CoreMemberDataTable;
@@ -31,17 +32,7 @@ class MemberSavingsTransferMutationController extends Controller
         session()->forget('session_savingsaccount');
         $sessiondata = session()->get('filter_membersavingstransfermutation');
         $branch_id          = auth()->user()->branch_id;
-        if($branch_id == 0){
-            $coremember = CoreMember::select('member_id','member_name','member_no')
-            ->where('data_state',0)
-            ->get();
-        }else{
-            $coremember = CoreMember::select('member_id','member_name','member_no')
-            ->where('data_state',0)
-            ->where('branch_id', $branch_id)
-            ->get();
-    
-        }
+        $coremember = AppHelper::member();
        
         return $dataTable->render('content.MemberSavingsTransferMutation.List.index',compact('sessiondata','coremember'));
     }

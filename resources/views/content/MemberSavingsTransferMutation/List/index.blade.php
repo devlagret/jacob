@@ -33,7 +33,7 @@
                             <select name="member_id" id="member_id" data-control="select2" data-placeholder="{{ __('Pilih Anggota') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg">
                                 <option value="">{{ __('Pilih') }}</option>
                                 @foreach($coremember as $key => $value)
-                                    <option data-kt-flag="{{ $value['member_id'] }}" value="{{ $value['member_id'] }}" {{ $value['member_id'] == old('member_id', $sessiondata['member_id'] ?? '') ? 'selected' :'' }}>{{ $value['member_no'] }} - {{ $value['member_name'] }}</option>
+                                    <option data-kt-flag="{{ $key }}" value="{{ $key }}" {{ $key == old('member_id', $sessiondata['member_id'] ?? '') ? 'selected' :'' }}>{{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
