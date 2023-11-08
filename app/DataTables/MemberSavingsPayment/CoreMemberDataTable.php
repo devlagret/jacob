@@ -35,7 +35,7 @@ class CoreMemberDataTable extends DataTable
     public function query(CoreMember $model)
     {
         $model = $model->newQuery()->with('branch')
-        ->where('member_status', 1)
+        // ->where('member_status', 1)
         ->orderBy('member_no', 'ASC');
         if(Auth::user()->branch_id!==0){
             $model->where('branch_id',Auth::user()->branch_id);
