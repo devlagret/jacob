@@ -104,11 +104,8 @@ class AcctCreditsPaymentBankController extends Controller
         $acctcreditsaccount     = array();
         $acctcreditspayment     = array();
         if(isset($sessiondata['credits_account_id'])){
-            $acctcreditsaccount = AcctCreditsAccount::select('acct_credits_account.*', 'acct_credits.credits_name', 'core_member.member_no', 'core_member.member_name', 'core_member.member_address')
-            ->join('acct_credits', 'acct_credits.credits_id', '=', 'acct_credits_account.credits_id')
-            ->join('core_member', 'core_member.member_id', '=', 'acct_credits_account.member_id')
-            ->where('acct_credits_account.credits_account_id', $sessiondata['credits_account_id'])
-            ->first();
+            $acctcreditsaccount = AcctCreditsAccount::with('member','credit')
+            ->find($sessiondata['credits_account_id']);
 
             $acctcreditspayment = AcctCreditsPayment::select('credits_payment_date', 'credits_payment_principal', 'credits_payment_interest', 'credits_principal_last_balance', 'credits_interest_last_balance')
             ->where('credits_account_id', $sessiondata['credits_account_id'])
