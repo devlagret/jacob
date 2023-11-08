@@ -14,6 +14,7 @@ use App\Models\AcctSavings;
 use App\Models\AcctSavingsAccount;
 use App\Models\CloseCashierLog;
 use App\Models\CoreEmployee;
+use App\Models\CoreMember;
 use App\Models\CoreMemberKopkar;
 use App\Models\Expenditure;
 use App\Models\InvtItem;
@@ -103,6 +104,16 @@ class ApiController extends Controller
         $data = AcctCreditsAccount::withoutGlobalScopes()
         ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
         ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
+        ->get();
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+     //pinjaman
+     public function getDataMembers(){
+        $data = CoreMember::withoutGlobalScopes()
         ->get();
         return response()->json([
             'data' => $data,
