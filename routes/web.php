@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Account\SettingsController;
+use App\Http\Controllers\AcctCreditsPaymentSuspendController;
 use App\Http\Controllers\AcctNominativeSavingsPickupController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
 use App\Http\Controllers\Documentation\ReferencesController;
@@ -216,16 +217,16 @@ Route::middleware(['auth','loged'])->group(function () {
     });
 
     // AcctCreditsPaymentSuspend pages
-    Route::prefix('credits-payment-suspend')->name('credits-payment-suspend.')->group(function () {
-        Route::get('/', [AcctCreditsPaymentSuspendController::class, 'index'])->name('index');
-        Route::post('/filter', [AcctCreditsPaymentSuspendController::class, 'filter'])->name('filter');
-        Route::get('/filter-reset', [AcctCreditsPaymentSuspendController::class, 'filterReset'])->name('filter-reset');
-        Route::get('/add', [AcctCreditsPaymentSuspendController::class, 'add'])->name('add');
-        Route::get('/modal-credits-account', [AcctCreditsPaymentSuspendController::class, 'modalAcctCreditsAccount'])->name('modal-credits-account');
-        Route::get('/select-credits-account/{credits_account_id}', [AcctCreditsPaymentSuspendController::class, 'selectAcctCreditsAccount'])->name('select-credits-account');
-        Route::post('/elements-add', [AcctCreditsPaymentSuspendController::class, 'elementsAdd'])->name('elements-add');
-        Route::post('/process-add', [AcctCreditsPaymentSuspendController::class, 'processAdd'])->name('process-add');
-        Route::get('/print-note/{savings_cash_mutation_id}', [AcctCreditsPaymentSuspendController::class, 'printNote'])->name('print-note');
+    Route::prefix('credits-payment-suspend')->controller(AcctCreditsPaymentSuspendController::class)->name('cps.')->group(function () {
+        Route::get('/',  'index')->name('index');
+        Route::post('/filter',  'filter')->name('filter');
+        Route::get('/filter-reset',  'filterReset')->name('filter-reset');
+        Route::get('/add',  'add')->name('add');
+        Route::get('/modal-credits-account',  'modalAcctCreditsAccount')->name('modal-credits-account');
+        Route::get('/select-credits-account/{credits_account_id}',  'selectAcctCreditsAccount')->name('select-credits-account');
+        Route::post('/elements-add',  'elementsAdd')->name('elements-add');
+        Route::post('/process-add',  'processAdd')->name('process-add');
+        Route::get('/print-note/{credits_payment_suspend_id}',  'printNote')->name('print-note');
     });
 
 
