@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Sample API route
 Route::group(['middleware'=> ['auth:sanctum']], function(){
-// Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'profits'])->name('profits');
+Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'profits'])->name('profits');
 Route::post('test', [ApiController::class, 'tst']);
 Route::post('getSavingsAccount', [ApiController::class, 'getDataSavings']);
 Route::post('getDepositoAccount', [ApiController::class, 'getDataDeposito']);
