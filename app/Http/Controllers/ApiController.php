@@ -111,7 +111,7 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
-     //pinjaman
+     //member
      public function getDataMembers(){
         $data = CoreMember::withoutGlobalScopes()
         ->get();
