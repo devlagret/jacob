@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\AcctSavingsAccount;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -46,10 +47,10 @@ class AcctSavingsAccountCoverDataTable extends DataTable
         if(!$sessiondata){
             $sessiondata = array(
                 'savings_id' => null,
-                'branch_id' => auth()->user()->branch_id,
+                'branch_id' => null,
             );
         }
-        if(!$sessiondata['branch_id'] || !$sessiondata['branch_id']==0){
+        if(empty($sessiondata['branch_id'])||Auth::user()->branch_id!==0){
             $sessiondata['branch_id'] = auth()->user()->branch_id;
         }
 

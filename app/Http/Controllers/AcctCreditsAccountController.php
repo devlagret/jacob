@@ -181,7 +181,6 @@ class AcctCreditsAccountController extends Controller
             "credits_token"                             => $token
         );
 
-
         DB::beginTransaction();
 
         try {
