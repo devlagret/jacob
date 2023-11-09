@@ -163,4 +163,10 @@ class ApiController extends Controller
             'message' => 'Logged Out'
         ];
     }
+
+    public function getLoginState(Request $request){
+        return response([
+            'state'          => "login",
+        ],201);
+    }
 }
