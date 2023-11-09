@@ -3134,7 +3134,8 @@ class AcctCreditsAccountController extends Controller
         $dayname 					= Configuration::DayName();
         $monthname 					= Configuration::Month();
 
-         $acctcreditsaccount			= AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
+         $acctcreditsaccount			= AcctCreditsAccount::withoutGlobalScopes()
+         ->select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
         ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
         ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
         ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
