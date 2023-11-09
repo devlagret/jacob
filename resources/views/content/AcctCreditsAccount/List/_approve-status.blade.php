@@ -2,7 +2,7 @@
     $approve = App\Http\Controllers\AcctCreditsAccountController::getApproveStatus($model->credits_approve_status);
 @endphp
 
-@if ($model->credits_approve_status == 0 && auth()->user()->user_group_id == 5  && auth()->user()->user_group_id == 1)
+@if ($model->credits_approve_status == 0 && auth()->user()->user_group_id == 5  && auth()->user()->user_group_id == 6)
     <td class="text-end">
         <a type="button" href="{{ route('credits-account.approving', $model->credits_account_id) }}" class="btn btn-sm btn-success btn-active-light-success mb-1">
             <span class="bi bi-check"></span>
