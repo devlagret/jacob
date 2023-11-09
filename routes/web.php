@@ -14,6 +14,7 @@ use App\Http\Controllers\AcctCreditsAccountPaidOffReportController;
 use App\Http\Controllers\AcctCreditsController;
 use App\Http\Controllers\AcctCreditsAccountHistoryController;
 use App\Http\Controllers\AcctCreditsAccountMasterController;
+use App\Http\Controllers\AcctCreditsAccountRescheduleController;
 use App\Http\Controllers\AcctCreditsAcquittanceController;
 use App\Http\Controllers\AcctCreditsAgunanController;
 use App\Http\Controllers\AcctCreditsDailyMutationController;
@@ -218,6 +219,20 @@ Route::middleware(['auth','loged'])->group(function () {
 
     // AcctCreditsPaymentSuspend pages
     Route::prefix('credits-payment-suspend')->controller(AcctCreditsPaymentSuspendController::class)->name('cps.')->group(function () {
+        Route::get('/',  'index')->name('index');
+        Route::post('/filter',  'filter')->name('filter');
+        Route::get('/filter-reset',  'filterReset')->name('filter-reset');
+        Route::get('/add',  'add')->name('add');
+        Route::get('/modal-credits-account',  'modalAcctCreditsAccount')->name('modal-credits-account');
+        Route::get('/select-credits-account/{credits_account_id}',  'selectAcctCreditsAccount')->name('select-credits-account');
+        Route::post('/elements-add',  'elementsAdd')->name('elements-add');
+        Route::post('/process-add',  'processAdd')->name('process-add');
+        Route::get('/print-note/{credits_payment_suspend_id}',  'printNote')->name('print-note');
+    });
+
+
+    // AcctCreditsReschedulling pages
+    Route::prefix('credits-account-reschedule')->controller(AcctCreditsAccountRescheduleController::class)->name('credits-account-reschedule.')->group(function () {
         Route::get('/',  'index')->name('index');
         Route::post('/filter',  'filter')->name('filter');
         Route::get('/filter-reset',  'filterReset')->name('filter-reset');
