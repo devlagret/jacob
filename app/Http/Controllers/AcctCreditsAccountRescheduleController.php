@@ -52,30 +52,50 @@ class AcctCreditsAccountRescheduleController extends Controller
             'credits_id' => $request->credits_id
         );
 
-        session()->put('filter-credit-p-suspend', $sessiondata);
+        session()->put('filter-credit-accountreschedull', $sessiondata);
 
-        return redirect('credits-payment-suspend');
+        return redirect('credits-account-reschedule');
     }
 
     public function filterReset(){
-        session()->forget('filter_creditspaymentsuspend');
+        session()->forget('filter-credit-accountreschedull');
 
-        return redirect('credits-payment-suspend');
+        return redirect('credits-account-reschedule');
     }
 
     public function elementsAdd(Request $request)
     {
-        $sessiondata = session()->get('data_creditspaymentsuspendadd');
+        $sessiondata = session()->get('data_creditsaccountreschedulladd');
         if(!$sessiondata || $sessiondata == ""){
-            $sessiondata['penalty_type_id']                         = null;
-            $sessiondata['credits_acquittance_interest']            = 0;
-            $sessiondata['credits_acquittance_fine']                = 0;
-            $sessiondata['credits_acquittance_penalty']             = 0;
+            $sessiondata['credits_id']                              = null;
+            $sessiondata['start_date']                              = 0;
+            $sessiondata['end_date']                                = 0;
+            $sessiondata['credits_account_id']             = 0;
             $sessiondata['credits_acquittance_amount']              = 0;
             $sessiondata['penalty']                                 = 0;
         }
         $sessiondata[$request->name] = $request->value;
-        session()->put('data_creditspaymentsuspendadd', $sessiondata);
+        session()->put('data_creditsaccountreschedulladd', $sessiondata);
+    }
+    public function add()
+    {
+        $sessiondata            = session()->get('data_creditsaccountreschedulladd');
+        $period=Configuration::CreditsPaymentPeriod();
+        $acctcreditsaccount     = array();
+        // $acctcreditspayment     = array();
+        // $credits_account_interest_last_balance = 0;
+        // if(isset($sessiondata['credits_account_id'])){
+        //     $acctcreditsaccount = AcctCreditsAccount::with('member','credit')->find($sessiondata['credits_account_id']);
+
+        //     $acctcreditspayment = AcctCreditsPayment::select('credits_payment_date', 'credits_payment_principal', 'credits_payment_interest', 'credits_principal_last_balance', 'credits_interest_last_balance')
+        //     ->where('credits_account_id', $sessiondata['credits_account_id'])
+        //     ->get();
+
+        //     $credits_account_interest_last_balance = ($acctcreditsaccount['credits_account_interest_amount'] * $acctcreditsaccount['credits_account_period']) - ($acctcreditsaccount['credits_account_payment_to'] * $acctcreditsaccount['credits_account_interest_amount']);
+        // }
+
+        // dd($credits_account_interest_last_balance);
+        return view('content.AcctCreditsAccountReschedule.Add.index', compact('sessiondata', 'period', 'acctcreditsaccount'));
     }
 
 }

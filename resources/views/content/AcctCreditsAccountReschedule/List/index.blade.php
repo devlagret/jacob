@@ -7,7 +7,7 @@
                 </span>
             </div>
         </div>
-        <form id="kt_filter_credits_acquittance_form" class="form" method="POST" action="{{ route('cps.filter') }}" enctype="multipart/form-data">
+        <form id="kt_filter_credits_acquittance_form" class="form" method="POST" action="{{ route('credits-account-reschedule.filter') }}" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <div id="kt_card_collapsible" class="collapse">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end py-6 px-9">
-                    <a href="{{ route('cps.filter-reset') }}" class="btn btn-danger me-2" id="kt_filter_cancel">
+                    <a href="{{ route('credits-account-reschedule.filter-reset') }}" class="btn btn-danger me-2" id="kt_filter_cancel">
                         {{__('Batal')}}
                     </a>
                     <button type="submit" class="btn btn-success" id="kt_filter_search">
@@ -47,11 +47,11 @@
     <br>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Daftar Reschedulling Account</h3>
+            <h3 class="card-title">Daftar Reschedulling Pinjaman</h3>
             <div class="card-toolbar">
-                <a type="button" href="{{ route('cps.add') }}"  class="btn btn-sm btn-light-primary">
+                <a type="button" href="{{ route('credits-account-reschedule.add') }}"  class="btn btn-sm btn-light-primary">
                     {!! theme()->getSvgIcon("icons/duotune/general/gen035.svg", "svg-icon-2x me-1") !!}
-                    {{ __('Tambah Pelunasan Baru') }}
+                    {{ __('Tambah Reschedule Baru') }}
                 </a>
             </div>
         </div>

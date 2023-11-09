@@ -25,12 +25,12 @@ class AcctCreditsAccountRescheduleDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addIndexColumn()
-            ->editColumn('credits_payment_period', fn($model)=>$period[$model->credits_payment_period])
-            ->editColumn('credits_payment_date_old', function (AcctCreditsAccountReschedule $model) {
-                return date('d-m-Y', strtotime($model->credits_payment_date_old));
+            // ->editColumn('credits_account_period_new', fn($model)=>$period[$model->credits_account_period_new])
+            ->editColumn('credits_account_date_new', function (AcctCreditsAccountReschedule $model) {
+                return date('d-m-Y', strtotime($model->credits_account_date_new));
             })
-            ->editColumn('credits_payment_date_new', function (AcctCreditsAccountReschedule $model) {
-                return date('d-m-Y', strtotime($model->credits_payment_date_new));
+            ->editColumn('credits_account_date_new', function (AcctCreditsAccountReschedule $model) {
+                return date('d-m-Y', strtotime($model->credits_account_date_new));
             })
             ->addColumn('action', 'content.AcctCreditsAccountReschedule.List._action-menu');
     }
@@ -43,7 +43,7 @@ class AcctCreditsAccountRescheduleDataTable extends DataTable
      */
     public function query(AcctCreditsAccountReschedule $model)
     {
-        $sessiondata = Session::get('filter-credit-p-suspend');
+        $sessiondata = Session::get('filter-credit-accountreschedull');
 
         $querydata = $model->newQuery()->with('member','account','credit');
         if(!empty($sessiondata['credits_id'])){
@@ -60,7 +60,7 @@ class AcctCreditsAccountRescheduleDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('savings-cash-mutation-table')
+                    ->setTableId('acct-credits-reschedule-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->stateSave(true)
@@ -79,14 +79,14 @@ class AcctCreditsAccountRescheduleDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::make('credits_payment_suspend_id')->title(__('No'))->data('DT_RowIndex'),
-            Column::make('account.credits_account_serial')->title(__('No Akad Pinjaman')),
+            Column::make('credits_account_reschedule_id')->title(__('No'))->data('DT_RowIndex'),
+            Column::make('account.credits_account_serial')->title(__('No Pinjaman')),
             Column::make('member.member_name')->title(__('Nama Anggota')),
             Column::make('credit.credits_name')->title(__('Jenis Pinjaman')),
-            Column::make('credits_payment_period')->title(__('Angsuran')),
-            Column::make('credits_grace_period')->title(__('Penundaan Angsuran')),
-            Column::make('credits_payment_date_old')->title(__('Tanggal Angsuran Lama')),
-            Column::make('credits_payment_date_new')->title(__('Tanggal Angsuran Baru')),
+            Column::make('credits_account_period_old')->title(__('Periode lama')),
+            Column::make('credits_account_period_new')->title(__('Periode Baru')),
+            Column::make('credits_account_date_old')->title(__('Tanggal Pinjaman Lama')),
+            Column::make('credits_account_date_new')->title(__('Tanggal Pinjaman Baru')),
             Column::computed('action')
                     ->title(__('Aksi'))
                     ->exportable(false)
@@ -103,6 +103,6 @@ class AcctCreditsAccountRescheduleDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Penundaan_angsuran' . date('YmdHis');
+        return 'Reschedule_Pinjaman' . date('YmdHis');
     }
 }
