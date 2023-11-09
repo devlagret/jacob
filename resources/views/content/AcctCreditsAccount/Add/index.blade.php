@@ -79,13 +79,13 @@ var validator = FormValidation.formValidation(
                     }
                 }
             },
-            'savings_account_id': {
-                validators: {
-                    notEmpty: {
-                        message: 'No. Simpanan harus diisi'
-                    }
-                }
-            },
+            // 'savings_account_id': {
+            //     validators: {
+            //         notEmpty: {
+            //             message: 'No. Simpanan harus diisi'
+            //         }
+            //     }
+            // },
         },
 
         plugins: {
