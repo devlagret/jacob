@@ -943,13 +943,9 @@ class AcctCreditsAccountController extends Controller
         $img = "<img src=\"".public_path('storage/'.$preferencecompany['logo_koperasi'])."\" alt=\"\" width=\"700%\" height=\"300%\"/>";
         $img ="";
         $tbl = "
-        <table cellspacing=\"0\" cellpadding=\"1\" border=\"0\">
+        <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\">
             <tr>
-                <td rowspan=\"2\" width=\"20%\">".$img."</td>
-                <td width=\"50%\"><div style=\"text-align: left; font-size:14px\">BUKTI PENCAIRAN PEMBIAYAAN</div></td>
-            </tr>
-            <tr>
-                <td width=\"40%\"><div style=\"text-align: left; font-size:14px\">Jam : ".date('H:i:s')."</div></td>
+                <td width=\"100%\"><div style=\"text-align: center; font-size:14px\">BUKTI PENERIMAAN PINJAMAN</div></td>
             </tr>
         </table>";
 
@@ -957,33 +953,35 @@ class AcctCreditsAccountController extends Controller
 
 
         $tbl1 = "
-        Telah dibayarkan kepada :
-        <br>
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"0\" width=\"100%\">
             <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Nama</div></td>
                 <td width=\"80%\"><div style=\"text-align: left;\">: {$acctcreditsaccount->member->member_name}</div></td>
             </tr>
             <tr>
-                <td width=\"20%\"><div style=\"text-align: left;\">No. Akad</div></td>
-                <td width=\"80%\"><div style=\"text-align: left;\">: {$acctcreditsaccount['credits_account_serial']}</div></td>
-            </tr>
-            <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Alamat</div></td>
                 <td width=\"80%\"><div style=\"text-align: left;\">: {$acctcreditsaccount->member->member_address}</div></td>
             </tr>
             <tr>
-                <td width=\"20%\"><div style=\"text-align: left;\">Terbilang</div></td>
-                <td width=\"80%\"><div style=\"text-align: left;\">: ".Configuration::numtotxt($acctcreditsaccount['credits_account_amount'])."</div></td>
+                <td width=\"20%\"><div style=\"text-align: left;\">Pekerjaan</div></td>
+                <td width=\"80%\"><div style=\"text-align: left;\">: {$acctcreditsaccount->member->member_job}</div></td>
             </tr>
             <tr>
-                <td width=\"20%\"><div style=\"text-align: left;\">Keperluan</div></td>
-                <td width=\"80%\"><div style=\"text-align: left;\">: PENCAIRAN PEMBIAYAAN</div></td>
-            </tr>
-                <tr>
-                <td width=\"20%\"><div style=\"text-align: left;\">Jumlah</div></td>
+                <td width=\"20%\"><div style=\"text-align: left;\">Besar Paket</div></td>
                 <td width=\"80%\"><div style=\"text-align: left;\">: Rp. &nbsp;".number_format($acctcreditsaccount['credits_account_amount'], 2)."</div></td>
             </tr>
+            <tr>
+                <td width=\"20%\"><div style=\"text-align: left;\">Besar Angsuran</div></td>
+                <td width=\"80%\"><div style=\"text-align: left;\">: Rp. &nbsp;".number_format($acctcreditsaccount['credits_account_payment_amount'], 2)."</div></td>
+            </tr>
+            <tr>
+                <td width=\"20%\"><div style=\"text-align: left;\">Pembayaran Tiap</div></td>
+                <td width=\"80%\"><div style=\"text-align: left;\">: </div></td>
+            </tr>
+            <tr>
+                <td width=\"100%\"><div style=\"text-align: left;\">Kelompok................................. Resort  ................................   No. Anggota {$acctcreditsaccount->member->member_no} </div></td>
+            </tr>
+           
         </table>";
 
         $tbl2 = "
@@ -994,9 +992,24 @@ class AcctCreditsAccountController extends Controller
                 <td width=\"30%\"><div style=\"text-align: center;\">".$this->getBranchCity(auth()->user()->branch_id).", ".date('d-m-Y')."</div></td>
             </tr>
             <tr>
-                <td width=\"30%\"><div style=\"text-align: center;\">Penerima</div></td>
+                <td width=\"30%\"><div style=\"text-align: center;\">Pemeriksa</div></td>
                 <td width=\"20%\"><div style=\"text-align: center;\"></div></td>
-                <td width=\"30%\"><div style=\"text-align: center;\">Teller/Kasir</div></td>
+                <td width=\"30%\"><div style=\"text-align: center;\">Yang Menerima,</div></td>
+            </tr>
+            <tr>
+                <td width=\"30%\"><div style=\"text-align: center;\"></div></td>
+                <td width=\"20%\"><div style=\"text-align: center;\"></div></td>
+                <td width=\"30%\"><div style=\"text-align: center;\"></div></td>
+            </tr>
+            <tr>
+                <td width=\"30%\"><div style=\"text-align: center;\"></div></td>
+                <td width=\"20%\"><div style=\"text-align: center;\"></div></td>
+                <td width=\"30%\"><div style=\"text-align: center;\"></div></td>
+            </tr>
+            <tr>
+                <td width=\"30%\"><div style=\"text-align: center;\">(.............)</div></td>
+                <td width=\"20%\"><div style=\"text-align: center;\"></div></td>
+                <td width=\"30%\"><div style=\"text-align: center;\">(.............)</div></td>
             </tr>
         </table>";
 
