@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 class CreditHelper{
     protected $credits_account_date;
     protected $credits_payment_to;
+    protected $total_credits_account;
     protected $creditData;
     /**
      * Get Schedule
@@ -21,7 +22,8 @@ class CreditHelper{
         if(!is_null($credit_account_id)){
             $cd = AcctCreditsAccount::find($credit_account_id);
             $ch->credits_account_date=$cd->credits_account_date;
-            $ch->credits_payment_to=1;
+            $ch->total_credits_account=$cd->credits_account_amount;
+            $ch->credits_payment_to=0;
             $ch->setData($cd);
         }
         return $ch;
@@ -37,7 +39,8 @@ class CreditHelper{
         if(!is_null($credits_payment_suspend_id)){
             $cs = AcctCreditsPaymentSuspend::with('account')->find($credits_payment_suspend_id);
             $ch->credits_account_date=$cs->credits_payment_date_new;
-            $ch->credits_payment_to=($cs->account->credits_account_payment_to+1);
+            $ch->credits_payment_to=$cs->credits_account_payment_to;
+            $ch->total_credits_account=$cs->credits_account_last_balance;
             $ch->setData($cs->account);
         }
         return $ch;
@@ -62,11 +65,11 @@ class CreditHelper{
      * @param integer $credits_payment_period
      * @return Collection
      */
-    public function flat($credits_account_amount=null,$credits_account_principal_amount=null,$credits_account_interest=null,$credits_account_period=null,$credits_account_date=null,$credits_payment_period=1){
+    public function flat($credits_account_amount=null,$credits_account_principal_amount=null,$credits_account_interest_amount=null,$credits_account_period=null,$credits_account_date=null,$credits_payment_period=1){
         $credits_payment_to=1;
         if(!empty($this->creditData)){
-        $total_credits_account 		= $this->creditData->credits_account_amount;
-        $credits_account_interest 	= $this->creditData->credits_account_interest;
+        $total_credits_account 		= $this->total_credits_account;
+        $credits_account_interest_amount 	= $this->creditData->credits_account_interest_amount;
         $credits_account_period 	= $this->creditData->credits_account_period;
         $credits_account_principal_amount 	= $this->creditData->credits_account_principal_amount;
         $credits_payment_period     = $this->creditData->credits_payment_period;
@@ -78,13 +81,13 @@ class CreditHelper{
         $period = self::paymentPeriod($credits_payment_period);
         for($i=$credits_payment_to; $i<=$credits_account_period; $i++){
             $row	= collect();
-            $tanggal_angsuran = Carbon::parse($credits_account_date)->add($i,$period)->format('d-m-Y');
+            $tanggal_angsuran = Carbon::parse($credits_account_date)->add(($i-$credits_payment_to),$period)->format('d-m-Y');
             $angsuran_pokok									= $credits_account_principal_amount;
-            $angsuran_margin								= ($credits_account_amount*$credits_account_interest/100);
+            $angsuran_margin								= $credits_account_interest_amount;
             $angsuran 										= $angsuran_pokok + $angsuran_margin;
             $last_balance 									= $opening_balance - $angsuran_pokok;
             $row->put('opening_balance',$opening_balance);
-            $row->put('ke',$i);
+            $row->put('ke',$i+1);
             $row->put('tanggal_angsuran',$tanggal_angsuran);
             $row->put('angsuran',$angsuran);
             $row->put('angsuran_pokok',$angsuran_pokok);

@@ -193,7 +193,7 @@ class AcctCreditsPaymentSuspendController extends Controller
                          <div style=\"font-size:12px\";><b>No. Pinjaman</b></div>
                      </td>
                      <td style=\"text-align:left;\" width=\"45%\">
-                         <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount['credits_account_serial']."</b></div>
+                         <div style=\"font-size:12px\";><b>: {$acctcreditsaccount->account->credits_account_serial}</b></div>
                      </td>
 
                      <td style=\"text-align:left;\" width=\"20%\">
@@ -214,7 +214,7 @@ class AcctCreditsPaymentSuspendController extends Controller
                          <div style=\"font-size:12px\";><b>Jangka Waktu</b></div>
                      </td>
                      <td style=\"text-align:left;\" width=\"50%\">
-                         <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount['credits_account_period']." ".$paymentperiod[$acctcreditsaccount['credits_payment_period']]."</b></div>
+                         <div style=\"font-size:12px\";><b>: {$acctcreditsaccount->account->credits_account_period} ".$paymentperiod[$acctcreditsaccount['credits_payment_period']]."</b></div>
                      </td>
                  </tr>
                  <tr  style=\"line-height: 60%;\">
@@ -228,7 +228,7 @@ class AcctCreditsPaymentSuspendController extends Controller
                          <div style=\"font-size:12px\";><b>Plafon</b></div>
                      </td>
                      <td style=\"text-align:left;\" width=\"50%\">
-                         <div style=\"font-size:12px\";><b>: Rp.".number_format($acctcreditsaccount['credits_account_amount'])."</b></div>
+                         <div style=\"font-size:12px\";><b>: Rp.".number_format($acctcreditsaccount->account->credits_account_amount)."</b></div>
                      </td>
                  </tr>
              </table>
