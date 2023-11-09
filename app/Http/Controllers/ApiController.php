@@ -81,6 +81,7 @@ class ApiController extends Controller
         $data = AcctSavingsAccount::withoutGlobalScopes()
         ->join('core_member','acct_savings_account.member_id','core_member.member_id')
         ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
+        ->where('data_state', 0)
         ->get();
 
         return response()->json([
