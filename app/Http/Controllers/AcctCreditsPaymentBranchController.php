@@ -34,9 +34,7 @@ class AcctCreditsPaymentBranchController extends Controller
         ->where('data_state', 0)
         ->get();
 
-        $corebranch = CoreBranch::select('branch_name', 'branch_id')
-        ->where('data_state', 0)
-        ->get();
+        $corebranch = CoreBranch::flt()->get()->pluck('branch_name','branch_id');
 
         return $dataTable->render('content.AcctCreditsPaymentBranch.List.index', compact('sessiondata', 'acctcredits', 'corebranch'));
     }

@@ -2,41 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\AcctCreditsDataTable;
-use App\DataTables\AcctCreditsPaymentCash\AcctCreditsAccountDataTable as AcctCreditsPaymentCashAcctCreditsAccountDataTable;
-use App\DataTables\AcctCreditsPaymentDebet\AcctCreditsAccountDataTable as AcctCreditsPaymentDebetAcctCreditsAccountDataTable;
-use App\Models\User;
-use App\Models\AcctAccount;
-use App\Models\AcctJournalVoucher;
-use App\Models\AcctJournalVoucherItem;
+use App\DataTables\AcctCreditsPaymentSuspend\AcctCreditsAccountDataTable;
+use App\DataTables\AcctCreditsPaymentSuspend\AcctCreditsPaymentSuspendDataTable;
+use App\Helpers\Configuration;
 use App\Models\AcctCredits;
 use App\Models\AcctCreditsAccount;
-use App\Models\AcctCreditsAcquittance;
 use App\Models\AcctCreditsPayment;
-use App\Models\CoreBranch;
-use App\Models\CoreMember;
-use App\Models\AcctMutation;
-use App\Models\PreferenceCompany;
-use App\Models\PreferenceTransactionModule;
-use App\DataTables\AcctCreditsPaymentSuspendDataTable\AcctCreditsAccountDataTable;
-use App\DataTables\AcctCreditsPaymentSuspendDataTable\AcctCreditsPaymentSuspendDataTable;
+use App\Models\AcctCreditsPaymentSuspend;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Helpers\Configuration;
-use Elibyy\TCPDF\Facades\TCPDF;
 
 class AcctCreditsPaymentSuspendController extends Controller
 {
     public function index(AcctCreditsPaymentSuspendDataTable $dataTable)
     {
         session()->forget('data_creditspaymentsuspendadd');
-        $sessiondata = session()->get('filter_creditspaymentsuspend');
+        $sessiondata = session()->get('filter-credit-p-suspend');
 
         $acctcredits = AcctCredits::select('credits_name', 'credits_id')
         ->where('data_state', 0)
         ->get();
 
-        return $dataTable->render('content.AcctCreditsAcquittance.List.index'   , compact('sessiondata', 'acctcredits'));
+        return $dataTable->render('content.AcctCreditsPaymentSuspend.List.index'   , compact('sessiondata', 'acctcredits'));
     }
 
     public function filter(Request $request){
@@ -58,7 +47,7 @@ class AcctCreditsPaymentSuspendController extends Controller
             'credits_id' => $request->credits_id
         );
 
-        session()->put('filter_creditspaymentsuspend', $sessiondata);
+        session()->put('filter-credit-p-suspend', $sessiondata);
 
         return redirect('credits-payment-suspend');
     }
@@ -71,7 +60,7 @@ class AcctCreditsPaymentSuspendController extends Controller
 
     public function elementsAdd(Request $request)
     {
-        $sessiondata = session()->get('data_creditsacquittanceadd');
+        $sessiondata = session()->get('data_creditspaymentsuspendadd');
         if(!$sessiondata || $sessiondata == ""){
             $sessiondata['penalty_type_id']                         = null;
             $sessiondata['credits_acquittance_interest']            = 0;
@@ -81,18 +70,16 @@ class AcctCreditsPaymentSuspendController extends Controller
             $sessiondata['penalty']                                 = 0;
         }
         $sessiondata[$request->name] = $request->value;
-        session()->put('data_creditsacquittanceadd', $sessiondata);
+        session()->put('data_creditspaymentsuspendadd', $sessiondata);
     }
 
     public function add()
     {
-        $config                 = theme()->getOption('page', 'view');
         $sessiondata            = session()->get('data_creditsacquittanceadd');
-        $penaltytype            = array_filter(Configuration::PenaltyType());
-
+        $period=Configuration::CreditsPaymentPeriod();
         $acctcreditsaccount     = array();
         $acctcreditspayment     = array();
-        $credits_account_interest_last_balance = 0; 
+        $credits_account_interest_last_balance = 0;
         if(isset($sessiondata['credits_account_id'])){
             $acctcreditsaccount = AcctCreditsAccount::with('member','credit')->find($sessiondata['credits_account_id']);
 
@@ -104,17 +91,17 @@ class AcctCreditsPaymentSuspendController extends Controller
         }
 
         // dd($credits_account_interest_last_balance);
-        return view('content.AcctCreditsAcquittance.Add.index', compact('sessiondata', 'penaltytype', 'acctcreditsaccount', 'acctcreditspayment','credits_account_interest_last_balance'));
+        return view('content.AcctCreditsPaymentSuspend.Add.index', compact('sessiondata', 'period', 'acctcreditsaccount', 'acctcreditspayment','credits_account_interest_last_balance'));
     }
 
-    public function modalAcctCreditsAccount(AcctCreditsPaymentCashAcctCreditsAccountDataTable $dataTable)
+    public function modalAcctCreditsAccount(AcctCreditsAccountDataTable $dataTable)
     {
-        return $dataTable->render('content.AcctCreditsAcquittance.Add.AcctCreditsAccountModal.index');
+        return $dataTable->render('content.AcctCreditsPaymentSuspend.Add.AcctCreditsAccountModal.index');
     }
 
     public function selectAcctCreditsAccount($credits_account_id)
     {
-        $sessiondata = session()->get('data_creditsacquittanceadd');
+        $sessiondata = session()->get('data_creditspaymentsuspendadd');
         if(!$sessiondata || $sessiondata == ""){
             $sessiondata['penalty_type_id']                         = null;
             $sessiondata['credits_acquittance_interest']            = 0;
@@ -124,10 +111,208 @@ class AcctCreditsPaymentSuspendController extends Controller
             $sessiondata['penalty']                                 = 0;
         }
         $sessiondata['credits_account_id'] = $credits_account_id;
-        session()->put('data_creditsacquittanceadd', $sessiondata);
+        session()->put('data_creditspaymentsuspendadd', $sessiondata);
 
         return redirect('credits-payment-suspend/add');
     }
+    public function processAdd(Request $request) {
+          try {
+          DB::beginTransaction();
+          AcctCreditsPaymentSuspend::create([
+            'branch_id'=>Auth::user()->branch_id,
+            'credits_account_id'=>$request->credits_account_id,
+            'member_id'=>$request->member_id,
+            'credits_id'=>$request->credits_id,
+            'credits_payment_suspend_date'=>Carbon::now()->format('Y-m-d'),
+            'credits_payment_period'=>$request->credits_payment_period,
+            'credits_grace_period'=>$request->credits_grace_period,
+            'credits_payment_date_old'=>$request->credits_payment_date_old,
+            'credits_payment_date_new'=>$request->credits_payment_date_new,
+            'created_id'=>Auth::id(),
+          ]);
+          $ca=AcctCreditsAccount::find($request->credits_account_id);
+          $ca->credits_account_payment_date=$request->credits_payment_date_new;
+          $ca->save();
+          DB::commit();
+          return redirect()->route('cps.index')->with(['pesan' => 'Penundaan Angsuran Sukses','alert' => 'success']);
+          } catch (\Exception $e) {
+          DB::rollBack();
+          dd($e);
+          report($e);
+          return redirect()->route('cps.index')->with(['pesan' => 'Penundaan Angsuran Gagal','alert' => 'error']);
+          }
+    }
+    public function printNote($credits_payment_suspend_id) {
+         return "Hello there";
+         $acctcreditsaccount		= AcctCreditsAccount::with('member')->find($credits_account_id);
+         $paymenttype 			= Configuration::PaymentType();
+         $paymentperiod 			= Configuration::CreditsPaymentPeriod();
+         $preferencecompany 		= PreferenceCompany::first();
 
-    
+         if($acctcreditsaccount['payment_type_id'] == '' || $acctcreditsaccount['payment_type_id'] == 1){
+             $datapola=$this->flat($credits_account_id);
+         }else if ($acctcreditsaccount['payment_type_id'] == 2){
+             $datapola=$this->anuitas($credits_account_id);
+         }else if($acctcreditsaccount['payment_type_id'] == 3){
+             $datapola=$this->slidingrate($credits_account_id);
+         }else if($acctcreditsaccount['payment_type_id'] == 4){
+             $datapola=$this->menurunharian($credits_account_id);
+         }
+
+         $pdf = new TCPDF('P', PDF_UNIT, 'A4', true, 'UTF-8', false);
+
+         $pdf::SetPrintHeader(false);
+         $pdf::SetPrintFooter(false);
+
+         $pdf::SetMargins(5, 5, 5, true);
+
+         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+         if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+             require_once(dirname(__FILE__).'/lang/eng.php');
+             $pdf::setLanguageArray($l);
+         }
+
+         $pdf::SetFont('helvetica', 'B', 20);
+
+         $pdf::AddPage('p');
+         $pdf::SetTitle('Jadwal Angsuran');
+
+         $pdf::SetFont('helvetica', '', 9);
+
+         // <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
+         //     <tr>
+         //         <td rowspan=\"2\" width=\"10%\"><img src=\"".public_path('storage/'.$preferencecompany['logo_koperasi'])."\" alt=\"\" width=\"700%\" height=\"300%\"/></td>
+         //     </tr>
+         // </table>
+         // <br/>
+         // <br/>
+         // <br/>
+         // <br/>
+         $tblheader = "
+             <table id=\"items\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
+                 <tr>
+                     <td style=\"text-align:center;\" width=\"100%\">
+                         <div style=\"font-size:14px\";>".$preferencecompany['company_name']."<BR><b>Jadwal Angsuran</b></div>
+                     </td>
+                 </tr>
+                 <tr style=\"line-height: 60%;\">
+                     <td style=\"text-align:left;\" width=\"20%\">
+                         <div style=\"font-size:12px\";><b>No. Pinjaman</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"45%\">
+                         <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount['credits_account_serial']."</b></div>
+                     </td>
+
+                     <td style=\"text-align:left;\" width=\"20%\">
+                         <div style=\"font-size:12px\";><b>Jenis Pinjaman</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"50%\">
+                         <div style=\"font-size:12px\";><b>: ".$this->getAcctCreditsName($acctcreditsaccount['credits_id'])."</b></div>
+                     </td>
+                 </tr>
+                 <tr style=\"line-height: 60%;\">
+                     <td style=\"text-align:left;\" width=\"20%\">
+                         <div style=\"font-size:12px\";><b>Nama</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"45%\">
+                         <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount->member->member_name."</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"20%\">
+                         <div style=\"font-size:12px\";><b>Jangka Waktu</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"50%\">
+                         <div style=\"font-size:12px\";><b>: ".$acctcreditsaccount['credits_account_period']." ".$paymentperiod[$acctcreditsaccount['credits_payment_period']]."</b></div>
+                     </td>
+                 </tr>
+                 <tr  style=\"line-height: 60%;\">
+                     <td style=\"text-align:left;\" width=\"20%\">
+                         <div style=\"font-size:12px\";><b>Tipe Angsuran</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"45%\">
+                         <div style=\"font-size:12px\";><b>: ".$paymenttype[$acctcreditsaccount['payment_type_id']]."</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"20%\">
+                         <div style=\"font-size:12px\";><b>Plafon</b></div>
+                     </td>
+                     <td style=\"text-align:left;\" width=\"50%\">
+                         <div style=\"font-size:12px\";><b>: Rp.".number_format($acctcreditsaccount['credits_account_amount'])."</b></div>
+                     </td>
+                 </tr>
+             </table>
+             <br><br>
+         ";
+         $pdf::setCellHeightRatio(0.9);
+         $pdf::writeHTML($tblheader, true, false, false, false, '');
+         $pdf::setCellHeightRatio(1);
+
+         $tbl1 = "
+         <br>
+         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
+             <tr>
+                 <td width=\"4%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Ke</div></td>
+                 <td width=\"12%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Tanggal Angsuran</div></td>
+                 <td width=\"8%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Hari</div></td>
+                 <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Saldo Pokok</div></td>
+                 <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Angsuran Pokok</div></td>
+                 <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Angsuran Bunga</div></td>
+                 <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Total Angsuran</div></td>
+                 <td width=\"15%\"><div style=\"text-align: center;font-size:10;font-weight:bold\">Sisa Pokok</div></td>
+
+
+             </tr>
+         ";
+
+         $no = 1;
+
+         $tbl2 = "";
+
+         $tbl3 ="";
+         $totalpokok = 0;
+         $totalmargin = 0;
+         $total = 0;
+         $totalpk = 0;
+         Carbon::setLocale('id');
+         foreach ($datapola as $key => $val) {
+
+             $roundAngsuran=round($val['angsuran'],-3);
+             $sisaRoundAngsuran = $val['angsuran'] - $roundAngsuran;
+             $sumAngsuranBunga = $val['angsuran_bunga'] + $sisaRoundAngsuran;
+
+             $tbl3 .= "
+                 <tr>
+                     <td ><div style=\"text-align: left;\">&nbsp; ".$val['ke']."</div></td>
+                     <td ><div style=\"text-align: center;\">".date('d-m-Y',strtotime($val['tanggal_angsuran']))." &nbsp; </div></td>
+                     <td ><div style=\"text-align: left;\">".Carbon::parse($val['tanggal_angsuran'])->translatedFormat('l')." &nbsp; </div></td>
+                     <td ><div style=\"text-align: right;\">".number_format($val['opening_balance'], 2)." &nbsp; </div></td>
+                     <td ><div style=\"text-align: right;\">".number_format($val['angsuran_pokok'], 2)." &nbsp; </div></td>
+                     <td ><div style=\"text-align: right;\">".number_format($sumAngsuranBunga,2)." &nbsp; </div></td>
+                     <td ><div style=\"text-align: right;\">".number_format($roundAngsuran,2)." &nbsp; </div></td>
+                     <td ><div style=\"text-align: right;\">".number_format($val['last_balance'], 2)." &nbsp; </div></td>
+
+                 </tr>
+             ";
+
+             $no++;
+             $totalpokok += $val['angsuran_pokok'];
+             $totalmargin += $sumAngsuranBunga;
+             $total += $roundAngsuran;
+             $totalpk += $val['last_balance'];
+         }
+
+         $tbl4 = "
+             <tr>
+                 <td colspan=\"4\"><div style=\"text-align: right;font-weight:bold\">Total</div></td>
+                 <td><div style=\"text-align: right;font-weight:bold\">".number_format($totalpokok, 2)."</div></td>
+                 <td><div style=\"text-align: right;font-weight:bold\">".number_format($totalmargin, 2)."</div></td>
+                 <td><div style=\"text-align: right;font-weight:bold\">".number_format($total, 2)."</div></td>
+                 <td><div style=\"text-align: right;font-weight:bold\">".number_format($totalpk, 2)."</div></td>
+             </tr>
+         </table>";
+         $pdf::writeHTML($tbl1.$tbl2.$tbl3.$tbl4, true, false, false, false, '');
+         $filename = 'Jadwal Angsuran Baru '.$acctcreditsaccount['credits_account_serial'].'.pdf';
+         $pdf::setTitle($filename);
+         $pdf::Output($filename, 'I');
+    }
+
 }

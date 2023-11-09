@@ -76,8 +76,8 @@ class CoreBranchController extends Controller
         $corebranch                 = CoreBranch::findOrFail($id);
         $corebranch->data_state     = 1;
         $corebranch->updated_id     = auth()->user()->user_id;
-
-        if($corebranch->save()){
+        $corebranch->save();
+        if($corebranch->delete()){
             $message = array(
                 'pesan' => 'Kode Cabang berhasil dihapus',
                 'alert' => 'success'
