@@ -92,53 +92,6 @@ function function_elements_add(name, value){
         }
     });
 }
-
-function calculate(){
-    var penalty_type_id                     = $("#penalty_type_id").val();
-    var penalty                             = $("#penalty").val();
-    var credits_acquittance_principal       = $("#credits_acquittance_principal").val();
-    var credits_acquittance_interest        = $("#credits_acquittance_interest").val();
-    var credits_acquittance_fine            = $("#credits_acquittance_fine").val();
-
-    var credits_account_last_balance        = $("#credits_account_last_balance").val();
-    var credits_account_interest            = $("#credits_account_interest").val();
-    var credits_account_interest_amount     = $("#credits_account_interest_amount").val();
-    var credits_account_payment_amount      = $("#credits_account_payment_amount").val();
-    var payment_type_id                     = $("#payment_type_id").val();
-    
-    if(penalty_type_id == 0 || penalty_type_id == '' || penalty_type_id == null){
-        var credits_acquittance_penalty = 0;
-    } else if(penalty_type_id == 1){
-        var credits_acquittance_penalty = (parseFloat(credits_acquittance_principal) * parseFloat(penalty)) / 100;
-    } else if(penalty_type_id == 2){
-        if(payment_type_id == 1){
-            var credits_acquittance_penalty = parseFloat(credits_account_interest_amount) * parseFloat(penalty) ;
-        } else {
-            var i;
-            var credits_acquittance_penalty;
-            var bunga = parseFloat(credits_account_interest) / 100;
-            var sisapinjaman = parseFloat(credits_account_last_balance);
-
-            for (i = 1; i <= penalty; i++) { 
-                var angsuranbunga 		    = parseFloat(sisapinjaman) * bunga;
-                var angsuranpokok 		    = parseFloat(credits_account_payment_amount) - angsuranbunga;
-                var sisapokok 			    = parseFloat(sisapinjaman) - parseFloat(angsuranpokok);
-                sisapinjaman 			    = sisapinjaman - angsuranpokok;
-                credits_acquittance_penalty = parseFloat(credits_acquittance_penalty) + parseFloat(angsuranbunga);
-            }
-        }
-    }
-
-    credits_acquittance_amount = parseFloat(credits_acquittance_principal) + parseFloat(credits_acquittance_interest) + parseFloat(credits_acquittance_fine) + parseFloat(credits_acquittance_penalty);
-
-    document.getElementById("credits_acquittance_penalty").value        = credits_acquittance_penalty;
-    document.getElementById("credits_acquittance_penalty_view").value   = toRp(credits_acquittance_penalty);
-    document.getElementById("credits_acquittance_amount").value         = credits_acquittance_amount;
-    document.getElementById("credits_acquittance_amount_view").value    = toRp(credits_acquittance_amount);
-    function_elements_add('credits_acquittance_amount', credits_acquittance_amount);
-    function_elements_add('credits_acquittance_penalty', credits_acquittance_penalty);
-    function_elements_add('penalty_type_id', penalty_type_id);
-}
 </script>
 @endsection
 <x-base-layout>
@@ -233,7 +186,7 @@ function calculate(){
                             <div class="row mb-3">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Tanggal Angsuran Lama') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="credits_payment_date_old" id="credits_payment_date_old" class="form-control form-control-lg form-control-solid" placeholder="Tanggal" value="{{ old('credits_payment_date_old', $acctcreditsaccount->credits_account_payment_date) }}" autocomplete="off" readonly/>
+                                    <input type="text" name="credits_payment_date_old" id="credits_payment_date_old" class="form-control form-control-lg form-control-solid" placeholder="Tanggal" value="{{ old('credits_payment_date_old', $acctcreditsaccount->credits_account_payment_date??'') }}" autocomplete="off" readonly/>
                                 </div>
                             </div>
                             <div class="row mb-3">

@@ -75,7 +75,7 @@ class AcctCreditsPaymentSuspendController extends Controller
 
     public function add()
     {
-        $sessiondata            = session()->get('data_creditsacquittanceadd');
+        $sessiondata            = session()->get('data_creditspaymentsuspendadd');
         $period=Configuration::CreditsPaymentPeriod();
         $acctcreditsaccount     = array();
         $acctcreditspayment     = array();
