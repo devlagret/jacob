@@ -26,7 +26,7 @@ class AcctSavingsAccountBlockirController extends Controller
         $corememberses  = session()->get('core_member_savings');
         $datases        = session()->get('datases');
 
-        return view('content.AcctSavingsAccountBlockir.add.index', compact('blockirtype','corememberses','datases'));
+        return view('content.AcctSavingsAccountBlockir.Add.index', compact('blockirtype','corememberses','datases'));
     }
 
     public function elementsAdd(Request $request)

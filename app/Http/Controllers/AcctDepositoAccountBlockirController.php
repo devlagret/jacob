@@ -25,7 +25,7 @@ class AcctDepositoAccountBlockirController extends Controller
         $corememberses  = session()->get('core_member_deposito');
         $datases        = session()->get('datases');
 
-        return view('content.AcctDepositoAccountBlockir.add.index', compact('blockirtype','corememberses','datases'));
+        return view('content.AcctDepositoAccountBlockir.Add.index', compact('blockirtype','corememberses','datases'));
     }
 
     public function modalMember(CoreMemberDataTable $dataTable)
