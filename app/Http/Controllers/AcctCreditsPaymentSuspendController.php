@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\DataTables\AcctCreditsPaymentSuspend\AcctCreditsAccountDataTable;
 use App\DataTables\AcctCreditsPaymentSuspend\AcctCreditsPaymentSuspendDataTable;
 use App\Helpers\Configuration;
+use App\Helpers\CreditHelper;
 use App\Models\AcctCredits;
 use App\Models\AcctCreditsAccount;
 use App\Models\AcctCreditsPayment;
 use App\Models\AcctCreditsPaymentSuspend;
+use App\Models\PreferenceCompany;
+use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -143,23 +146,22 @@ class AcctCreditsPaymentSuspendController extends Controller
           }
     }
     public function printNote($credits_payment_suspend_id) {
-         return "Hello there";
-         $acctcreditsaccount		= AcctCreditsAccount::with('member')->find($credits_account_id);
+         $acctcreditsaccount		= AcctCreditsPaymentSuspend::with('member')->find($credits_payment_suspend_id);
          $paymenttype 			= Configuration::PaymentType();
          $paymentperiod 			= Configuration::CreditsPaymentPeriod();
          $preferencecompany 		= PreferenceCompany::first();
 
          if($acctcreditsaccount['payment_type_id'] == '' || $acctcreditsaccount['payment_type_id'] == 1){
-             $datapola=$this->flat($credits_account_id);
+             $datapola=CreditHelper::reSedule($credits_payment_suspend_id)->flat();
          }else if ($acctcreditsaccount['payment_type_id'] == 2){
-             $datapola=$this->anuitas($credits_account_id);
+            //  $datapola=$this->anuitas($credits_account_id);
          }else if($acctcreditsaccount['payment_type_id'] == 3){
-             $datapola=$this->slidingrate($credits_account_id);
+            //  $datapola=$this->slidingrate($credits_account_id);
          }else if($acctcreditsaccount['payment_type_id'] == 4){
-             $datapola=$this->menurunharian($credits_account_id);
+            //  $datapola=$this->menurunharian($credits_account_id);
          }
 
-         $pdf = new TCPDF('P', PDF_UNIT, 'A4', true, 'UTF-8', false);
+         $pdf = new TCPDF(['P', PDF_UNIT, 'A4', true, 'UTF-8', false]);
 
          $pdf::SetPrintHeader(false);
          $pdf::SetPrintFooter(false);
@@ -175,20 +177,10 @@ class AcctCreditsPaymentSuspendController extends Controller
 
          $pdf::SetFont('helvetica', 'B', 20);
 
-         $pdf::AddPage('p');
-         $pdf::SetTitle('Jadwal Angsuran');
+         $pdf::AddPage('P','A4');
+         $pdf::SetTitle('Jadwal Angsuran Ditunda');
 
          $pdf::SetFont('helvetica', '', 9);
-
-         // <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
-         //     <tr>
-         //         <td rowspan=\"2\" width=\"10%\"><img src=\"".public_path('storage/'.$preferencecompany['logo_koperasi'])."\" alt=\"\" width=\"700%\" height=\"300%\"/></td>
-         //     </tr>
-         // </table>
-         // <br/>
-         // <br/>
-         // <br/>
-         // <br/>
          $tblheader = "
              <table id=\"items\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
                  <tr>
@@ -208,7 +200,7 @@ class AcctCreditsPaymentSuspendController extends Controller
                          <div style=\"font-size:12px\";><b>Jenis Pinjaman</b></div>
                      </td>
                      <td style=\"text-align:left;\" width=\"50%\">
-                         <div style=\"font-size:12px\";><b>: ".$this->getAcctCreditsName($acctcreditsaccount['credits_id'])."</b></div>
+                         <div style=\"font-size:12px\";><b>: {$acctcreditsaccount->credit->credits_name}</b></div>
                      </td>
                  </tr>
                  <tr style=\"line-height: 60%;\">
@@ -230,7 +222,7 @@ class AcctCreditsPaymentSuspendController extends Controller
                          <div style=\"font-size:12px\";><b>Tipe Angsuran</b></div>
                      </td>
                      <td style=\"text-align:left;\" width=\"45%\">
-                         <div style=\"font-size:12px\";><b>: ".$paymenttype[$acctcreditsaccount['payment_type_id']]."</b></div>
+                         <div style=\"font-size:12px\";><b>: {$paymenttype[$acctcreditsaccount->account->payment_type_id]}</b></div>
                      </td>
                      <td style=\"text-align:left;\" width=\"20%\">
                          <div style=\"font-size:12px\";><b>Plafon</b></div>
