@@ -81,6 +81,7 @@ class ApiController extends Controller
         $data = AcctSavingsAccount::withoutGlobalScopes()
         ->join('core_member','acct_savings_account.member_id','core_member.member_id')
         ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
+        ->where('acct_savings_account.data_state',0)
         ->get();
 
         return response()->json([
@@ -94,6 +95,7 @@ class ApiController extends Controller
         $data = AcctDepositoAccount::withoutGlobalScopes()
         ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
         ->join('acct_deposito','acct_deposito.deposito_id','acct_d+eposito_account.deposito_id')
+        ->where('acct_deposito_account.data_state',0)
         ->get();
         return response()->json([
             'data' => $data,

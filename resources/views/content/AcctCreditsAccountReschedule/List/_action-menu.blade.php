@@ -3,9 +3,9 @@
         <a type="button" href="{{ route('credits-account.print-note', $model->credits_account_id) }}" class="btn btn-sm btn-primary btn-active-light-primary m-1">
             Kwitansi
         </a>
-        {{-- <a type="button" href="{{ route('credits-account.print-akad', $model->credits_account_id) }}" class="btn btn-sm btn-warning btn-active-light-warning m-1">
+        <a type="button" href="{{ route('credits-account.print-akad', $model->credits_account_id) }}" class="btn btn-sm btn-warning btn-active-light-warning m-1">
             Akad
-        </a> --}}
+        </a>
         <a type="button" href="{{ route('credits-account.edit-date', $model->credits_account_id) }}" class="btn btn-sm btn-dark btn-active-light-dark m-1">
             Edit Tanggal
         </a>
@@ -29,9 +29,9 @@
         <a type="button" href="{{ route('credits-account.print-note', $model->credits_account_id) }}" class="btn btn-sm btn-primary btn-active-light-primary m-1">
             Kwitansi
         </a>
-        {{-- <a type="button" href="{{ route('credits-account.print-akad', $model->credits_account_id) }}" class="btn btn-sm btn-warning btn-active-light-warning m-1">
+        <a type="button" href="{{ route('credits-account.print-akad', $model->credits_account_id) }}" class="btn btn-sm btn-warning btn-active-light-warning m-1">
             Akad
-        </a> --}}
+        </a>
         <a type="button" href="{{ route('credits-account.print-schedule', $model->credits_account_id) }}" class="btn btn-sm btn-info btn-active-light-info m-1">
             Jadwal Angsuran
         </a>
