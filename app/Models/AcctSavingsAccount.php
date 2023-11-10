@@ -14,9 +14,9 @@ class AcctSavingsAccount extends Model
      * @var string[]
      */
 
-    protected $table        = 'acct_savings_account'; 
+    protected $table        = 'acct_savings_account';
     protected $primaryKey   = 'savings_account_id';
-    
+
     protected $guarded = [
         'created_at',
         'updated_at',
@@ -35,8 +35,8 @@ class AcctSavingsAccount extends Model
     public function savingdata() {
         return $this->belongsTo(AcctSavings::class,'savings_id','savings_id');
     }
-    // protected static function booted()  
-    // {
-    //     static::addGlobalScope(new NotDeletedScope);
-    // }
+    protected static function booted()
+    {
+        static::addGlobalScope(new NotDeletedScope);
+    }
 }

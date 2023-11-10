@@ -80,10 +80,7 @@ class ApiController extends Controller
     }
     //data simpanan
     public function getDataSavings(){
-        $data = AcctSavingsAccount::withoutGlobalScopes()
-        ->join('core_member','acct_savings_account.member_id','core_member.member_id')
-        ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
-        ->where('acct_savings_account.data_state',0)
+        $data = AcctSavingsAccount::with('member','savingdata')
         ->get();
 
         return response()->json([
