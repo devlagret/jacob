@@ -31,7 +31,7 @@ Route::post('PostSavingsByNo/{savings_account_no}', [ApiController::class, 'Post
 Route::post('logout', [ApiController::class, 'logout']);
 Route::post('getLoginState', [ApiController::class, 'getLoginState']);
 
-Route::prefix('saving')->middleware(ApiController::class)->group(function () {
+Route::prefix('saving')->controller(ApiController::class)->group(function () {
     Route::get('account','getDataSavings');
     Route::post('deposit','deposit');
 });
