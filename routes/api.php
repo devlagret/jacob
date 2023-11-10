@@ -34,6 +34,7 @@ Route::post('getLoginState', [ApiController::class, 'getLoginState']);
 Route::prefix('saving')->controller(ApiController::class)->group(function () {
     Route::get('account','getDataSavings');
     Route::post('deposit','deposit');
+    Route::post('withdraw','withdraw');
 });
 });
 
