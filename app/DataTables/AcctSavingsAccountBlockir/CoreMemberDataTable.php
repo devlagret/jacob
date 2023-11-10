@@ -3,6 +3,7 @@
 namespace App\DataTables\AcctSavingsAccountBlockir;
 
 use App\Models\AcctSavingsAccount;
+use Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -33,12 +34,13 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(AcctSavingsAccount $model)
     {
-        return $model->newQuery()
-        ->select('acct_savings_account.savings_account_id','acct_savings_account.savings_account_no','core_member.member_name','core_member.member_address')
-        ->join('core_member','core_member.member_id','=','acct_savings_account.member_id')
-        ->where('acct_savings_account.savings_account_status', 0)
-        ->where('acct_savings_account.data_state', 0)
-        ->where('acct_savings_account.branch_id', auth()->user()->branch_id);
+        $model = $model->newQuery()->with('branch')
+        ->where('member_status', 1)
+        ->where('data_state', 0);
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
     /**
      * Optional method if you want to use html builder.

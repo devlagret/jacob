@@ -3,6 +3,7 @@
 namespace App\DataTables\CoreMemberPrintMutation;
 
 use App\Models\CoreMember;
+use Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -33,10 +34,13 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(CoreMember $model)
     {
-        return $model->newQuery()
-        ->where('core_member.member_active_status', 0)
-        ->where('core_member.data_state', 0)
-        ->where('core_member.branch_id', auth()->user()->branch_id);
+        $model = $model->newQuery()->with('branch')
+        ->where('member_status', 1)
+        ->where('data_state', 0);
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
     /**
      * Optional method if you want to use html builder.
