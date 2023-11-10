@@ -18,7 +18,6 @@ class AcctSavingsAccount extends Model
     protected $primaryKey   = 'savings_account_id';
     
     protected $guarded = [
-        'savings_account_id',
         'created_at',
         'updated_at',
     ];
