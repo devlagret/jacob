@@ -5349,17 +5349,7 @@ class AcctCreditsAccountController extends Controller
     }
 
     public function anuitas($id){
-        $creditsaccount 	= AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
-        ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
-        ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
-        ->join('core_member_working', 'acct_credits_account.member_id','=','core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id','=','core_province.province_id')
-        ->join('core_city', 'core_member.city_id','=','core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id','=','core_kecamatan.kecamatan_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_account_id', $id)
-        ->first();
+        $creditsaccount 	= AcctCreditsAccount::find($id);
 
         $pinjaman 	= $creditsaccount['credits_account_amount'];
         $bunga 		= $creditsaccount['credits_account_interest'] / 100;
@@ -5401,19 +5391,25 @@ class AcctCreditsAccountController extends Controller
         return $pola;
 
     }
-
+    protected function rate3($nprest, $vlrparc, $vp, $guess = 0.25) {
+        $maxit      = 100;
+        $precision  = 14;
+        $guess      = round($guess,$precision);
+        for ($i=0 ; $i<$maxit ; $i++) {
+            $divdnd = $vlrparc - ( $vlrparc * (pow(1 + $guess , -$nprest)) ) - ($vp * $guess);
+            $divisor = $nprest * $vlrparc * pow(1 + $guess , (-$nprest - 1)) - $vp;
+            $newguess = $guess - ( $divdnd / $divisor );
+            $newguess = round($newguess, $precision);
+            if ($newguess == $guess) {
+                return $newguess;
+            } else {
+                $guess = $newguess;
+            }
+        }
+        return null;
+    }
     public function slidingrate($id){
-        $credistaccount					= AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
-        ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
-        ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
-        ->join('core_member_working', 'acct_credits_account.member_id','=','core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id','=','core_province.province_id')
-        ->join('core_city', 'core_member.city_id','=','core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id','=','core_kecamatan.kecamatan_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_account_id', $id)
-        ->first();
+        $credistaccount					= AcctCreditsAccount::find($id);
 
         $total_credits_account 			= ($credistaccount['credits_account_amount']??0);
         $credits_account_interest 		= ($credistaccount['credits_account_interest']??0);
@@ -5458,17 +5454,7 @@ class AcctCreditsAccountController extends Controller
     }
 
     public function menurunharian($id){
-        $credistaccount					= AcctCreditsAccount::select('acct_credits_account.*', 'core_member.member_name', 'core_member.member_no', 'core_member.member_address', 'core_member.province_id', 'core_province.province_name','core_member.member_mother', 'core_member.city_id', 'core_city.city_name', 'core_member.kecamatan_id', 'core_kecamatan.kecamatan_name', 'acct_credits.credits_id','core_member.member_identity', 'core_member.member_identity_no', 'acct_credits.credits_name', 'core_branch.branch_name', 'core_member.member_phone', 'core_member_working.member_company_name', 'core_member_working.member_company_job_title', 'core_member.member_mandatory_savings_last_balance', 'core_member.member_principal_savings_last_balance')
-        ->join('core_branch', 'acct_credits_account.branch_id','=','core_branch.branch_id')
-        ->join('acct_credits', 'acct_credits_account.credits_id','=','acct_credits.credits_id')
-        ->join('core_member', 'acct_credits_account.member_id','=','core_member.member_id')
-        ->join('core_member_working', 'acct_credits_account.member_id','=','core_member_working.member_id')
-        ->join('core_province', 'core_member.province_id','=','core_province.province_id')
-        ->join('core_city', 'core_member.city_id','=','core_city.city_id')
-        ->join('core_kecamatan', 'core_member.kecamatan_id','=','core_kecamatan.kecamatan_id')
-        ->where('acct_credits_account.data_state', 0)
-        ->where('acct_credits_account.credits_account_id', $id)
-        ->first();
+        $credistaccount					= AcctCreditsAccount::find($id);
 
         $total_credits_account 			= $credistaccount['credits_account_amount'];
         $credits_account_interest 		= $credistaccount['credits_account_interest'];

@@ -146,21 +146,20 @@ class AcctCreditsPaymentSuspendController extends Controller
           }
     }
     public function printNote($credits_payment_suspend_id) {
-         $acctcreditsaccount		= AcctCreditsPaymentSuspend::with('member')->find($credits_payment_suspend_id);
+         $acctcreditsaccount		= AcctCreditsPaymentSuspend::with('member','account')->find($credits_payment_suspend_id);
          $paymenttype 			= Configuration::PaymentType();
          $paymentperiod 			= Configuration::CreditsPaymentPeriod();
          $preferencecompany 		= PreferenceCompany::first();
 
-         if($acctcreditsaccount['payment_type_id'] == '' || $acctcreditsaccount['payment_type_id'] == 1){
+         if($acctcreditsaccount->account->payment_type_id == '' || $acctcreditsaccount->account->payment_type_id == 1){
              $datapola=CreditHelper::reSedule($credits_payment_suspend_id)->flat();
-         }else if ($acctcreditsaccount['payment_type_id'] == 2){
-            //  $datapola=$this->anuitas($credits_account_id);
-         }else if($acctcreditsaccount['payment_type_id'] == 3){
-            //  $datapola=$this->slidingrate($credits_account_id);
-         }else if($acctcreditsaccount['payment_type_id'] == 4){
+        }else if ($acctcreditsaccount->account->payment_type_id == 2){
+             $datapola=CreditHelper::reSedule($credits_payment_suspend_id)->anuitas();
+         }else if($acctcreditsaccount->account->payment_type_id == 3){
+            $datapola=CreditHelper::reSedule($credits_payment_suspend_id)->slidingrate();
+         }else if($acctcreditsaccount->account->payment_type_id == 4){
             //  $datapola=$this->menurunharian($credits_account_id);
          }
-
          $pdf = new TCPDF(['P', PDF_UNIT, 'A4', true, 'UTF-8', false]);
 
          $pdf::SetPrintHeader(false);
