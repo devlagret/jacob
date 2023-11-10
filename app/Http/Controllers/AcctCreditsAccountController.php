@@ -826,7 +826,7 @@ class AcctCreditsAccountController extends Controller
     public function reject($credits_account_id)
     {
         $table                          = AcctCreditsAccount::findOrFail($credits_account_id);
-        $table->credits_approve_status  = 9;
+        $table->credits_approve_status  = 2;
         $table->updated_id              = auth()->user()->user_id;
 
         if ($table->save()) {
