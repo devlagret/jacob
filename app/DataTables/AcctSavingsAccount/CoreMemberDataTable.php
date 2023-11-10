@@ -34,11 +34,13 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(CoreMember $model)
     {
-        return $model->newQuery()
-        ->select('member_no','member_name','member_address','member_id')
+        $model = $model->newQuery()->with('branch')
         ->where('member_status', 1)
-        ->where('data_state', 0)
-        ->where('branch_id',$sessiondata['branch_id']??Auth::user()->branch_id);
+        ->where('data_state', 0);
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
     /**
      * Optional method if you want to use html builder.

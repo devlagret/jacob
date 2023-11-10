@@ -4,6 +4,7 @@ namespace App\DataTables\AcctDepositoAccountBlockir;
 
 use App\Models\AcctDepositoAccountBlockir;
 use App\Models\AcctDepositoAccount;
+use Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
@@ -34,12 +35,13 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(AcctDepositoAccount $model)
     {
-        return $model->newQuery()
-        ->select('acct_deposito_account.deposito_account_id','acct_deposito_account.deposito_account_no','core_member.member_name','core_member.member_address')
-        ->join('core_member','core_member.member_id','=','acct_deposito_account.member_id')
-        ->where('acct_deposito_account.deposito_account_status', 0)
-        ->where('acct_deposito_account.data_state', 0)
-        ->where('acct_deposito_account.branch_id', auth()->user()->branch_id);
+        $model = $model->newQuery()->with('branch')
+        ->where('member_status', 1)
+        ->where('data_state', 0);
+        if(Auth::user()->branch_id!==0){
+            $model->where('branch_id',Auth::user()->branch_id);
+        }
+        return $model;
     }
 
     /**
