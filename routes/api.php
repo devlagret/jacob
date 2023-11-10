@@ -23,7 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware'=> ['auth:sanctum']], function(){
 Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'profits'])->name('profits');
 Route::post('test', [ApiController::class, 'tst']);
-Route::post('getSavingsAccount', [ApiController::class, 'getDataSavings']);
 Route::post('getDepositoAccount', [ApiController::class, 'getDataDeposito']);
 Route::post('getCreditsAccount', [ApiController::class, 'getDataCredit']);
 Route::post('getMembers', [ApiController::class, 'getDataMembers']);
@@ -31,6 +30,11 @@ Route::post('PostSavingsById/{savings_account_id}', [ApiController::class, 'Post
 Route::post('PostSavingsByNo/{savings_account_no}', [ApiController::class, 'PostSavingsByNo']);
 Route::post('logout', [ApiController::class, 'logout']);
 Route::post('getLoginState', [ApiController::class, 'getLoginState']);
+
+Route::prefix('saving')->middleware(ApiController::class)->group(function () {
+    Route::get('account','getDataSavings');
+    Route::post('deposit','deposit');
+});
 });
 
 
