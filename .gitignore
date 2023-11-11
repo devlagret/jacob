@@ -4,6 +4,7 @@
 /vendor
 .env
 .env.backup
+.env.example
 .phpunit.result.cache
 docker-compose.override.yml
 Homestead.json
@@ -17,3 +18,4 @@ testDiagram.drawio
 debug.log
 settings.json
 .vscode/settings.json
+composer.lock
