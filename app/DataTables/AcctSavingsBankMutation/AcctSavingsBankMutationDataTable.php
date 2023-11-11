@@ -49,6 +49,7 @@ class AcctSavingsBankMutationDataTable extends DataTable
         }
 
         $querydata = $model->newQuery()
+        ->withoutGlobalScopes()
         ->select(DB::raw("CONCAT(acct_account.account_code,' - ',acct_bank_account.bank_account_name) AS full_account"), 'acct_savings_bank_mutation.savings_bank_mutation_id', 'acct_savings_bank_mutation.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings_bank_mutation.savings_bank_mutation_date', 'acct_savings_bank_mutation.savings_bank_mutation_amount', 'acct_savings_bank_mutation.bank_account_id', 'acct_bank_account.bank_account_name', 'acct_bank_account.account_id', 'acct_account.account_code')
         ->join('acct_bank_account', 'acct_savings_bank_mutation.bank_account_id', '=', 'acct_bank_account.bank_account_id')
         ->join('acct_account', 'acct_bank_account.account_id', '=', 'acct_account.account_id')

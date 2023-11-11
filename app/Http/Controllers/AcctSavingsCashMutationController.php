@@ -94,7 +94,7 @@ class AcctSavingsCashMutationController extends Controller
 
         $acctsavingsaccount = [];
         if (isset($sessiondata['savings_account_id'])) {
-            $acctsavingsaccount = AcctSavingsAccount::with('savingdata','member.city','member.kecamatan')->find($sessiondata['savings_account_id']);
+            $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->with('savingdata','member.city','member.kecamatan')->find($sessiondata['savings_account_id']);
         }
         return view('content.AcctSavingsCashMutation.Add.index', compact('sessiondata', 'membergender', 'memberidentity', 'familyrelationship', 'acctmutation', 'acctsavingsaccount'));
     }

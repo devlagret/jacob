@@ -61,6 +61,7 @@ class AcctDepositoAccountBlockirDataTable extends DataTable
     public function query(AcctDepositoAccountBlockir $model)
     {
         return $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_deposito_account_blockir.deposito_account_blockir_id','acct_deposito_account_blockir.deposito_account_blockir_type','acct_deposito_account_blockir.deposito_account_blockir_status','acct_deposito_account_blockir.deposito_account_blockir_date','acct_deposito_account_blockir.deposito_account_unblockir_date','acct_deposito_account_blockir.deposito_account_blockir_amount','acct_deposito_account.deposito_account_no','core_member.member_name','core_member.member_address')
         ->join('core_member','core_member.member_id','=','acct_deposito_account_blockir.member_id')
         ->join('acct_deposito_account','acct_deposito_account.deposito_account_id','=','acct_deposito_account_blockir.deposito_account_id')

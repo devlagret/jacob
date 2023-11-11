@@ -34,7 +34,9 @@ class CoreMemberDataTable extends DataTable
      */
     public function query(CoreMember $model)
     {
-        $model = $model->newQuery()->with('branch')
+        $model = $model->newQuery()
+        ->withoutGlobalScopes()
+        ->with('branch')
         ->where('member_status', 1)
         ->where('data_state', 0);
         if(Auth::user()->branch_id!==0){

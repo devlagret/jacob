@@ -44,13 +44,16 @@ class AcctSavingsAccountDataTable extends DataTable
         $sessiondata['deposito_account_id'] = $deposito_account_id;
         session()->put('data_depositoaccountclosingadd', $sessiondata);
 
-        $acctdepositoaccount    = AcctDepositoAccount::select('acct_deposito_account.*', 'core_member.member_no', 'core_member.member_name', 'core_member.member_address', 'core_member.member_phone', 'acct_deposito.deposito_name')
+        $acctdepositoaccount    = AcctDepositoAccount::
+        ->withoutGlobalScopes()
+        ->select('acct_deposito_account.*', 'core_member.member_no', 'core_member.member_name', 'core_member.member_address', 'core_member.member_phone', 'acct_deposito.deposito_name')
         ->join('core_member', 'core_member.member_id', 'acct_deposito_account.member_id')
         ->join('acct_deposito', 'acct_deposito.deposito_id', 'acct_deposito_account.deposito_id')
         ->where('acct_deposito_account.deposito_account_id', $deposito_account_id)
         ->first();
 
         return $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'core_member.member_name', 'core_member.member_address')
         ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
         ->where('acct_savings_account.savings_account_status', 0)

@@ -66,6 +66,7 @@ class MemberSavingsTransferMutationDataTable extends DataTable
 
         if (empty($session['member_id'])) {
             return $model->newQuery()
+            ->withoutGlobalScopes()
             ->select('core_member_transfer_mutation.member_transfer_mutation_id', 'core_member_transfer_mutation.member_transfer_mutation_date', 'core_member_transfer_mutation.member_mandatory_savings', 'core_member_transfer_mutation.validation', 'core_member_transfer_mutation.validation_id', 'core_member_transfer_mutation.member_id', 'core_member.member_name', 'core_member.member_no', 'core_member_transfer_mutation.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id')
             ->join('acct_savings_account', 'core_member_transfer_mutation.savings_account_id','=','acct_savings_account.savings_account_id')
             ->join('core_member', 'core_member_transfer_mutation.member_id','=','core_member.member_id')
@@ -74,6 +75,7 @@ class MemberSavingsTransferMutationDataTable extends DataTable
             ->where('core_member_transfer_mutation.data_state', 0);
         } else {
             return $model->newQuery()
+            ->withoutGlobalScopes()
             ->select('core_member_transfer_mutation.member_transfer_mutation_id', 'core_member_transfer_mutation.member_transfer_mutation_date', 'core_member_transfer_mutation.member_mandatory_savings', 'core_member_transfer_mutation.validation', 'core_member_transfer_mutation.validation_id', 'core_member_transfer_mutation.member_id', 'core_member.member_name', 'core_member.member_no', 'core_member_transfer_mutation.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id')
             ->join('acct_savings_account', 'core_member_transfer_mutation.savings_account_id','=','acct_savings_account.savings_account_id')
             ->join('core_member', 'core_member_transfer_mutation.member_id','=','core_member.member_id')

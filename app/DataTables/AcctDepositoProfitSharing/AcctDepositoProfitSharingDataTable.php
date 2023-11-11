@@ -59,6 +59,7 @@ class AcctDepositoProfitSharingDataTable extends DataTable
         }
 
         $querydata = $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_deposito_profit_sharing.deposito_profit_sharing_id', 'acct_deposito_profit_sharing.deposito_account_id', 'acct_deposito_account.deposito_account_no', 'acct_deposito_account.deposito_account_date', 'acct_deposito_account.deposito_account_due_date', 'acct_deposito_account.deposito_account_serial_no', 'acct_deposito_profit_sharing.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_deposito_profit_sharing.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_deposito_profit_sharing.deposito_profit_sharing_amount', 'acct_deposito_profit_sharing.deposito_account_last_balance', 'acct_deposito_profit_sharing.deposito_profit_sharing_date', 'acct_deposito_profit_sharing.deposito_profit_sharing_due_date', 'acct_deposito_profit_sharing.deposito_profit_sharing_status', 'acct_deposito_account.deposito_account_status')
         ->join('acct_deposito_account', 'acct_deposito_profit_sharing.deposito_account_id', '=', 'acct_deposito_account.deposito_account_id')
         ->join('acct_savings_account', 'acct_deposito_profit_sharing.savings_account_id', '=', 'acct_savings_account.savings_account_id')

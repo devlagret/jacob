@@ -51,7 +51,8 @@ class AcctSavingsAccountDataTable extends DataTable
                 'branch_id' => null,
             );
         }
-        $querydata = $model->newQuery()->with('savingdata','member')
+        $querydata = $model->withoutGlobalScopes()
+        ->newQuery()->with('savingdata','member')
         ->whereHas('savingdata', function($q){
             $q->where('savings_status',0);
         });

@@ -66,6 +66,7 @@ class AcctDepositoAccountDataTable extends DataTable
         }
 
         $querydata = $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_deposito_account.deposito_account_id', 'core_member.member_name', 'acct_deposito.deposito_name', 'acct_deposito_account.deposito_account_no', 'acct_deposito_account.deposito_account_date', 'acct_deposito_account.deposito_account_due_date', 'acct_deposito_account.deposito_account_extra_type', 'acct_deposito_account.deposito_account_serial_no', 'acct_deposito_account.deposito_account_amount', 'acct_deposito_account.deposito_account_interest_amount', 'acct_deposito_account.validation')
         ->join('core_member', 'acct_deposito_account.member_id', '=', 'core_member.member_id')
         ->join('acct_deposito', 'acct_deposito_account.deposito_id', '=', 'acct_deposito.deposito_id')

@@ -34,6 +34,7 @@ class AcctSavingsAccountDataTable extends DataTable
     public function query(AcctSavingsAccount $model)
     {
         return $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_savings_account.savings_account_id', 'acct_savings.savings_name','acct_savings_account.savings_account_no', 'core_member.member_name', 'core_member.member_address')
         ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
         ->join('acct_savings', 'acct_savings.savings_id', '=', 'acct_savings_account.savings_id')

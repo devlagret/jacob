@@ -65,6 +65,7 @@ class AcctSavingsAccountBlockirDataTable extends DataTable
     public function query(AcctSavingsAccountBlockir $model)
     {
         return $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_savings_account_blockir.savings_account_blockir_id','acct_savings_account_blockir.savings_account_blockir_type','acct_savings_account_blockir.savings_account_blockir_status','acct_savings_account_blockir.savings_account_blockir_date','acct_savings_account_blockir.savings_account_unblockir_date','acct_savings_account_blockir.savings_account_blockir_amount','acct_savings_account.savings_account_no','core_member.member_name','core_member.member_address')
         ->join('core_member','core_member.member_id','=','acct_savings_account_blockir.member_id')
         ->join('acct_savings_account','acct_savings_account.savings_account_id','=','acct_savings_account_blockir.savings_account_id')

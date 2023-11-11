@@ -54,6 +54,7 @@ class AcctSavingsCashMutationDataTable extends DataTable
         }
 
         $querydata = $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_savings_cash_mutation.*', 'acct_mutation.*', 'acct_savings_account.*', 'core_member.*', 'acct_savings.*', 'acct_savings_cash_mutation.validation')
         ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
         ->join('acct_savings_account', 'acct_savings_cash_mutation.savings_account_id', '=', 'acct_savings_account.savings_account_id')

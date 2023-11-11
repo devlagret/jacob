@@ -79,6 +79,7 @@ class SavingsTransferMutationDataTable extends DataTable
         }
 
         return $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_savings_transfer_mutation.savings_transfer_mutation_date','acct_savings_transfer_mutation.savings_transfer_mutation_amount','acct_savings_transfer_mutation.validation','acct_savings_transfer_mutation.savings_transfer_mutation_id','acct_savings_transfer_mutation_from.savings_account_id as savings_account_id_from','acct_savings_transfer_mutation_to.savings_account_id as savings_account_id_to')
         ->join('acct_savings_transfer_mutation_from', 'acct_savings_transfer_mutation.savings_transfer_mutation_id', '=', 'acct_savings_transfer_mutation_from.savings_transfer_mutation_id')
         ->join('acct_savings_transfer_mutation_to', 'acct_savings_transfer_mutation.savings_transfer_mutation_id','=', 'acct_savings_transfer_mutation_to.savings_transfer_mutation_id')
