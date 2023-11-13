@@ -68,6 +68,7 @@ class CoreMemberDataTable extends DataTable
             Column::make('member_no')->title(__('No Anggota')),
             Column::make('member_name')->title(__('Nama')),
             Column::make('member_address')->title(__('Alamat')),
+            Column::make('branch.branch_name')->title(__('Cabang')),
             Column::make('member_status')->title(__('Status')),
             Column::make('member_phone')->title(__('No HP')),
             Column::make('member_principal_savings_last_balance')->title(__('Simp Pokok')),
