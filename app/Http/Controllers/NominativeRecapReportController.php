@@ -70,7 +70,8 @@ class NominativeRecapReportController extends Controller
         ->get();
 
         foreach ($acctsavings as $key => $vS) {
-            $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status')
+            $acctsavingsaccount = AcctSavingsAccount::
+            withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status')
             ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
             ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
             ->where('acct_savings_account.data_state', 0)
@@ -88,7 +89,7 @@ class NominativeRecapReportController extends Controller
             ->get();
 
             foreach ($acctsavingsaccount as $key => $val) {
-                $acctsavingsprofitsharing   = AcctSavingsProfitSharing::select('acct_savings_profit_sharing.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_profit_sharing.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_profit_sharing.savings_profit_sharing_amount', 'acct_savings_profit_sharing.savings_daily_average_balance', 'acct_savings_profit_sharing.savings_account_last_balance')
+                $acctsavingsprofitsharing   = AcctSavingsProfitSharing::withoutGlobalScopes()->select('acct_savings_profit_sharing.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_profit_sharing.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_profit_sharing.savings_profit_sharing_amount', 'acct_savings_profit_sharing.savings_daily_average_balance', 'acct_savings_profit_sharing.savings_account_last_balance')
                 ->join('acct_savings_account', 'acct_savings_profit_sharing.savings_account_id', '=', 'acct_savings_account.savings_account_id')
                 ->join('core_member', 'acct_savings_profit_sharing.member_id' ,'=', 'core_member.member_id')
                 ->where('acct_savings_profit_sharing.savings_profit_sharing_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))

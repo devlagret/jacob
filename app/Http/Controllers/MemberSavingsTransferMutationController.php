@@ -234,7 +234,8 @@ class MemberSavingsTransferMutationController extends Controller
 
     public function selectSavingsAccount($savings_account_id)
     {
-        $acctsavingsaccount = AcctSavingsAccount::where('acct_savings_account.savings_account_id', $savings_account_id)
+        $acctsavingsaccount = AcctSavingsAccount::
+        withoutGlobalScopes()->where('acct_savings_account.savings_account_id', $savings_account_id)
         ->join('acct_savings','acct_savings.savings_id','=','acct_savings_account.savings_id')
         ->join('core_member','core_member.member_id','=','acct_savings_account.member_id')
         ->first();

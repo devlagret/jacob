@@ -70,7 +70,7 @@ class NominativeSavingsReportController extends Controller
         $period 					= date('mY', strtotime($sesi['start_date']));
 
         if($sesi['kelompok'] == 0){
-            $acctsavingsaccount     = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status', 'acct_savings.savings_interest_rate', 'acct_savings_account.data_state')
+            $acctsavingsaccount     = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status', 'acct_savings.savings_interest_rate', 'acct_savings_account.data_state')
             ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
             ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
             ->where('acct_savings.savings_status', 0)
@@ -125,7 +125,7 @@ class NominativeSavingsReportController extends Controller
             foreach ($acctsavings as $key => $vS) {
                 $savings_interest_rate	    = $vS['savings_interest_rate']/12;
                 $savingsinterestrate 	    = round($savings_interest_rate,2);
-                $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status')
+                $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status')
                 ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
                 ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
                 ->where('acct_savings_account.data_state', 0)
@@ -360,7 +360,7 @@ class NominativeSavingsReportController extends Controller
         $period 					= date('mY', strtotime($sesi['start_date']));
 
         if($sesi['kelompok'] == 0){
-            $acctsavingsaccount     = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status', 'acct_savings.savings_interest_rate', 'acct_savings_account.data_state')
+            $acctsavingsaccount     = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status', 'acct_savings.savings_interest_rate', 'acct_savings_account.data_state')
             ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
             ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
             ->where('acct_savings.savings_status', 0)
@@ -415,7 +415,7 @@ class NominativeSavingsReportController extends Controller
             foreach ($acctsavings as $key => $vS) {
                 $savings_interest_rate	    = $vS['savings_interest_rate']/12;
                 $savingsinterestrate 	    = round($savings_interest_rate,2);
-                $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status')
+                $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status')
                 ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
                 ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
                 ->where('acct_savings_account.data_state', 0)

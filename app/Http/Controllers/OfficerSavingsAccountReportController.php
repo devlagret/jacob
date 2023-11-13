@@ -133,7 +133,7 @@ class OfficerSavingsAccountReportController extends Controller
             $grandtotalbasil = 0;
             $grandtotalsaldo = 0;
             foreach ($acctsavings as $kSavings => $vSavings) {
-                $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
+                $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
                 ->join('core_member', 'acct_savings_account.member_id', '=' ,'core_member.member_id')
                 ->join('acct_savings', 'acct_savings_account.savings_id', '=' ,'acct_savings.savings_id')
                 ->where('acct_savings_account.savings_account_date' , '>=', date('Y-m-d', strtotime($sesi['start_date'])))
@@ -236,7 +236,7 @@ class OfficerSavingsAccountReportController extends Controller
             $grandtotalbasil = 0;
             $grandtotalsaldo = 0;
             foreach ($acctsavings as $kSavings => $vSavings) {
-                $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
+                $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
                 ->join('core_member', 'acct_savings_account.member_id', '=' ,'core_member.member_id')
                 ->join('acct_savings', 'acct_savings_account.savings_id', '=' ,'acct_savings.savings_id')
                 ->where('acct_savings_account.savings_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
@@ -394,7 +394,7 @@ class OfficerSavingsAccountReportController extends Controller
             $i          = 4;
             if(empty($sesi['office_id'])){
                 foreach ($acctsavings as $k => $v) {
-                    $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
+                    $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
                     ->join('core_member', 'acct_savings_account.member_id', '=' ,'core_member.member_id')
                     ->join('acct_savings', 'acct_savings_account.savings_id', '=' ,'acct_savings.savings_id')
                     ->where('acct_savings_account.savings_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))
@@ -445,7 +445,7 @@ class OfficerSavingsAccountReportController extends Controller
                 $totalbasil = 0;
                 $totalsaldo = 0;
                 foreach ($acctsavings as $k => $v) {
-                    $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
+                    $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.office_id', 'acct_savings_account.branch_id')
                     ->join('core_member', 'acct_savings_account.member_id', '=' ,'core_member.member_id')
                     ->join('acct_savings', 'acct_savings_account.savings_id', '=' ,'acct_savings.savings_id')
                     ->where('acct_savings_account.savings_account_date', '>=', date('Y-m-d', strtotime($sesi['start_date'])))

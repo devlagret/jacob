@@ -418,7 +418,7 @@ class SavingsTransferMutationController extends Controller
 
     public function getSavingsAccountNo($savings_account_id)
     {
-        $data = AcctSavingsAccount::where('savings_account_id', $savings_account_id)
+        $data = AcctSavingsAccount::withoutGlobalScopes()->where('savings_account_id', $savings_account_id)
             ->where('data_state', 0)
             ->first();
 

@@ -40,7 +40,7 @@ class AcctSavingsCloseBookController extends Controller
             ->get();
 
             foreach ($acctsavingsaccount as $key => $val) {
-                $acctsavingsaccount_update                                  = AcctSavingsAccount::findOrFail($val['savings_account_id']);
+                $acctsavingsaccount_update                                  = AcctSavingsAccount::withoutGlobalScopes()->findOrFail($val['savings_account_id']);
                 $acctsavingsaccount_update->savings_account_opening_balance = $val['savings_account_last_balance'];
                 $acctsavingsaccount_update->updated_id                      = auth()->user()->user_id;
                 $acctsavingsaccount_update->save();
