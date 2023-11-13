@@ -55,6 +55,7 @@ class AcctSavingsAccountCoverDataTable extends DataTable
         }
 
         $querydata = $model->newQuery()
+        ->withoutGlobalScopes()
         ->select('acct_savings_account.savings_account_id', 'core_member.member_name', 'acct_savings.savings_name', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_first_deposit_amount', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.validation')
         ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
         ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
@@ -62,7 +63,9 @@ class AcctSavingsAccountCoverDataTable extends DataTable
         ->where('acct_savings.savings_status', 0)
         ->where('core_member.branch_id', $sessiondata['branch_id']);
         if($sessiondata['savings_id']){
-            $querydata = $querydata->where('acct_savings_account.savings_id', $sessiondata['savings_id']);
+            $querydata = $querydata
+            ->withoutGlobalScopes()
+            ->where('acct_savings_account.savings_id', $sessiondata['savings_id']);
         }
 
         return $querydata;
