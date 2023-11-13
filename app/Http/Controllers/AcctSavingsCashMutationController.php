@@ -472,7 +472,7 @@ class AcctSavingsCashMutationController extends Controller
                         AcctJournalVoucherItem::create($data_credit);
                     }
                 } else {
-                    $closed_savings_account = AcctSavingsAccount::findOrFail($data['savings_account_id']);
+                    $closed_savings_account = AcctSavingsAccount::withoutGlobalScopes()->findOrFail($data['savings_account_id']);
                     $closed_savings_account->savings_account_status = 1;
                     $closed_savings_account->save();
 
@@ -908,7 +908,7 @@ class AcctSavingsCashMutationController extends Controller
                                 AcctJournalVoucherItem::create($data_credit);
                             }
                         } else {
-                            $closed_savings_account = AcctSavingsAccount::findOrFail($data['savings_account_id']);
+                            $closed_savings_account = AcctSavingsAccount::withoutGlobalScopes()->findOrFail($data['savings_account_id']);
                             $closed_savings_account->savings_account_status = 1;
                             $closed_savings_account->save();
 

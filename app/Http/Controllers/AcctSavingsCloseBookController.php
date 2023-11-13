@@ -35,7 +35,7 @@ class AcctSavingsCloseBookController extends Controller
 
         try {
             AcctSavingsCloseBook::create($data_log);
-            $acctsavingsaccount = AcctSavingsAccount::where('branch_id', auth()->user()->branch_id)
+            $acctsavingsaccount = AcctSavingsAccount::withoutGlobalScopes()->where('branch_id', auth()->user()->branch_id)
             ->orderBy('savings_account_no', 'ASC')
             ->get();
 

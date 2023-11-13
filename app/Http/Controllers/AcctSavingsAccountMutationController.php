@@ -81,7 +81,7 @@ class AcctSavingsAccountMutationController extends Controller
 
     public function selectSavingsAccount($savings_account_id)
     {
-        $savingsaccount = AcctSavingsAccount::where('acct_savings_account.savings_account_id',$savings_account_id)
+        $savingsaccount = AcctSavingsAccount::withoutGlobalScopes()->where('acct_savings_account.savings_account_id',$savings_account_id)
         ->join('core_member','acct_savings_account.member_id', '=', 'core_member.member_id')
         ->first();
 
@@ -180,7 +180,7 @@ class AcctSavingsAccountMutationController extends Controller
                     AcctSavingsAccountDetail::where('savings_account_detail_id', $update_data['savings_account_detail_id'])
                     ->update(['savings_print_status'=> 1, 'updated_id' => auth()->user()->user_id]);
     
-                    AcctSavingsAccount::where('savings_account_id', $update_data['savings_account_id'])
+                    AcctSavingsAccount::withoutGlobalScopes()->where('savings_account_id', $update_data['savings_account_id'])
                     ->update(['savings_account_last_number' => $update_data['savings_account_last_number'], 'updated_id' => auth()->user()->user_id]);
                 }
             }

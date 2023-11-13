@@ -71,7 +71,8 @@ class AcctSavingsAccountMasterController extends Controller
         $spreadsheet        = new Spreadsheet();
         $preferencecompany	= PreferenceCompany::select('company_name')->first();
 
-        $savingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.member_id', 'core_member.member_name', 'acct_savings_account.savings_id', 'acct_savings.savings_code', 'acct_savings.savings_name', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_first_deposit_amount', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.validation', 'acct_savings_account.validation_at')
+        $savingsaccount = AcctSavingsAccount::withoutGlobalScopes()
+        ->select('acct_savings_account.savings_account_id', 'acct_savings_account.member_id', 'core_member.member_name', 'acct_savings_account.savings_id', 'acct_savings.savings_code', 'acct_savings.savings_name', 'acct_savings_account.savings_account_no', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_first_deposit_amount', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.validation', 'acct_savings_account.validation_at')
         ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
         ->join('acct_savings', 'acct_savings_account.savings_id', '=', 'acct_savings.savings_id')
         ->where('acct_savings_account.data_state', 0)

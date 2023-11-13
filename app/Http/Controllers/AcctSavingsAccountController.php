@@ -183,7 +183,8 @@ class AcctSavingsAccountController extends Controller
             ->first()
             ->transaction_module_id;
 
-            $acctsavingsaccount_last 	= AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name')
+            $acctsavingsaccount_last 	= AcctSavingsAccount::withoutGlobalScopes()
+            ->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name')
 			->join('core_member','acct_savings_account.member_id', '=', 'core_member.member_id')
 			->where('acct_savings_account.created_id', $data['created_id'])
 			->whereDate('acct_savings_account.created_at', date('Y-m-d'))

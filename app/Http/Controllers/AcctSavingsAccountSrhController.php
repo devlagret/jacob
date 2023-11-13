@@ -68,7 +68,8 @@ class AcctSavingsAccountSrhController extends Controller
 
     public function selectSavingsAccount($savings_account_id)
     {
-        $savingsaccount = AcctSavingsAccount::where('acct_savings_account.savings_account_id',$savings_account_id)
+        $savingsaccount = AcctSavingsAccount::withoutGlobalScopes()
+        ->where('acct_savings_account.savings_account_id',$savings_account_id)
         ->join('core_member','acct_savings_account.member_id', '=', 'core_member.member_id')
         ->first();
 

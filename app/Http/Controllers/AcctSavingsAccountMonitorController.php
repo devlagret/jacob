@@ -66,7 +66,8 @@ class AcctSavingsAccountMonitorController extends Controller
 
     public function selectSavingsAccount($savings_account_id)
     {
-        $savingsaccount = AcctSavingsAccount::where('acct_savings_account.savings_account_id',$savings_account_id)
+        $savingsaccount = AcctSavingsAccount::withoutGlobalScopes()
+        ->where('acct_savings_account.savings_account_id',$savings_account_id)
         ->join('core_member','acct_savings_account.member_id', '=', 'core_member.member_id')
         ->first();
 
@@ -258,7 +259,8 @@ class AcctSavingsAccountMonitorController extends Controller
 
                 $opening_balance->opening_balance = $last_balance;
 
-                AcctSavingsAccount::where('savings_account_id',$newdata['savings_account_id'])->update(['savings_account_last_balance' => $newdata['last_balance'], 'updated_id' => auth()->user()->user_id]);
+                AcctSavingsAccount::withoutGlobalScopes()
+                ->where('savings_account_id',$newdata['savings_account_id'])->update(['savings_account_last_balance' => $newdata['last_balance'], 'updated_id' => auth()->user()->user_id]);
                     
                 AcctSavingsAccountDetail::where('savings_account_detail_id', $newdata['savings_account_detail_id'])
                 ->update([
