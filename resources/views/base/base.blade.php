@@ -156,7 +156,16 @@ License: {{ theme()->getOption('product', 'license') }}
         toastr.error("{{$error}}");
         @endforeach
     @endif
-
+    $(".date").daterangepicker({
+        autoApply: true,
+        singleDatePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        maxYear: parseInt(moment().format("YYYY"),12),
+        locale: {
+            format: 'DD-MM-YYYY',
+        }
+    });
     function toRp(number) {
         var number = number.toString(), 
         rupiah = number.split('.')[0], 
