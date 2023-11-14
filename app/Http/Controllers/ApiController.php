@@ -152,6 +152,20 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
+    //data simpanan by no member
+    public function PostSavingsByMember($member_id){
+        $data = AcctSavingsAccount::with('member','savingdata')
+        ->withoutGlobalScopes()
+        ->where('member_id',$member_id)
+        ->get();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+
 
     public function logout(Request $request){
         $user = auth()->user();
