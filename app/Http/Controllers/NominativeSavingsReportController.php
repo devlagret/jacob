@@ -68,6 +68,7 @@ class NominativeSavingsReportController extends Controller
         ->where('data_state', 0)
         ->get();
         $period 					= date('mY', strtotime($sesi['start_date']));
+        $data_acctsavingsaccount = [];
 
         if($sesi['kelompok'] == 0){
             $acctsavingsaccount     = AcctSavingsAccount::withoutGlobalScopes()->select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_date', 'acct_savings_account.savings_account_last_balance', 'acct_savings_account.savings_id', 'acct_savings.savings_name', 'acct_savings.savings_status', 'acct_savings.savings_interest_rate', 'acct_savings_account.data_state')
@@ -75,6 +76,7 @@ class NominativeSavingsReportController extends Controller
             ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
             ->where('acct_savings.savings_status', 0)
             ->where('acct_savings_account.data_state', 0)
+            ->where('acct_savings_account.branch_id',$branch_id)
 			->orderBy('acct_savings_account.savings_account_no', 'ASC')
 			->orderBy('acct_savings_account.savings_account_id', 'ASC')
 			->orderBy('acct_savings_account.member_id', 'ASC')
@@ -130,6 +132,7 @@ class NominativeSavingsReportController extends Controller
                 ->join('core_member', 'acct_savings_account.member_id', '=', 'core_member.member_id')
                 ->where('acct_savings_account.data_state', 0)
                 ->where('acct_savings_account.savings_id', $vS['savings_id'])
+                ->where('acct_savings_account.branch_id',$branch_id)
                 ->orderBy('acct_savings_account.savings_account_id', 'ASC')
                 ->orderBy('acct_savings_account.savings_account_no', 'ASC')
                 ->orderBy('acct_savings_account.member_id', 'ASC')
@@ -249,25 +252,43 @@ class NominativeSavingsReportController extends Controller
         $no         = 1;
         $totalbasil = 0;
         $totalsaldo = 0;
+
         if($sesi['kelompok'] == 0){
-            foreach ($data_acctsavingsaccount as $key => $val) {
+            if($data_acctsavingsaccount == null){
                 $export .= "
-                    <tr>
-                        <td width=\"5%\"><div style=\"text-align: left;\">".$no."</div></td>
-                        <td width=\"11%\"><div style=\"text-align: left;\">".$val['savings_account_no']."</div></td>
-                        <td width=\"25%\"><div style=\"text-align: left;\">".$val['member_name']."</div></td>
-                        <td width=\"30%\"><div style=\"text-align: left;\">".$val['member_address']."</div></td>
-                        <td width=\"5%\"><div style=\"text-align: left;\">".$val['savings_interest_rate']."%</div></td>
-                        <td width=\"20%\"><div style=\"text-align: right;\">".number_format($val['savings_account_last_balance'], 2)."</div></td>
-                    </tr>
+                <tr>
+                    <td width=\"5%\"><div style=\"text-align: left;\"></div></td>
+                    <td width=\"11%\"><div style=\"text-align: left;\"></div></td>
+                    <td width=\"25%\"><div style=\"text-align: left;\"></div></td>
+                    <td width=\"30%\"><div style=\"text-align: left;\"></div></td>
+                    <td width=\"5%\"><div style=\"text-align: left;\"></div></td>
+                    <td width=\"20%\"><div style=\"text-align: right;\"></div></td>
+                </tr>
+    
+            ";
+            }else{
 
-                ";
-
-                $totalbasil += $val['savings_profit_sharing_amount'];
-                $totalsaldo += $val['savings_account_last_balance'];
-                $no++;
+                foreach ($data_acctsavingsaccount as $key => $val) {
+                    $export .= "
+                        <tr>
+                            <td width=\"5%\"><div style=\"text-align: left;\">".$no."</div></td>
+                            <td width=\"11%\"><div style=\"text-align: left;\">".$val['savings_account_no']."</div></td>
+                            <td width=\"25%\"><div style=\"text-align: left;\">".$val['member_name']."</div></td>
+                            <td width=\"30%\"><div style=\"text-align: left;\">".$val['member_address']."</div></td>
+                            <td width=\"5%\"><div style=\"text-align: left;\">".$val['savings_interest_rate']."%</div></td>
+                            <td width=\"20%\"><div style=\"text-align: right;\">".number_format($val['savings_account_last_balance'], 2)."</div></td>
+                        </tr>
+    
+                    ";
+    
+                    $totalbasil += $val['savings_profit_sharing_amount'];
+                    $totalsaldo += $val['savings_account_last_balance'];
+                    $no++;
+                }
             }
-        } else { 
+
+        }
+        if($sesi['kelompok'] == 1) { 
             $totalglobal    = 0;
             $totalsaldo     = 0;
             foreach ($acctsavings as $key => $vS) {
