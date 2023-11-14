@@ -170,10 +170,14 @@ class ApiController extends Controller
             'state'          => "login",
         ],201);
     }
-    public function deposit(Request $request) {
-        $request->validate(['savings_account_id'=>'required','savings_cash_mutation_amount'=>'required']);
+    public function deposit(Request $request,$savings_account_id) {
+        $request->validate(['savings_cash_mutation_amount'=>'required']);
+        $sai = $request->savings_account_id;
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
+        }
         try {
-            $savingacc = AcctSavingsAccount::find($request->savings_account_id);
+            $savingacc = AcctSavingsAccount::find($sai);
         DB::beginTransaction();
         AcctSavingsCashMutation::create( [
             'savings_account_id' => $request['savings_account_id'],
@@ -198,10 +202,14 @@ class ApiController extends Controller
         return response($e,500);
         }
     }
-    public function withdraw(Request $request) {
-        $request->validate(['savings_account_id'=>'required','savings_cash_mutation_amount'=>'required']);
+    public function withdraw(Request $request,$savings_account_id) {
+        $request->validate(['savings_cash_mutation_amount'=>'required']);
+        $sai = $request->savings_account_id;
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
+        }
         try {
-            $savingacc = AcctSavingsAccount::find($request->savings_account_id);
+            $savingacc = AcctSavingsAccount::find($sai);
         DB::beginTransaction();
         AcctSavingsCashMutation::create( [
             'savings_account_id' => $request['savings_account_id'],
