@@ -195,6 +195,7 @@ class ApiController extends Controller
         DB::beginTransaction();
         AcctSavingsCashMutation::create( [
             'savings_account_id' => $request['savings_account_id'],
+            'mutation_id' => 1,
             'member_id' => $savingacc->member_id,
             'savings_id' => $savingacc->savings_id,
             'savings_cash_mutation_date' => date('Y-m-d'),
