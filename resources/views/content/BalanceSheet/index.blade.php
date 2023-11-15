@@ -59,6 +59,14 @@
     $year_now = date('Y');
     for($i=($year_now-2); $i<($year_now+2); $i++){
         $yearlist[$i] = $i;
+
+    $title = '';
+    $branch_id          = auth()->user()->branch_id;
+    if($branch_id == 0){
+            $title = 'LAPORAN KONSOLIDASI';
+        }else{
+            $title = 'LAPORAN NERACA';
+        }
     } 
 @endphp
 
@@ -131,7 +139,7 @@
                     <table class="table table-rounded border  gs-7 show-border">
                     <thead>
                             <tr align="center">
-                                <th colspan="2"><b>LAPORAN NERACA</b></th>
+                                <th colspan="2"><b>{{ $title }}</b></th>
                             </tr>
                             <tr align="center">
                                 <th colspan="2"><b>{{ $preferencecompany['company_name'] }}</b></th>
