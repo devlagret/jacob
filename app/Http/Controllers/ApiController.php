@@ -95,6 +95,7 @@ class ApiController extends Controller
         ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
         ->join('acct_deposito','acct_deposito.deposito_id','acct_d+eposito_account.deposito_id')
         ->where('acct_deposito_account.data_state',0)
+        ->where('acct_deposito_account.data_state',0)
         ->get();
         return response()->json([
             'data' => $data,
@@ -107,6 +108,7 @@ class ApiController extends Controller
         $data = AcctCreditsAccount::withoutGlobalScopes()
         ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
         ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
+        ->where('acct_credits_account.data_state',0)
         ->get();
         return response()->json([
             'data' => $data,
@@ -130,6 +132,7 @@ class ApiController extends Controller
         ->join('core_member','acct_savings_account.member_id','core_member.member_id')
         ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
         ->where('acct_savings_account.savings_account_id',$savings_account_id)
+        ->where('acct_savings_account.data_state',0)
         ->first();
 
         return response()->json([
@@ -144,6 +147,7 @@ class ApiController extends Controller
         ->join('core_member','acct_savings_account.member_id','core_member.member_id')
         ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
         ->where('acct_savings_account.savings_account_no','LIKE',$savings_account_no)
+        ->where('acct_savings_account.data_state',0)
         ->first();
 
         return response()->json([
@@ -186,9 +190,9 @@ class ApiController extends Controller
     }
     public function deposit(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
-        $sai = $savings_account_id;
-        if(!empty($request->savings_account_id)){
-            $sai = $request->savings_account_id;
+        $sai = $request->savings_account_id;
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
         }
         try {
             $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
@@ -221,9 +225,9 @@ class ApiController extends Controller
     }
     public function withdraw(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
-        $sai = $savings_account_id;
-        if(!empty($request->savings_account_id)){
-            $sai = $request->savings_account_id;
+        $sai = $request->savings_account_id;
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
         }
         try {
             $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
@@ -260,6 +264,7 @@ class ApiController extends Controller
         ->where('savings_cash_mutation_date','>=',$start_date)
         ->where('savings_cash_mutation_date','<=',$end_date)
         ->where('mutation_id',1)
+        ->where('data_state',0)
         ->get();
 
         return response()->json([

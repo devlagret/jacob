@@ -39,7 +39,7 @@ if (empty($sessiondata)){
                             </select>
                         </div>
                         <div class="col-lg-3 fv-row">
-                            <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Cabang') }}</label>
+                            <label class="col-lg-4 col-form-label mt-6 fw-bold fs-6">{{ __('Cabang') }}</label>
                             <select name="branch_id" id="branch_id" aria-label="{{ __('Cabang') }}" data-control="select2" data-placeholder="{{ __('Pilih cabang..') }}" data-allow-clear="true" class="form-select form-select-solid form-select-lg">
                                 <option value="">{{ __('Pilih cabang..') }}</option>
                                 @foreach($corebranch as $key => $value)

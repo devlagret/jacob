@@ -71,12 +71,26 @@ class AcctCreditsAccountMasterDataTable extends DataTable
             ->editColumn('credits_account_principal', function (AcctCreditsAccount $model) {
                 return number_format($model->credits_account_principal, 2);
             })
-            ->editColumn('member_gender', function (AcctCreditsAccount $model) {
-                return ($model->member_gender == 0 ?'Perempuan':'Laki-laki');
+            ->editColumn('member.member_gender', function (AcctCreditsAccount $model) {
+
+                if($model->member_gender == 0)
+                {
+                    return 'Perempuan';
+                }else{
+                    return 'Laki-laki';
+                }               
             })
             ->editColumn('member_working_type', function (AcctCreditsAccount $model) {
                 return ($model->member_working_type == 0 ?'': ($model->member_working_type == 1?'Karyawan': ($model->member_working_type == 2 ? 'Profesional':'Non Karyawan')));
             });
+            // ->editColumn('savingacc.savings_account_no', function (AcctCreditsAccount $model) {
+            //     if($model->savingacc->savings_account_no == null)
+            //     {
+            //         return ' - ' ;
+            //     }else{
+            //         return $model->savingacc->savings_account_no;
+            //     }
+            // });
     }
 
     /**
@@ -107,7 +121,9 @@ class AcctCreditsAccountMasterDataTable extends DataTable
             $query->where('branch_id',  $sessiondata['branch_id']??Auth::user()->branch_id);
         });
         if($sessiondata['credits_id']){
-            $querydata = $querydata->where('credits_id', $sessiondata['credits_id']);
+            $querydata = $querydata
+            ->with('member.working','savingacc','credit')
+            ->where('credits_id', $sessiondata['credits_id']);
         }
 
         return $querydata;
@@ -142,7 +158,7 @@ class AcctCreditsAccountMasterDataTable extends DataTable
         return [
             Column::make('credits_account_id')->title(__('No'))->data('DT_RowIndex'),
             Column::make('credits_account_serial')->title(__('Nomor Akad')),
-            Column::make('savingacc.savings_account_no')->title(__('No Rekening')),
+            // Column::make('savingacc.savings_account_no')->title(__('No Rekening')),
             Column::make('member.member_name')->title(__('Nama Anggota')),
             Column::make('member.member_gender')->title(__('JNS Kel')),
             Column::make('member.member_address')->title(__('Alamat')),
