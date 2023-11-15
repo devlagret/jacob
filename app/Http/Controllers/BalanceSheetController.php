@@ -81,28 +81,48 @@ class BalanceSheetController extends Controller
         // } else {
         //     return $data->opening_balance;
         // }
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $data = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+            ->select('acct_journal_voucher_item.journal_voucher_amount', 'acct_journal_voucher_item.account_id_status')
+            ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
+            ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
+            ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
+            ->where('acct_journal_voucher.data_state', 0)
+            ->where('acct_journal_voucher_item.account_id', $account_id)
+            ->get();
+            $data_first = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+                ->select('acct_journal_voucher_item.account_id_status')
+                ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
+                ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
+                ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
+                ->where('acct_journal_voucher.data_state', 0)
+                ->where('acct_journal_voucher_item.account_id', $account_id)
+                ->first();
+        }else{
 
-
-        $data = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
-        ->select('acct_journal_voucher_item.journal_voucher_amount', 'acct_journal_voucher_item.account_id_status')
-        ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
-        ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
-        ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
-        ->where('acct_journal_voucher.data_state', 0)
-        ->where('acct_journal_voucher.branch_id', $branch_id)
-        ->where('acct_journal_voucher_item.account_id', $account_id)
-        // ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
-        ->get();
-        $data_first = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
-            ->select('acct_journal_voucher_item.account_id_status')
+            $data = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+            ->select('acct_journal_voucher_item.journal_voucher_amount', 'acct_journal_voucher_item.account_id_status')
             ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
             ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
             ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
             ->where('acct_journal_voucher.data_state', 0)
             ->where('acct_journal_voucher.branch_id', $branch_id)
-            // ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
             ->where('acct_journal_voucher_item.account_id', $account_id)
-            ->first();
+            ->get();
+            $data_first = AcctJournalVoucher::join('acct_journal_voucher_item', 'acct_journal_voucher_item.journal_voucher_id', 'acct_journal_voucher.journal_voucher_id')
+                ->select('acct_journal_voucher_item.account_id_status')
+                ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
+                ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
+                ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
+                ->where('acct_journal_voucher.data_state', 0)
+                ->where('acct_journal_voucher.branch_id', $branch_id)
+                ->where('acct_journal_voucher_item.account_id', $account_id)
+                ->first();
+        }
+
+
+
 
         $amount = 0;
         $amount1 = 0;
