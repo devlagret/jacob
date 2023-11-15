@@ -206,7 +206,7 @@ class AcctCreditsAccountMasterController extends Controller
                 $spreadsheet->getActiveSheet()->setCellValue('F' . $row, $membergender[$val->member->member_gender]);
                 $spreadsheet->getActiveSheet()->setCellValue('G' . $row, date('d-m-Y', strtotime($val->member->member_date_of_birth)));
                 $spreadsheet->getActiveSheet()->setCellValue('H' . $row, $val->member->member_address);
-                $spreadsheet->getActiveSheet()->setCellValue('I' . $row, $memberjobtype[$val->member->working->member_working_type]);
+                $spreadsheet->getActiveSheet()->setCellValue('I' . $row, $memberjobtype[$val->member->working->member_working_type] ?? '');
                 $spreadsheet->getActiveSheet()->setCellValue('J' . $row, $val->member->member_company_name);
                 $spreadsheet->getActiveSheet()->setCellValue('K' . $row, $val->member->member_identity_no);
                 $spreadsheet->getActiveSheet()->setCellValue('L' . $row, $val->member->member_phone);
