@@ -155,7 +155,7 @@ class ApiController extends Controller
     //data simpanan by no member
     public function PostSavingsByMember($member_id){
         $data = AcctSavingsAccount::with('member','savingdata')
-        ->withoutGlobalScopes()
+        ->withoutGlobalScopes() 
         ->where('member_id',$member_id)
         ->get();
 
