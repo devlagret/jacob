@@ -119,6 +119,7 @@ class ApiController extends Controller
      //member
      public function getDataMembers(){
         $data = CoreMember::withoutGlobalScopes()
+        ->where('data_state',0)
         ->get();
         return response()->json([
             'data' => $data,
