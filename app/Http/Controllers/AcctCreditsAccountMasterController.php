@@ -87,7 +87,7 @@ class AcctCreditsAccountMasterController extends Controller
 		$membergender 	                = Configuration::MemberGender();
 		$memberidentity                 = Configuration::MemberIdentity();
 		$memberjobtype 	                = Configuration::WorkingType();
-		$acctcreditsaccountmasterdata	= AcctCreditsAccount::with('member.working','credit');
+		$acctcreditsaccountmasterdata	= AcctCreditsAccount::with('member','member.working','credit');
 		if ($branch_id && $branch_id != '') {
 			$acctcreditsaccountmasterdata = $acctcreditsaccountmasterdata->where('acct_credits_account.branch_id', $branch_id);
 		}
