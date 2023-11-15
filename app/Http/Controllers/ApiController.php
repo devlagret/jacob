@@ -195,7 +195,6 @@ class ApiController extends Controller
         DB::beginTransaction();
         AcctSavingsCashMutation::create( [
             'savings_account_id' => $request['savings_account_id'],
-            'mutation_id' => 1,
             'member_id' => $savingacc->member_id,
             'savings_id' => $savingacc->savings_id,
             'savings_cash_mutation_date' => date('Y-m-d'),
@@ -248,4 +247,21 @@ class ApiController extends Controller
         return response($e,500);
         }
     }
+
+
+    //data mutasi setor simpanan tunai 
+    public function PostSavingsmutation($start_date,$end_date){
+        $data = AcctSavingsCashMutation::with('member','mutation')
+        ->withoutGlobalScopes() 
+        ->where('savings_cash_mutation_date','>=',$start_date)
+        ->where('savings_cash_mutation_date','<=',$end_date)
+        ->where('mutation_id',1)
+        ->get();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
 }
