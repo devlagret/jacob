@@ -61,6 +61,7 @@ class AcctCreditsAccountController extends Controller
 
     public function add()
     {
+        $branch_id          = auth()->user()->branch_id;
         if(empty(Session::get('credit-token'))){
             Session::put('credit-token',Str::uuid());
         }
@@ -76,8 +77,14 @@ class AcctCreditsAccountController extends Controller
         $sumberdana = AcctSourceFund::select('source_fund_id','source_fund_name')
         ->where('data_state', 0)
         ->get();
-        $acctsavingsaccount = AcctSavingsAccount::with('member','savingdata')
-        ->get();
+        if($branch_id == 0){
+            $acctsavingsaccount = AcctSavingsAccount::with('member','savingdata')
+            ->get();
+        }else{
+            $acctsavingsaccount = AcctSavingsAccount::with('member','savingdata')
+            ->where('branch_id',$branch_id)
+            ->get();
+        }
         $daftaragunan = session()->get('array_creditsaccountangunan');
         return view('content.AcctCreditsAccount.Add.index', compact('coremember','creditid','datasession','coreoffice','sumberdana','acctsavingsaccount','daftaragunan'));
     }

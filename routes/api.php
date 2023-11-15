@@ -28,6 +28,8 @@ Route::post('getCreditsAccount', [ApiController::class, 'getDataCredit']);
 Route::post('getMembers', [ApiController::class, 'getDataMembers']);
 Route::post('PostSavingsById/{savings_account_id}', [ApiController::class, 'PostSavingsById']);
 Route::post('PostSavingsByNo/{savings_account_no}', [ApiController::class, 'PostSavingsByNo']);
+Route::post('PostSavingsByMember/{member_id}', [ApiController::class, 'PostSavingsByMember']);
+Route::post('PostSavingsmutation/{start_date?}/{end_date?}', [ApiController::class, 'PostSavingsmutation']);
 Route::post('logout', [ApiController::class, 'logout']);
 Route::post('getLoginState', [ApiController::class, 'getLoginState']);
 
