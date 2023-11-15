@@ -172,9 +172,9 @@ class ApiController extends Controller
     }
     public function deposit(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
-        $sai = $savings_account_id;
-        if(!empty($request->savings_account_id)){
-            $sai = $request->savings_account_id;
+        $sai = $request->savings_account_id;
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
         }
         try {
             $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
@@ -204,9 +204,9 @@ class ApiController extends Controller
     }
     public function withdraw(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
-        $sai = $savings_account_id;
-        if(!empty($request->savings_account_id)){
-            $sai = $request->savings_account_id;
+        $sai = $request->savings_account_id;
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
         }
         try {
             $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
