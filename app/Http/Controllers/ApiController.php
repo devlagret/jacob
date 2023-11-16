@@ -227,9 +227,15 @@ class ApiController extends Controller
     public function withdraw(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
         $sai = $request->savings_account_id;
+        $savingacc1 = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
         if(!empty($savings_account_id)){
             $sai = $savings_account_id;
         }
+         print($savingacc1);
+
+        // if($request->savings_cash_mutation_amount > $savingacc1['savings_cash_mutation_last_balance']){
+        //     return response('Withdraw Failed');
+        // }
         try {
             $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
         DB::beginTransaction();
@@ -259,11 +265,11 @@ class ApiController extends Controller
 
 
     //data mutasi setor simpanan tunai 
-    public function PostSavingsmutation($start_date,$end_date){
+    public function PostSavingsmutation(){
         $data = AcctSavingsCashMutation::with('member','mutation')
         ->withoutGlobalScopes() 
-        ->where('savings_cash_mutation_date','>=',$start_date)
-        ->where('savings_cash_mutation_date','<=',$end_date)
+        // ->where('savings_cash_mutation_date','>=',$start_date)
+        // ->where('savings_cash_mutation_date','<=',$end_date)
         ->where('mutation_id',1)
         ->where('data_state',0)
         ->get();

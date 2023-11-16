@@ -146,7 +146,7 @@ class LoginRequest extends FormRequest
                     }
                 }
             } else {
-                if ($data_user['user_group_id'] != 1 || $data_user['user_group_id'] != 5) {
+                if ($data_user['user_group_id'] != 1 || $data_user['user_group_id'] != 5 || $data_user['user_group_id'] != 5) {
                     throw ValidationException::withMessages([
                         'username' => __('auth.closebranch'),
                     ]);
