@@ -269,7 +269,7 @@ class ApiController extends Controller
         $data = AcctSavingsCashMutation::with('member','mutation')
         ->withoutGlobalScopes() 
         // ->where('savings_cash_mutation_date','>=',$start_date)
-        // ->where('savings_cash_mutation_date','<=',$end_date)
+        ->where('savings_cash_mutation_date',date('d/m/Y'))
         ->where('mutation_id',1)
         ->where('data_state',0)
         ->get();
@@ -281,11 +281,12 @@ class ApiController extends Controller
     }
 
     //data akhir mutasi setor simpanan tunai by member 
-    public function PostSavingsmutationByMember($member_id){
+    public function PrintmutationByMember($member_id){
         $data = AcctSavingsCashMutation::with('member','mutation')
         ->withoutGlobalScopes() 
         ->where('member.member_id',$member_id)
         ->where('mutation_id',1)
+        ->where('savings_cash_mutation_date',date('d/m/Y'))
         ->where('data_state',0)
         ->orderBy('DESC')
         ->first();
