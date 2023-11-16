@@ -35,6 +35,7 @@ use App\Models\SalesInvoiceItem;
 use App\Models\SystemLoginLog;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -269,7 +270,7 @@ class ApiController extends Controller
         $data = AcctSavingsCashMutation::with('member','mutation')
         ->withoutGlobalScopes() 
         // ->where('savings_cash_mutation_date','>=',$start_date)
-        ->where('savings_cash_mutation_date',date('d/m/Y'))
+        ->where('savings_cash_mutation_date',Carbon::today())
         ->where('mutation_id',1)
         ->where('data_state',0)
         ->get();
@@ -286,7 +287,7 @@ class ApiController extends Controller
         ->withoutGlobalScopes() 
         ->where('member.member_id',$member_id)
         ->where('mutation_id',1)
-        ->where('savings_cash_mutation_date',date('d/m/Y'))
+        ->where('savings_cash_mutation_date',Carbon::today())
         ->where('data_state',0)
         ->orderBy('DESC')
         ->first();
