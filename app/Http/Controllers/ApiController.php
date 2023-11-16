@@ -280,4 +280,21 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
+    //data akhir mutasi setor simpanan tunai by member 
+    public function PostSavingsmutationByMember($member_id){
+        $data = AcctSavingsCashMutation::with('member','mutation')
+        ->withoutGlobalScopes() 
+        ->where('member.member_id',$member_id)
+        ->where('mutation_id',1)
+        ->where('data_state',0)
+        ->orderBy('DESC')
+        ->first();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+
 }
