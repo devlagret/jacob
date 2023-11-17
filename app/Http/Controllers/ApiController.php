@@ -35,6 +35,7 @@ use App\Models\SalesInvoiceItem;
 use App\Models\SystemLoginLog;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -95,6 +96,7 @@ class ApiController extends Controller
         ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
         ->join('acct_deposito','acct_deposito.deposito_id','acct_d+eposito_account.deposito_id')
         ->where('acct_deposito_account.data_state',0)
+        ->where('acct_deposito_account.data_state',0)
         ->get();
         return response()->json([
             'data' => $data,
@@ -107,6 +109,7 @@ class ApiController extends Controller
         $data = AcctCreditsAccount::withoutGlobalScopes()
         ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
         ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
+        ->where('acct_credits_account.data_state',0)
         ->get();
         return response()->json([
             'data' => $data,
@@ -117,6 +120,7 @@ class ApiController extends Controller
      //member
      public function getDataMembers(){
         $data = CoreMember::withoutGlobalScopes()
+        ->where('data_state',0)
         ->get();
         return response()->json([
             'data' => $data,
@@ -130,6 +134,7 @@ class ApiController extends Controller
         ->join('core_member','acct_savings_account.member_id','core_member.member_id')
         ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
         ->where('acct_savings_account.savings_account_id',$savings_account_id)
+        ->where('acct_savings_account.data_state',0)
         ->first();
 
         return response()->json([
@@ -144,6 +149,7 @@ class ApiController extends Controller
         ->join('core_member','acct_savings_account.member_id','core_member.member_id')
         ->join('acct_savings','acct_savings.savings_id','acct_savings_account.savings_id')
         ->where('acct_savings_account.savings_account_no','LIKE',$savings_account_no)
+        ->where('acct_savings_account.data_state',0)
         ->first();
 
         return response()->json([
@@ -155,7 +161,7 @@ class ApiController extends Controller
     //data simpanan by no member
     public function PostSavingsByMember($member_id){
         $data = AcctSavingsAccount::with('member','savingdata')
-        ->withoutGlobalScopes()
+        ->withoutGlobalScopes() 
         ->where('member_id',$member_id)
         ->get();
 
@@ -186,12 +192,14 @@ class ApiController extends Controller
     }
     public function deposit(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
-        $sai = $savings_account_id;
-        if(!empty($request->savings_account_id)){
-            $sai = $request->savings_account_id;
+        $sai = $request->savings_account_id;
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
         }
         try {
             $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
+            $savingacc->savings_account_pickup_date=date('Y-m-d');
+            $savingacc->save();
         DB::beginTransaction();
         AcctSavingsCashMutation::create( [
             'savings_account_id' => $request['savings_account_id'],
@@ -199,12 +207,13 @@ class ApiController extends Controller
             'member_id' => $savingacc->member_id,
             'savings_id' => $savingacc->savings_id,
             'savings_cash_mutation_date' => date('Y-m-d'),
+            'pickup_date' => date('Y-m-d'),
             'savings_cash_mutation_opening_balance' => $savingacc->savings_cash_mutation_last_balance,
             'savings_cash_mutation_amount' => $request->savings_cash_mutation_amount,
             'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
             'savings_cash_mutation_last_balance' => $savingacc->savings_cash_mutation_last_balance,
             'savings_cash_mutation_remark' => $request->savings_cash_mutation_remark,
-            'branch_id' => Auth::user()->branch_id,
+            'branch_id' =>  $savingacc->branch_id,
             'operated_name' => Auth::user()->username,
             'created_id' => Auth::user()->user_id,
         ]);
@@ -218,10 +227,16 @@ class ApiController extends Controller
     }
     public function withdraw(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
-        $sai = $savings_account_id;
-        if(!empty($request->savings_account_id)){
-            $sai = $request->savings_account_id;
+        $sai = $request->savings_account_id;
+        $savingacc1 = AcctSavingsAccount::find($sai);
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
         }
+         print($savingacc1);
+
+        // if($request->savings_cash_mutation_amount > $savingacc1['savings_cash_mutation_last_balance']){
+        //     return response('Withdraw Failed');
+        // }
         try {
             $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
         DB::beginTransaction();
@@ -230,7 +245,7 @@ class ApiController extends Controller
             'mutation_id' => 2,
             'member_id' => $savingacc->member_id,
             'savings_id' => $savingacc->savings_id,
-            'savings_cash_mutation_date' => date('Y-m-d'),
+            'pickup_date' => date('Y-m-d'),
             'savings_cash_mutation_opening_balance' => $savingacc->savings_cash_mutation_last_balance,
             'savings_cash_mutation_amount' => $request->savings_cash_mutation_amount,
             'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
@@ -248,4 +263,57 @@ class ApiController extends Controller
         return response($e,500);
         }
     }
+
+
+    //data mutasi setor simpanan tunai 
+    public function GetDeposit(){
+        $data = AcctSavingsCashMutation::with('member','mutation')
+        ->withoutGlobalScopes() 
+        // ->where('savings_cash_mutation_date','>=',$start_date)
+        ->where('savings_cash_mutation_date',Carbon::today())
+        ->where('mutation_id',1)
+        ->where('data_state',0)
+        ->get();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+      //data mutasi setor simpanan tunai 
+      public function GetWithdraw(){
+        $data = AcctSavingsCashMutation::with('member','mutation')
+        ->withoutGlobalScopes() 
+        // ->where('savings_cash_mutation_date','>=',$start_date)
+        ->where('savings_cash_mutation_date',Carbon::today())
+        ->where('mutation_id',2)
+        ->where('data_state',0)
+        ->get();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+
+    //data akhir mutasi setor simpanan tunai by member 
+    public function PrintmutationByMember($member_id){
+        $data = AcctSavingsCashMutation::with('member','mutation')
+        ->withoutGlobalScopes() 
+        ->where('member.member_id',$member_id)
+        ->where('mutation_id',1)
+        ->where('savings_cash_mutation_date',Carbon::today())
+        ->where('data_state',0)
+        ->orderBy('DESC')
+        ->first();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+
 }
