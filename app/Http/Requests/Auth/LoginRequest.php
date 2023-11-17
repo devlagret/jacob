@@ -146,11 +146,11 @@ class LoginRequest extends FormRequest
                     }
                 }
             } else {
-                if ($data_user['user_group_id'] != 1 || $data_user['user_group_id'] != 5) {
-                    throw ValidationException::withMessages([
-                        'username' => __('auth.closebranch'),
-                    ]);
-                } else {
+                // if ($data_user['user_group_id'] != 1 || $data_user['user_group_id'] != 5) {
+                //     throw ValidationException::withMessages([
+                //         'username' => __('auth.closebranch'),
+                //     ]);
+                // } else {
                     if ($data_user->user_id == 1) {
                         $this->ensureIsNotRateLimited();
 
@@ -186,7 +186,7 @@ class LoginRequest extends FormRequest
                             ]);
                         }
                     }
-                }
+                // }
             }
         }
     }
