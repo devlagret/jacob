@@ -228,7 +228,7 @@ class ApiController extends Controller
     public function withdraw(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
         $sai = $request->savings_account_id;
-        $savingacc1 = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
+        $savingacc1 = AcctSavingsAccount::find($sai);
         if(!empty($savings_account_id)){
             $sai = $savings_account_id;
         }
@@ -245,7 +245,7 @@ class ApiController extends Controller
             'mutation_id' => 2,
             'member_id' => $savingacc->member_id,
             'savings_id' => $savingacc->savings_id,
-            'savings_cash_mutation_date' => date('Y-m-d'),
+            'pickup_date' => date('Y-m-d'),
             'savings_cash_mutation_opening_balance' => $savingacc->savings_cash_mutation_last_balance,
             'savings_cash_mutation_amount' => $request->savings_cash_mutation_amount,
             'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
@@ -266,7 +266,7 @@ class ApiController extends Controller
 
 
     //data mutasi setor simpanan tunai 
-    public function PostSavingsmutation(){
+    public function GetDeposit(){
         $data = AcctSavingsCashMutation::with('member','mutation')
         ->withoutGlobalScopes() 
         // ->where('savings_cash_mutation_date','>=',$start_date)
@@ -280,6 +280,23 @@ class ApiController extends Controller
         ]);
         // return json_encode($data);
     }
+
+      //data mutasi setor simpanan tunai 
+      public function GetWithdraw(){
+        $data = AcctSavingsCashMutation::with('member','mutation')
+        ->withoutGlobalScopes() 
+        // ->where('savings_cash_mutation_date','>=',$start_date)
+        ->where('savings_cash_mutation_date',Carbon::today())
+        ->where('mutation_id',2)
+        ->where('data_state',0)
+        ->get();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
 
     //data akhir mutasi setor simpanan tunai by member 
     public function PrintmutationByMember($member_id){

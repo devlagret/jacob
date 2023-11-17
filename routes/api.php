@@ -30,7 +30,9 @@ Route::post('PostSavingsById/{savings_account_id}', [ApiController::class, 'Post
 Route::post('PostSavingsByNo/{savings_account_no}', [ApiController::class, 'PostSavingsByNo']);
 Route::post('PostSavingsByMember/{member_id}', [ApiController::class, 'PostSavingsByMember']);
 Route::post('PrintmutationByMember/{member_id}', [ApiController::class, 'PrintmutationByMember']);
-Route::post('PostSavingsmutation', [ApiController::class, 'PostSavingsmutation']);
+Route::post('PostSavingsmutation', [ApiController::class, 'GetDeposit']);
+Route::post('GetWithdraw', [ApiController::class, 'GetWithdraw']);
+
 Route::post('logout', [ApiController::class, 'logout']);
 Route::post('getLoginState', [ApiController::class, 'getLoginState']);
 
