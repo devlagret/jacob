@@ -232,7 +232,7 @@ class ApiController extends Controller
         if(!empty($savings_account_id)){
             $sai = $savings_account_id;
         }
-         print($savingacc1);
+        // print($savingacc1);
 
         // if($request->savings_cash_mutation_amount > $savingacc1['savings_cash_mutation_last_balance']){
         //     return response('Withdraw Failed');
@@ -245,13 +245,14 @@ class ApiController extends Controller
             'mutation_id' => 2,
             'member_id' => $savingacc->member_id,
             'savings_id' => $savingacc->savings_id,
+            'savings_cash_mutation_date' => date('Y-m-d'),
             'pickup_date' => date('Y-m-d'),
             'savings_cash_mutation_opening_balance' => $savingacc->savings_cash_mutation_last_balance,
             'savings_cash_mutation_amount' => $request->savings_cash_mutation_amount,
             'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
             'savings_cash_mutation_last_balance' => $savingacc->savings_cash_mutation_last_balance,
             'savings_cash_mutation_remark' => $request->savings_cash_mutation_remark,
-            'branch_id' => Auth::user()->branch_id,
+            'branch_id' =>  $savingacc->branch_id,
             'operated_name' => Auth::user()->username,
             'created_id' => Auth::user()->user_id,
         ]);
