@@ -416,6 +416,26 @@
                                                 ";
 
                                                 echo "
+                                                <tr>
+                                            ";
+
+                                                if($val['report_type2']	== 7){
+                                                    
+                                                    $last_balance2 	= BalanceSheetController::getLastBalance($val['account_id2'], empty($session['branch_id']) ? auth()->user()->branch_id : $session['branch_id'], $last_month, $last_year);
+
+                                                    // echo "
+                                                    //     <td><div style='font-weight:".$report_bold2."'>".$report_tab2."(".$val['account_code2'].") ".$val['account_name2']."</div> </td>
+                                                    //     <td style='text-align:right'><div style='font-weight:".$report_bold2."'>".number_format($last_balance2, 2)."</div></td>
+                                                    // ";   
+
+                                                    $account_amount2_bottom[$val['report_no']] = $last_balance2;
+                                                }
+
+                                            echo "
+                                                </tr>
+                                            ";
+
+                                                echo "
                                                     <tr>
                                                 ";
                                                     $grand_total_account_name2 = '';
@@ -453,14 +473,94 @@
                                                 echo "			
                                                     </tr>
                                                 ";
+                                                echo "
+                                                <tr>
+                                            ";
 
+                                            echo "
+                                                    <tr>
+                                                ";
+                                                    $grand_total_account_name2 = '';
+                                                    if($val['report_type2'] == 8){
+                                                        if(!empty($val['report_formula2']) && !empty($val['report_operator2'])){
+                                                            $grand_total_account_name2  = $val['account_name2'];
+                                                            $report_formula2 	        = explode('#', $val['report_formula2']);
+                                                            $report_operator2 	        = explode('#', $val['report_operator2']);
+                                                            // $baris= count($report_formula2);
+                                                            // $report = $report_operator2[];
+                                                            $total_account_amount2	= 0;
+                                                            for($i = 0; $i < count($report_formula2); $i++){
+                                                                if($report_operator2[$i] == '-'){
+                                                                    if($total_account_amount2 == 0 ){
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
+                                                                    } else {
+                                                                        $total_account_amount2 = $total_account_amount2 - $account_amount2_bottom[$report_formula2[$i]];
+                                                                    }
+                                                                } else if($report_operator2[$i] == '+'){
+                                                                    if($total_account_amount2 == 0){
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
+                                                                    } else {
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            $grand_total_account_amount2 = $total_account_amount2;
+                                                            // echo "
+                                                            //     <td><div style='font-weight:".$report_bold2."'>".$report_tab2."".$val['account_name2']."</div></td>
+                                                            //     <td style='text-align:right'><div style='font-weight:".$report_bold2."'>".number_format($total_account_amount2, 2)."</div></td>
+                                                            // ";
+                                                        }	
+                                                    }
+                                                echo "			
+                                                    </tr>
+                                                ";
+                                                echo "
+                                                <tr>
+                                            ";
+
+                                                $grand_total_account_name2 = '';
+                                                    if($val['report_type2'] == 5){
+                                                        if(!empty($val['report_formula2']) && !empty($val['report_operator2'])){
+                                                            $grand_total_account_name2  = $val['account_name2'];
+                                                            $report_formula2 	        = explode('#', $val['report_formula2']);
+                                                            $report_operator2 	        = explode('#', $val['report_operator2']);
+                                                            // $baris= count($report_formula2);
+                                                            // $report = $report_operator2[];
+                                                            $total_account_amount2	= 0;
+                                                            for($i = 0; $i < count($report_formula2); $i++){
+                                                                if($report_operator2[$i] == '-'){
+                                                                    if($total_account_amount2 == 0 ){
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
+                                                                    } else {
+                                                                        $total_account_amount2 = $total_account_amount2 - $account_amount2_bottom[$report_formula2[$i]];
+                                                                    }
+                                                                } else if($report_operator2[$i] == '+'){
+                                                                    if($total_account_amount2 == 0){
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
+                                                                    } else {
+                                                                        $total_account_amount2 = $total_account_amount2 + $account_amount2_bottom[$report_formula2[$i]];
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            $grand_total_account_amount2 = $total_account_amount2;
+                                                            echo "
+                                                                <td><div style='font-weight:".$report_bold2."'>".$report_tab2."".$val['account_name2']."</div></td>
+                                                                <td style='text-align:right'><div style='font-weight:".$report_bold2."'>".number_format($total_account_amount2, 2)."</div></td>
+                                                            ";
+                                                        }	
+                                                    }
+                                                echo "			
+                                                    </tr>
+                                                ";
                                                 echo "
                                                     <tr>
                                                 ";
                                                     if($val['report_type2']	== 5){
-                                                        $last_balance210 	= BalanceSheetController::getSHUTahunBerjalan($val['account_id2'], empty($session['branch_id']) ? auth()->user()->branch_id : $session['branch_id'], $month, $year);
-
-                                                        $account_amount210_top[$val['report_no']] = $last_balance210;
+                                                        $expenditure_subtotal 	= $grand_total_account_amount2;
+                                                        
+                                                        $account_amount2_bottom[$val['report_no']] = $expenditure_subtotal;
                                                     }	
                                                 echo "
                                                     </tr>
