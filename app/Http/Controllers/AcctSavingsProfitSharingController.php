@@ -366,7 +366,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'transaction_module_code'		=> $transaction_module_code,
                             'created_id' 					=> auth()->user()->user_id,
                         );
-                        AcctJournalVoucher::create($data_journal);
+                        // AcctJournalVoucher::create($data_journal);
 
                         $journal_voucher_id 			= AcctJournalVoucher::select('journal_voucher_id')
                         ->where('created_id', $data_journal['created_id'])
@@ -394,7 +394,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'account_id_default_status'		=> $account_id_default_status,
                             'account_id_status'				=> 0,
                         );
-                        AcctJournalVoucherItem::create($data_debet);
+                        // AcctJournalVoucherItem::create($data_debet);
 
                         $account_id 					= AcctSavings::select('account_id')
                         ->where('savings_id', $val['savings_id'])
@@ -416,7 +416,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'account_id_default_status'		=> $account_id_default_status,
                             'account_id_status'				=> 1,
                         );
-                        AcctJournalVoucherItem::create($data_credit);
+                        // AcctJournalVoucherItem::create($data_credit);
                     }
                     foreach ($acctsavings as $key => $val) {
                         $totalsavingstax 	= AcctSavingsProfitSharingTemp::where('savings_id', $val['savings_id'])
@@ -441,7 +441,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'transaction_module_code'		=> $transaction_module_code,
                             'created_id' 					=> auth()->user()->user_id,
                         );
-                        AcctJournalVoucher::create($data_journal);
+                        // AcctJournalVoucher::create($data_journal);
 
                         $journal_voucher_id 			= AcctJournalVoucher::select('journal_voucher_id')
                         ->where('created_id', $data_journal['created_id'])
@@ -465,7 +465,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'account_id_default_status'		=> $account_id_default_status,
                             'account_id_status'				=> 0,
                         );
-                        AcctJournalVoucherItem::create($data_debet);
+                        // AcctJournalVoucherItem::create($data_debet);
 
                         $account_id 					= AcctSavings::select('account_id')
                         ->where('savings_id', $val['savings_id'])
@@ -487,7 +487,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'account_id_default_status'		=> $account_id_default_status,
                             'account_id_status'				=> 1,
                         );
-                        AcctJournalVoucherItem::create($data_credit);
+                        // AcctJournalVoucherItem::create($data_credit);
                     }
                 }
                 DB::commit();
