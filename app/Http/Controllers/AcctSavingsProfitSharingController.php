@@ -257,6 +257,8 @@ class AcctSavingsProfitSharingController extends Controller
                     'periode'			    => $periode,
                     'step'				    => 5,
                 );
+
+                // dd($data_profit_sharing_log);
                 SavingsProfitSharingLog::create($data_profit_sharing_log);
 
                 $data_system_period_log = array (
@@ -366,7 +368,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'transaction_module_code'		=> $transaction_module_code,
                             'created_id' 					=> auth()->user()->user_id,
                         );
-                        // AcctJournalVoucher::create($data_journal);
+                        AcctJournalVoucher::create($data_journal);
 
                         $journal_voucher_id 			= AcctJournalVoucher::select('journal_voucher_id')
                         ->where('created_id', $data_journal['created_id'])
@@ -394,7 +396,7 @@ class AcctSavingsProfitSharingController extends Controller
                             'account_id_default_status'		=> $account_id_default_status,
                             'account_id_status'				=> 0,
                         );
-                        // AcctJournalVoucherItem::create($data_debet);
+                        AcctJournalVoucherItem::create($data_debet);
 
                         $account_id 					= AcctSavings::select('account_id')
                         ->where('savings_id', $val['savings_id'])
@@ -416,79 +418,79 @@ class AcctSavingsProfitSharingController extends Controller
                             'account_id_default_status'		=> $account_id_default_status,
                             'account_id_status'				=> 1,
                         );
-                        // AcctJournalVoucherItem::create($data_credit);
+                        AcctJournalVoucherItem::create($data_credit);
                     }
-                    foreach ($acctsavings as $key => $val) {
-                        $totalsavingstax 	= AcctSavingsProfitSharingTemp::where('savings_id', $val['savings_id'])
-                        ->where('branch_id', $vCB['branch_id'])
-                        ->sum('savings_tax_temp_amount');
+                    // foreach ($acctsavings as $key => $val) {
+                    //     $totalsavingstax 	= AcctSavingsProfitSharingTemp::where('savings_id', $val['savings_id'])
+                    //     ->where('branch_id', $vCB['branch_id'])
+                    //     ->sum('savings_tax_temp_amount');
                 
-                        $transaction_module_code 	= "PS";
-                        $transaction_module_id 		= PreferenceTransactionModule::select('transaction_module_id')
-                        ->where('transaction_module_code', $transaction_module_code)
-                        ->first()
-                        ->transaction_module_id;
+                    //     $transaction_module_code 	= "PS";
+                    //     $transaction_module_id 		= PreferenceTransactionModule::select('transaction_module_id')
+                    //     ->where('transaction_module_code', $transaction_module_code)
+                    //     ->first()
+                    //     ->transaction_module_id;
 
-                        $journal_voucher_period 	= $periode;
+                    //     $journal_voucher_period 	= $periode;
                         
-                        $data_journal 				= array(
-                            'branch_id'						=> $vCB['branch_id'],
-                            'journal_voucher_period' 		=> $journal_voucher_period,
-                            'journal_voucher_date'			=> date('Y-m-d'),
-                            'journal_voucher_title'			=> 'PAJAK SIMPANAN '.$val['savings_name'].' PERIODE '.$journal_voucher_period,
-                            'journal_voucher_description'	=> 'PAJAK SIMPANAN '.$val['savings_name'].' PERIODE '.$journal_voucher_period,
-                            'transaction_module_id'			=> $transaction_module_id,
-                            'transaction_module_code'		=> $transaction_module_code,
-                            'created_id' 					=> auth()->user()->user_id,
-                        );
-                        // AcctJournalVoucher::create($data_journal);
+                    //     $data_journal 				= array(
+                    //         'branch_id'						=> $vCB['branch_id'],
+                    //         'journal_voucher_period' 		=> $journal_voucher_period,
+                    //         'journal_voucher_date'			=> date('Y-m-d'),
+                    //         'journal_voucher_title'			=> 'PAJAK SIMPANAN '.$val['savings_name'].' PERIODE '.$journal_voucher_period,
+                    //         'journal_voucher_description'	=> 'PAJAK SIMPANAN '.$val['savings_name'].' PERIODE '.$journal_voucher_period,
+                    //         'transaction_module_id'			=> $transaction_module_id,
+                    //         'transaction_module_code'		=> $transaction_module_code,
+                    //         'created_id' 					=> auth()->user()->user_id,
+                    //     );
+                    //     // AcctJournalVoucher::create($data_journal);
 
-                        $journal_voucher_id 			= AcctJournalVoucher::select('journal_voucher_id')
-                        ->where('created_id', $data_journal['created_id'])
-                        ->orderBy('journal_voucher_id', 'DESC')
-                        ->first()
-                        ->journal_voucher_id;
+                    //     $journal_voucher_id 			= AcctJournalVoucher::select('journal_voucher_id')
+                    //     ->where('created_id', $data_journal['created_id'])
+                    //     ->orderBy('journal_voucher_id', 'DESC')
+                    //     ->first()
+                    //     ->journal_voucher_id;
 
-                        $account_tax_id 				= $preferencecompany['account_savings_tax_id'];
-                        $account_id_default_status      = AcctAccount::select('account_default_status')
-                        ->where('acct_account.account_id', $account_tax_id)
-                        ->where('acct_account.data_state', 0)
-                        ->first()
-                        ->account_default_status;
+                    //     $account_tax_id 				= $preferencecompany['account_savings_tax_id'];
+                    //     $account_id_default_status      = AcctAccount::select('account_default_status')
+                    //     ->where('acct_account.account_id', $account_tax_id)
+                    //     ->where('acct_account.data_state', 0)
+                    //     ->first()
+                    //     ->account_default_status;
 
-                        $data_debet = array (
-                            'journal_voucher_id'			=> $journal_voucher_id,
-                            'account_id'					=> $account_tax_id,
-                            'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-                            'journal_voucher_amount'		=> $totalsavingstax,
-                            'journal_voucher_debit_amount'	=> $totalsavingstax,
-                            'account_id_default_status'		=> $account_id_default_status,
-                            'account_id_status'				=> 0,
-                        );
-                        // AcctJournalVoucherItem::create($data_debet);
+                    //     $data_debet = array (
+                    //         'journal_voucher_id'			=> $journal_voucher_id,
+                    //         'account_id'					=> $account_tax_id,
+                    //         'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
+                    //         'journal_voucher_amount'		=> $totalsavingstax,
+                    //         'journal_voucher_debit_amount'	=> $totalsavingstax,
+                    //         'account_id_default_status'		=> $account_id_default_status,
+                    //         'account_id_status'				=> 0,
+                    //     );
+                    //     // AcctJournalVoucherItem::create($data_debet);
 
-                        $account_id 					= AcctSavings::select('account_id')
-                        ->where('savings_id', $val['savings_id'])
-                        ->first()
-                        ->account_id;
+                    //     $account_id 					= AcctSavings::select('account_id')
+                    //     ->where('savings_id', $val['savings_id'])
+                    //     ->first()
+                    //     ->account_id;
 
-                        $account_id_default_status      = AcctAccount::select('account_default_status')
-                        ->where('acct_account.account_id', $account_id)
-                        ->where('acct_account.data_state', 0)
-                        ->first()
-                        ->account_default_status;
+                    //     $account_id_default_status      = AcctAccount::select('account_default_status')
+                    //     ->where('acct_account.account_id', $account_id)
+                    //     ->where('acct_account.data_state', 0)
+                    //     ->first()
+                    //     ->account_default_status;
 
-                        $data_credit =array(
-                            'journal_voucher_id'			=> $journal_voucher_id,
-                            'account_id'					=> $account_id,
-                            'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-                            'journal_voucher_amount'		=> $totalsavingstax,
-                            'journal_voucher_credit_amount'	=> $totalsavingstax,
-                            'account_id_default_status'		=> $account_id_default_status,
-                            'account_id_status'				=> 1,
-                        );
-                        // AcctJournalVoucherItem::create($data_credit);
-                    }
+                    //     $data_credit =array(
+                    //         'journal_voucher_id'			=> $journal_voucher_id,
+                    //         'account_id'					=> $account_id,
+                    //         'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
+                    //         'journal_voucher_amount'		=> $totalsavingstax,
+                    //         'journal_voucher_credit_amount'	=> $totalsavingstax,
+                    //         'account_id_default_status'		=> $account_id_default_status,
+                    //         'account_id_status'				=> 1,
+                    //     );
+                    //     // AcctJournalVoucherItem::create($data_credit);
+                    // }
                 }
                 DB::commit();
 
