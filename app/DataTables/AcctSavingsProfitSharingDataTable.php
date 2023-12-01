@@ -41,7 +41,8 @@ class AcctSavingsProfitSharingDataTable extends DataTable
         return $model->newQuery()
         ->select('acct_savings_profit_sharing_temp.*', 'core_member.member_name', 'core_member.member_address', 'acct_savings_account.savings_account_no')
         ->join('core_member', 'core_member.member_id', '=', 'acct_savings_profit_sharing_temp.member_id')
-        ->join('acct_savings_account', 'acct_savings_account.savings_account_id', '=', 'acct_savings_profit_sharing_temp.savings_account_id');
+        ->join('acct_savings_account', 'acct_savings_account.savings_account_id', '=', 'acct_savings_profit_sharing_temp.savings_account_id')
+        ->where('acct_savings_profit_sharing_temp.branch_id', auth()->user()->branch_id);
     }
 
     public function html()

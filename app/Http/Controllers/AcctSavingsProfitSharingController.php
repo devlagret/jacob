@@ -75,7 +75,7 @@ class AcctSavingsProfitSharingController extends Controller
         $acctsavingsprofitsharingtemp   = AcctSavingsProfitSharingTemp::select('acct_savings_profit_sharing_temp.savings_account_id', 'acct_savings_account.savings_account_no', 'acct_savings_profit_sharing_temp.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_savings_profit_sharing_temp.savings_profit_sharing_temp_amount', 'acct_savings_profit_sharing_temp.savings_account_last_balance', 'acct_savings_profit_sharing_temp.savings_profit_sharing_temp_period', 'acct_savings_profit_sharing_temp.savings_interest_temp_amount', 'acct_savings_profit_sharing_temp.savings_tax_temp_amount')
         ->join('acct_savings_account','acct_savings_profit_sharing_temp.savings_account_id', '=', 'acct_savings_account.savings_account_id')
         ->join('core_member', 'acct_savings_profit_sharing_temp.member_id', '=', 'core_member.member_id')
-        // ->where('acct_savings_profit_sharing_temp.branch_id', auth()->user()->branch_id)
+        ->where('acct_savings_profit_sharing_temp.branch_id', auth()->user()->branch_id)
         ->get();
 
         return $dataTable->render('content.AcctSavingsProfitSharing.List.index', compact('month', 'acctsavingsprofitsharingtemp'));
