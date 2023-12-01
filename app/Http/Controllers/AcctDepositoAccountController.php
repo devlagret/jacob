@@ -411,7 +411,11 @@ class AcctDepositoAccountController extends Controller
             </tr>
             <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Keperluan</div></td>
-                <td width=\"80%\"><div style=\"text-align: left;\">: SETORAN AWAL TABUNGAN</div></td>
+                <td width=\"80%\"><div style=\"text-align: left;\">: SETORAN SIMPANAN BERJANGKA</div></td>
+            </tr>
+            <tr>
+                <td width=\"20%\"><div style=\"text-align: left;\">Jangka Waktu</div></td>
+                <td width=\"80%\"><div style=\"text-align: left;\">: ".$acctdepositoaccount['deposito_name']."</div></td>
             </tr>
                 <tr>
                 <td width=\"20%\"><div style=\"text-align: left;\">Jumlah</div></td>
