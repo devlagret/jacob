@@ -198,7 +198,7 @@ class ApiController extends Controller
             $sai = $savings_account_id;
         }
         try {
-            $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
+            $savingacc = AcctSavingsAccount::find($sai);
             $savingacc->savings_account_pickup_date=date('Y-m-d');
             $savingacc->save();
         DB::beginTransaction();
@@ -233,7 +233,7 @@ class ApiController extends Controller
         if(!empty($savings_account_id)){
             $sai = $savings_account_id;
         }
-        // print($savingacc1);
+        print($savingacc1);
 
         // if($request->savings_cash_mutation_amount > $savingacc1['savings_cash_mutation_last_balance']){
         //     return response('Withdraw Failed');
