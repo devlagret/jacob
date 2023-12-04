@@ -13,6 +13,7 @@ use App\Models\AcctProfitLossReport;
 use App\Models\AcctSavings;
 use App\Models\AcctSavingsAccount;
 use App\Models\AcctSavingsCashMutation;
+use App\Models\AcctSavingsMemberDetail;
 use App\Models\CloseCashierLog;
 use App\Models\CoreEmployee;
 use App\Models\CoreMember;
@@ -314,6 +315,91 @@ class ApiController extends Controller
             'data' => $data,
         ]);
         // return json_encode($data);
+    }
+
+
+
+    public function processAddMemberSavings(Request $request,$member_id)
+    {
+
+        $member = CoreMember::where('member_id',$member_id)
+        ->first();
+
+
+        $data = array(
+            'member_id'								=> $member_id,
+            'member_name'							=> $member->member_name,
+            'member_address'						=> $member->member_address,
+            'mutation_id'							=> $request->mutation_id,
+            'province_id'						    => $member->province_id,
+            'city_id'								=> $member->city_id,
+            'kecamatan_id'							=> $member->kecamatan_id,
+            'kelurahan_id'							=> $member->kelurahan_id,
+            'member_character'						=> $member->member_character,
+            'member_principal_savings'				=> $member->member_principal_savings,
+            'member_special_savings'				=> $member->member_special_savings,
+            'member_mandatory_savings'				=> $request->member_mandatory_savings,
+            'member_principal_savings_last_balance'	=> $member->member_principal_savings_last_balance,
+            'member_special_savings_last_balance'	=> $member->member_special_savings_last_balance,
+            'member_mandatory_savings_last_balance'	=> $member->member_mandatory_savings_last_balance,
+            'updated_id'                            => auth()->user()->user_id,
+        );
+
+
+
+        try {
+            DB::beginTransaction();
+            CoreMember::where('member_id', $data['member_id'])
+            ->update([
+                'member_name'							=> $data['member_name'],
+                'member_address'						=> $data['member_address'],
+                'province_id'							=> $data['province_id'],
+                'city_id'								=> $data['city_id'],
+                'kecamatan_id'							=> $data['kecamatan_id'],
+                'kelurahan_id'							=> $data['kelurahan_id'],
+                'member_character'						=> $data['member_character'],
+                'member_principal_savings'				=> $data['member_principal_savings'],
+                'member_special_savings'				=> $data['member_special_savings'],
+                'member_mandatory_savings'				=> $data['member_mandatory_savings'],
+                'member_principal_savings_last_balance'	=> $data['member_principal_savings_last_balance'],
+                'member_special_savings_last_balance'	=> $data['member_special_savings_last_balance'],
+                'member_mandatory_savings_last_balance'	=> $data['member_mandatory_savings_last_balance'],
+                'updated_id'                            => $data['updated_id'],
+            ]);
+
+            if($data['member_principal_savings'] <> 0 || $data['member_principal_savings'] <> '' || $data['member_mandatory_savings'] <> 0 || $data['member_mandatory_savings'] <> ''  || $data['member_special_savings'] <> 0 || $data['member_special_savings'] <> ''){
+
+                $data_detail = array (
+                    'branch_id'						=> $member->branch_id,
+                    'member_id'						=> $data['member_id'],
+                    'mutation_id'					=> $data['mutation_id'],
+                    'transaction_date'				=> date('Y-m-d'),
+                    'principal_savings_amount'		=> $data['member_principal_savings'],
+                    'special_savings_amount'		=> $data['member_special_savings'],
+                    'mandatory_savings_amount'		=> $data['member_mandatory_savings'],
+                    'operated_name'					=> $member->username,
+                    'created_id'                    => $member->user_id,
+                );
+                AcctSavingsMemberDetail::create($data_detail);
+            }
+
+            DB::commit();
+            $message = array(
+                'pesan' => 'Data Anggota berhasil diubah',
+                'alert' => 'success',
+                'member_id' => $data['member_id']
+            );
+            return $message;
+        } catch (\Exception $e) {
+            DB::rollback();
+            report($e);
+            $message = array(
+                'pesan' => 'Data Anggota gagal diubah',
+                'alert' => 'error'
+            );
+            return $message;
+        }
+
     }
 
 
