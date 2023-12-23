@@ -25,6 +25,7 @@ Route::get('/profits', [\App\Http\Controllers\SampleDataController::class, 'prof
 Route::post('test', [ApiController::class, 'tst']);
 Route::post('getDepositoAccount', [ApiController::class, 'getDataDeposito']);
 Route::post('getCreditsAccount', [ApiController::class, 'getDataCredit']);
+Route::post('PostCreditsById/{credits_account_id}', [ApiController::class, 'PostCreditsById']);
 Route::post('getMembers', [ApiController::class, 'getDataMembers']);
 Route::post('PostSavingsById/{savings_account_id}', [ApiController::class, 'PostSavingsById']);
 Route::post('PostSavingsByNo/{savings_account_no}', [ApiController::class, 'PostSavingsByNo']);
