@@ -105,33 +105,6 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
-    //pinjaman
-    public function getDataCredit(){
-        $data = AcctCreditsAccount::withoutGlobalScopes()
-        ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
-        ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
-        ->where('acct_credits_account.data_state',0)
-        ->get();
-        return response()->json([
-            'data' => $data,
-        ]);
-        // return json_encode($data);
-    }
-
-    //data pinjaman by id pinjaman
-    public function PostCreditsById($credits_account_id){
-        $data = AcctCreditsAccount::withoutGlobalScopes()
-        ->join('core_member','acct_credits_account.member_id','core_member.member_id')
-        ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
-        ->where('acct_credits_account.credits_account_id',$credits_account_id)
-        ->where('acct_credits_account.data_state',0)
-        ->first();
-
-        return response()->json([
-            'data' => $data,
-        ]);
-        // return json_encode($data);
-    }
 
      //member
      public function getDataMembers(){
@@ -415,6 +388,35 @@ class ApiController extends Controller
             return $message;
         }
 
+    }
+
+    
+    //pinjaman
+    public function getDataCredit(){
+        $data = AcctCreditsAccount::withoutGlobalScopes()
+        ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
+        ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
+        ->where('acct_credits_account.data_state',0)
+        ->get();
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
+    //data pinjaman by id pinjaman
+    public function PostCreditsById($credits_account_id){
+        $data = AcctCreditsAccount::withoutGlobalScopes()
+        ->join('core_member','acct_credits_account.member_id','core_member.member_id')
+        ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
+        ->where('acct_credits_account.credits_account_id',$credits_account_id)
+        ->where('acct_credits_account.data_state',0)
+        ->first();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
     }
 
 
