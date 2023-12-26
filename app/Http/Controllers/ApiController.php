@@ -290,7 +290,7 @@ class ApiController extends Controller
     }
 
 
-
+    //simpanan wajib
     public function processAddMemberSavings(Request $request,$member_id)
     {
 
