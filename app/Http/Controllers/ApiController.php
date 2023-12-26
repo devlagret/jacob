@@ -332,7 +332,7 @@ class ApiController extends Controller
                 'member_character'						=> $data['member_character'],
                 'member_principal_savings'				=> $data['member_principal_savings'],
                 'member_special_savings'				=> $data['member_special_savings'],
-                'member_mandatory_savings'				=> $data['member_mandatory_savings'],
+                'member_mandatory_savings'				=> $data['member_mandatory_savings'] + $member['member_mandatory_savings'],
                 'member_principal_savings_last_balance'	=> $data['member_principal_savings_last_balance'],
                 'member_special_savings_last_balance'	=> $data['member_special_savings_last_balance'],
                 'member_mandatory_savings_last_balance'	=> $data['member_mandatory_savings_last_balance'],
