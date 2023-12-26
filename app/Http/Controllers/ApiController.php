@@ -94,6 +94,7 @@ class ApiController extends Controller
      public function getDataMembers(){
         $data = CoreMember::withoutGlobalScopes()
         ->where('data_state',0)
+        ->orderBy('member_name', 'asc') 
         ->get();
         return response()->json([
             'data' => $data,
@@ -255,7 +256,7 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
-      //data mutasi setor simpanan tunai 
+      //data mutasi setor simpanan tunai
       public function GetWithdraw(){
         $data = AcctSavingsCashMutation::with('member','mutation')
         ->withoutGlobalScopes() 
@@ -375,7 +376,7 @@ class ApiController extends Controller
     }
 
     
-    //pinjaman
+    //ANGSURAN
     public function getDataCredit(){
         $data = AcctCreditsAccount::withoutGlobalScopes()
         ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
@@ -388,7 +389,7 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
-    //data pinjaman by id pinjaman
+    //data ANGSURAN by id ANGSURAN
     public function PostCreditsById($credits_account_id){
         $data = AcctCreditsAccount::withoutGlobalScopes()
         ->join('core_member','acct_credits_account.member_id','core_member.member_id')
