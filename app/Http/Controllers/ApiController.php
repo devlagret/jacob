@@ -252,6 +252,7 @@ class ApiController extends Controller
         ->withoutGlobalScopes() 
         // ->where('savings_cash_mutation_date','>=',$start_date)
         ->where('savings_cash_mutation_date',Carbon::today())
+        ->where('branch_id',auth()->user()->branch_id)
         ->where('mutation_id',1)
         ->where('data_state',0)
         ->get();
@@ -268,6 +269,7 @@ class ApiController extends Controller
         ->withoutGlobalScopes() 
         // ->where('savings_cash_mutation_date','>=',$start_date)
         ->where('savings_cash_mutation_date',Carbon::today())
+        ->where('branch_id',auth()->user()->branch_id)
         ->where('mutation_id',2)
         ->where('data_state',0)
         ->get();
@@ -402,6 +404,7 @@ class ApiController extends Controller
         ->join('core_member','acct_credits_account.member_id','core_member.member_id')
         ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
         ->where('acct_credits_account.credits_account_id',$credits_account_id)
+        ->where('acct_credits_account.branch_id',auth()->user()->branch_id)
         ->where('acct_credits_account.data_state',0)
         ->first();
 
