@@ -269,31 +269,50 @@ class ApiController extends Controller
 
     //data mutasi setor simpanan tunai 
     public function GetDeposit(){
-        $data = AcctSavingsCashMutation::with('member','mutation')
-        ->withoutGlobalScopes() 
-        // ->where('savings_cash_mutation_date','>=',$start_date)
-        ->where('savings_cash_mutation_date',Carbon::today())
-        ->where('branch_id',auth()->user()->branch_id)
-        ->where('mutation_id',1)
-        ->where('data_state',0)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $data = AcctSavingsCashMutation::with('member','mutation')
+            ->withoutGlobalScopes() 
+            ->where('savings_cash_mutation_date',Carbon::today())
+            ->where('mutation_id',1)
+            ->where('data_state',0)
+            ->get();
+        }else{
+            $data = AcctSavingsCashMutation::with('member','mutation')
+            ->withoutGlobalScopes() 
+            ->where('savings_cash_mutation_date',Carbon::today())
+            ->where('branch_id',auth()->user()->branch_id)
+            ->where('mutation_id',1)
+            ->where('data_state',0)
+            ->get();
+        }
 
         return response()->json([
             'data' => $data,
         ]);
-        // return json_encode($data);
     }
 
       //data mutasi setor simpanan tunai
       public function GetWithdraw(){
-        $data = AcctSavingsCashMutation::with('member','mutation')
-        ->withoutGlobalScopes() 
-        // ->where('savings_cash_mutation_date','>=',$start_date)
-        ->where('savings_cash_mutation_date',Carbon::today())
-        ->where('branch_id',auth()->user()->branch_id)
-        ->where('mutation_id',2)
-        ->where('data_state',0)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $data = AcctSavingsCashMutation::with('member','mutation')
+            ->withoutGlobalScopes() 
+            // ->where('savings_cash_mutation_date','>=',$start_date)
+            ->where('savings_cash_mutation_date',Carbon::today())
+            ->where('mutation_id',2)
+            ->where('data_state',0)
+            ->get();
+        }else{
+            $data = AcctSavingsCashMutation::with('member','mutation')
+            ->withoutGlobalScopes() 
+            // ->where('savings_cash_mutation_date','>=',$start_date)
+            ->where('savings_cash_mutation_date',Carbon::today())
+            ->where('branch_id',auth()->user()->branch_id)
+            ->where('mutation_id',2)
+            ->where('data_state',0)
+            ->get();
+        }
 
         return response()->json([
             'data' => $data,
@@ -407,12 +426,21 @@ class ApiController extends Controller
     
     //ANGSURAN
     public function getDataCredit(){
-        $data = AcctCreditsAccount::withoutGlobalScopes()
-        ->join('core_member','acct_credits_account.member_id','core_member.member_id')
-        ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
-        ->where('acct_credits_account.data_state',0)
-        ->where('acct_credits_account.branch_id',auth()->user()->branch_id)
-        ->get();
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $data = AcctCreditsAccount::withoutGlobalScopes()
+            ->join('core_member','acct_credits_account.member_id','core_member.member_id')
+            ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
+            ->where('acct_credits_account.data_state',0)
+            ->get();
+        }else{
+            $data = AcctCreditsAccount::withoutGlobalScopes()
+            ->join('core_member','acct_credits_account.member_id','core_member.member_id')
+            ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
+            ->where('acct_credits_account.data_state',0)
+            ->where('acct_credits_account.branch_id',auth()->user()->branch_id)
+            ->get();
+        }
         return response()->json([
             'data' => $data,
         ]);
@@ -425,7 +453,6 @@ class ApiController extends Controller
         ->join('core_member','acct_credits_account.member_id','core_member.member_id')
         ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
         ->where('acct_credits_account.credits_account_id',$credits_account_id)
-        ->where('acct_credits_account.branch_id',auth()->user()->branch_id)
         ->where('acct_credits_account.data_state',0)
         ->first();
 
