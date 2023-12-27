@@ -375,10 +375,11 @@ class ApiController extends Controller
 
     }
 
+    
     //ANGSURAN
     public function getDataCredit(){
         $data = AcctCreditsAccount::withoutGlobalScopes()
-        ->join('core_member','acct_deposito_account.member_id','core_member.member_id')
+        ->join('core_member','acct_credits_account.member_id','core_member.member_id')
         ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
         ->where('acct_credits_account.data_state',0)
         ->get();
@@ -388,7 +389,7 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
-    //data ANGSURAN by id ANGSURAN
+    //data Pinjaman by id Pinjaman
     public function PostCreditsById($credits_account_id){
         $data = AcctCreditsAccount::withoutGlobalScopes()
         ->join('core_member','acct_credits_account.member_id','core_member.member_id')
