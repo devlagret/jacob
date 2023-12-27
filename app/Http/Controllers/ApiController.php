@@ -73,6 +73,7 @@ class ApiController extends Controller
     //data simpanan
     public function getDataSavings(){
         $data = AcctSavingsAccount::with('member','savingdata')
+        ->where('branch_id',auth()->user()->branch_id)
         ->get();
 
         return response()->json([
@@ -88,6 +89,7 @@ class ApiController extends Controller
         ->join('acct_deposito','acct_deposito.deposito_id','acct_d+eposito_account.deposito_id')
         ->where('acct_deposito_account.data_state',0)
         ->where('acct_deposito_account.data_state',0)
+        ->where('acct_deposito_account.branch_id',auth()->user()->branch_id)
         ->get();
         return response()->json([
             'data' => $data,
@@ -100,6 +102,7 @@ class ApiController extends Controller
      public function getDataMembers(){
         $data = CoreMember::withoutGlobalScopes()
         ->where('data_state',0)
+        ->where('branch_id',auth()->user()->branch_id)
         ->orderBy('member_name', 'asc') 
         ->get();
         return response()->json([
@@ -415,7 +418,7 @@ class ApiController extends Controller
         // 
     }
 
-
+    //Add Angsuran
     public function processAdd(Request $request)
     {
         if(empty(Session::get('payment-token'))){
