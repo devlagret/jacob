@@ -35,6 +35,10 @@ Route::post('PostSavingsmutation', [ApiController::class, 'GetDeposit']);
 Route::post('GetWithdraw', [ApiController::class, 'GetWithdraw']);
 Route::post('processAddMemberSavings/{member_id?}', [ApiController::class, 'processAddMemberSavings']);
 
+Route::post('getDataCredit', [ApiController::class, 'getDataCredit']);
+Route::post('PostCreditsById', [ApiController::class, 'PostCreditsById']);
+
+
 Route::post('logout', [ApiController::class, 'logout']);
 Route::post('getLoginState', [ApiController::class, 'getLoginState']);
 

@@ -375,7 +375,6 @@ class ApiController extends Controller
 
     }
 
-    
     //ANGSURAN
     public function getDataCredit(){
         $data = AcctCreditsAccount::withoutGlobalScopes()
