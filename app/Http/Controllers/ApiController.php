@@ -444,7 +444,6 @@ class ApiController extends Controller
         return response()->json([
             'data' => $data,
         ]);
-        // return json_encode($data);
     }
 
     //data Pinjaman by id Pinjaman
@@ -459,21 +458,66 @@ class ApiController extends Controller
         return response()->json([
             'data' => $data,
         ]);
-        // return json_encode($data);
-        // 
+        
     }
 
-    //Add Angsuran
-    public function processAdd(Request $request)
+    //Save Angsuran
+    public function processAddCreditsPaymentCash(Request $request,$credits_account_id)
     {
-        if(empty(Session::get('payment-token'))){
-            return redirect('credits-payment-cash')->with(['pesan' => 'Angsuran Tunai berhasil ditambah','alert' => 'success']);
-        }
+
+//---------Cek id pinjaman
+            $acctcreditsaccount = AcctCreditsAccount::with('credit','member')->find($credits_account_id);
+
+            $acctcreditspayment = AcctCreditsPayment::select('credits_payment_date', 'credits_payment_principal', 'credits_payment_interest', 'credits_principal_last_balance', 'credits_interest_last_balance')
+            ->where('credits_account_id', $credits_account_id)
+            ->get();
+
+            $credits_payment_date   = date('Y-m-d');
+            $date1                  = date_create($credits_payment_date);
+            $date2                  = date_create($acctcreditsaccount['credits_account_payment_date']);
+
+            if($date1 > $date2){
+                $interval                       = $date1->diff($date2);
+                $credits_payment_day_of_delay   = $interval->days;
+            } else {
+                $credits_payment_day_of_delay 	= 0;
+            }
+            
+            if(strpos($acctcreditsaccount['credits_account_payment_to'], ',') == true ||strpos($acctcreditsaccount['credits_account_payment_to'], '*') == true ){
+                $angsuranke = substr($acctcreditsaccount['credits_account_payment_to'], -1) + 1;
+            }else{
+                $angsuranke = $acctcreditsaccount['credits_account_payment_to'] + 1;
+            }
+
+            $credits_payment_fine_amount 		= (($acctcreditsaccount['credits_account_payment_amount'] * $acctcreditsaccount['credits_fine']) / 100 ) * $credits_payment_day_of_delay;
+            $credits_account_accumulated_fines 	= $acctcreditsaccount['credits_account_accumulated_fines'] + $credits_payment_fine_amount;
+
+            if($acctcreditsaccount['payment_type_id'] == 1){
+                $angsuranpokok 		= $acctcreditsaccount['credits_account_principal_amount'];
+                $angsuranbunga 	 	= $acctcreditsaccount['credits_account_payment_amount'] - $angsuranpokok;
+            } else if($acctcreditsaccount['payment_type_id'] == 2){
+                $angsuranpokok 		= $anuitas[$angsuranke]['angsuran_pokok'];
+                $angsuranbunga 	 	= $acctcreditsaccount['credits_account_payment_amount'] - $angsuranpokok;
+            } else if($acctcreditsaccount['payment_type_id'] == 3){
+                $angsuranpokok 		= $slidingrate[$angsuranke]['angsuran_pokok'];
+                $angsuranbunga 	 	= $acctcreditsaccount['credits_account_payment_amount'] - $angsuranpokok;
+            } else if($acctcreditsaccount['payment_type_id'] == 4){
+                $angsuranpokok		= 0;
+                $angsuranbunga		= $angsuran_bunga_menurunharian;
+            }
+        
+
+        $creditaccount = AcctCreditsAccount::where('credits_account_id',$credits_account_id)
+        ->first();
+
+        // if(empty(Session::get('payment-token'))){
+        //     return redirect('credits-payment-cash')->with(['pesan' => 'Angsuran Tunai berhasil ditambah','alert' => 'success']);
+        // }
         $preferencecompany = PreferenceCompany::first();
 
-        $fields = request()->validate([
-            'credits_account_id' => ['required'],
-        ]);
+        // $fields = request()->validate([
+        //     'credits_account_id' => ['required'],
+        // ]);
         
         $credits_account_payment_date = date('Y-m-d');
         if($request->credits_payment_to < $request->credits_account_period){
@@ -490,22 +534,22 @@ class ApiController extends Controller
 
         try {
             $data  = array(
-                'member_id'									=> $request->member_id,
-				'credits_id'								=> $request->credits_id,
-				'credits_account_id'						=> $fields['credits_account_id'],
+                'member_id'									=> $creditaccount->member_id,
+				'credits_id'								=> $creditaccount->credits_id,
+				'credits_account_id'						=> $creditaccount->credits_account_id,
 				'credits_payment_date'						=> date('Y-m-d'),
 				'credits_payment_amount'					=> $request->angsuran_total,
-				'credits_payment_principal'					=> $request->angsuran_pokok,
-				'credits_payment_interest'					=> $request->angsuran_bunga,
+				'credits_payment_principal'					=> $angsuranpokok,
+				'credits_payment_interest'					=> $angsuranbunga,
 				'credits_others_income'						=> $request->others_income,
-				'credits_principal_opening_balance'			=> $request->sisa_pokok,
-				'credits_principal_last_balance'			=> $request->sisa_pokok - $request->angsuran_pokok,
-				'credits_interest_opening_balance'			=> $request->sisa_bunga,
-				'credits_interest_last_balance'				=> $request->sisa_bunga + $request->angsuran_bunga,				
-				'credits_payment_fine'						=> $request->credits_payment_fine,
+				'credits_principal_opening_balance'			=> $creditaccount->credits_account_last_balance,
+				'credits_principal_last_balance'			=> $creditaccount->credits_account_last_balance - $angsuranpokok,
+				'credits_interest_opening_balance'			=> $creditaccount->credits_account_interest_last_balance,
+				'credits_interest_last_balance'				=> $creditaccount->credits_account_interest_last_balance + $angsuranbunga,				
+				'credits_payment_fine'						=> $credits_payment_fine_amount,
 				'credits_account_payment_date'				=> $credits_account_payment_date,
-				'credits_payment_to'						=> $request->credits_payment_to,
-				'credits_payment_day_of_delay'				=> $request->credits_payment_day_of_delay,
+				'credits_payment_to'						=> $angsuranke,
+				'credits_payment_day_of_delay'				=> $credits_payment_day_of_delay,
 				'branch_id'									=> auth()->user()->branch_id,
 				'created_id'								=> auth()->user()->user_id,
             );
@@ -513,16 +557,17 @@ class ApiController extends Controller
 
 			$credits_account_status = 0;
 
-			if($request->payment_type_id == 4){
+			if($creditaccount->payment_type_id == 4){
 				if($data['credits_principal_last_balance'] <= 0){
 					$credits_account_status = 1;
 				}
 			}else{
-				if($request->credits_payment_to == $request->credits_account_period){
+				if($creditaccount->credits_payment_to == $creditaccount->credits_payment_period){
 					$credits_account_status = 1;
 				}
 			}
 
+//---------Jurnal Header
 			$transaction_module_code    = 'ANGS';
 			$journal_voucher_period     = date("Ym", strtotime($data['credits_payment_date']));
 			$transaction_module_id      = PreferenceTransactionModule::select('transaction_module_id')
@@ -536,7 +581,7 @@ class ApiController extends Controller
             $acctcreditsaccount->credits_account_interest_last_balance  = $data['credits_interest_last_balance'];
             $acctcreditsaccount->credits_account_payment_date           = $credits_account_payment_date;
             $acctcreditsaccount->credits_account_payment_to             = $data['credits_payment_to'];
-            $acctcreditsaccount->credits_account_accumulated_fines      = $request->credits_account_accumulated_fines;
+            $acctcreditsaccount->credits_account_accumulated_fines      = $credits_account_accumulated_fines;
             $acctcreditsaccount->credits_account_status                 = $credits_account_status;
             $acctcreditsaccount->save();
 
@@ -560,6 +605,8 @@ class ApiController extends Controller
 			->orderBy('acct_credits_payment.credits_payment_id','DESC')
             ->first();
 
+
+//---------Jurnal Header Angsuran
             $data_journal = array(
                 'branch_id'						=> auth()->user()->branch_id,
                 'journal_voucher_period' 		=> $journal_voucher_period,
@@ -579,7 +626,7 @@ class ApiController extends Controller
 			->orderBy('journal_voucher_id', 'DESC')
             ->first()
             ->journal_voucher_id;
-
+//-----------Jurnal Voucher Item
             if($data['credits_others_income']!='' && $data['credits_others_income'] > 0){
                 $account_id_default_status  = AcctAccount::select('account_default_status')
                 ->where('account_id', $preferencecompany['account_others_income_id'])
@@ -706,22 +753,22 @@ class ApiController extends Controller
                 );
                 AcctJournalVoucherItem::create($data_credit);
             }
+//----------End Journal Voucher Item
 
             DB::commit();
             $message = array(
                 'pesan' => 'Angsuran Tunai berhasil ditambah',
                 'alert' => 'success'
             );
-            Session::forget('payment-token');
-            return redirect('credits-payment-cash')->with($message);
+            return $message;
+
         } catch (\Exception $e) {
-            Session::forget('payment-token');
             DB::rollback();
             $message = array(
                 'pesan' => 'Angsuran Tunai gagal ditambah',
                 'alert' => 'error'
             );
-            return redirect('credits-payment-cash')->with($message);
+            return $message;
         }
         
     }

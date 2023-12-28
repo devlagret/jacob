@@ -33,11 +33,14 @@ Route::post('PostSavingsByMember/{member_id}', [ApiController::class, 'PostSavin
 Route::post('PrintmutationByMember/{member_id}', [ApiController::class, 'PrintmutationByMember']);
 Route::post('PostSavingsmutation', [ApiController::class, 'GetDeposit']);
 Route::post('GetWithdraw', [ApiController::class, 'GetWithdraw']);
+//save simp wajib
 Route::post('processAddMemberSavings/{member_id?}', [ApiController::class, 'processAddMemberSavings']);
 
 Route::post('getDataCredit', [ApiController::class, 'getDataCredit']);
 Route::post('PostCreditsById', [ApiController::class, 'PostCreditsById']);
 
+//save angsuran
+Route::post('processAddCreditsPaymentCash/{credit_account_id?}', [ApiController::class, 'processAddCreditsPaymentCash']);
 
 Route::post('logout', [ApiController::class, 'logout']);
 Route::post('getLoginState', [ApiController::class, 'getLoginState']);
