@@ -201,7 +201,7 @@ class ApiController extends Controller
             $savingacc = AcctSavingsAccount::find($sai);
             $savingacc->savings_account_pickup_date=date('Y-m-d');
             $savingacc->save();
-        DB::beginTransaction();
+        DB::beginTransaction(); 
         AcctSavingsCashMutation::create( [
             'savings_account_id' => $request['savings_account_id'],
             'mutation_id' => 1,
@@ -362,7 +362,7 @@ class ApiController extends Controller
             'member_mandatory_savings'				=> $request->member_mandatory_savings,
             'member_principal_savings_last_balance'	=> $member->member_principal_savings_last_balance,
             'member_special_savings_last_balance'	=> $member->member_special_savings_last_balance,
-            'member_mandatory_savings_last_balance'	=> $member->member_mandatory_savings_last_balance,
+            'member_mandatory_savings_last_balance'	=> $request->member_mandatory_savings_last_balance,
             'updated_id'                            => auth()->user()->user_id,
         );
 
@@ -381,7 +381,7 @@ class ApiController extends Controller
                 'member_character'						=> $data['member_character'],
                 'member_principal_savings'				=> $data['member_principal_savings'],
                 'member_special_savings'				=> $data['member_special_savings'],
-                'member_mandatory_savings'				=> $data['member_mandatory_savings'] + $member['member_mandatory_savings'],
+                'member_mandatory_savings'				=> $data['member_mandatory_savings'],
                 'member_principal_savings_last_balance'	=> $data['member_principal_savings_last_balance'],
                 'member_special_savings_last_balance'	=> $data['member_special_savings_last_balance'],
                 'member_mandatory_savings_last_balance'	=> $data['member_mandatory_savings_last_balance'],
