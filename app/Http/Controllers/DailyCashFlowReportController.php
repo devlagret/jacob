@@ -33,10 +33,11 @@ class DailyCashFlowReportController extends Controller
     public function print(Request $request)
     {
         $sesi = array (
-            "start_date" 		=> date('Y-m-d', strtotime($request->start_date)),
+            "start_date"        => $request->start_date,
             "branch_id"			=> $request->branch_id,
         );
 
+        // dd($sesi['start_date']);
         if(empty($sesi['branch_id'])){
             $branch_id = auth()->user()->branch_id;
         } else {
@@ -62,26 +63,13 @@ class DailyCashFlowReportController extends Controller
         // ->orderBy('account_balance_detail_id', 'DESC')
         // ->first();
 
-        // if(empty($opening_balance)){
-        //     $opening_date = AcctAccountBalanceDetail::where('account_id', $preferencecompany['account_cash_id'])
-        //     ->where('branch_id', $branch_id)
-        //     ->where('transaction_date','<',$sesi['start_date'])
-        //     ->first();
-
-        //     $opening_balance = AcctAccountBalanceDetail::where('transaction_date', $opening_date->transaction_date)
-        //     ->where('account_id', $preferencecompany['account_cash_id'])
-        //     ->where('branch_id', $branch_id)
-        //     ->orderBy('account_balance_detail_id', 'DESC')
-        //     ->first();
-        // }
-            // echo(Auth::user()->branch_id);
-        $opening_balance = AcctAccountBalanceDetail::
-        where('acct_account_balance_detail.transaction_date',date('Y-m-d',strtotime($sesi['start_date'])))
+        $opening_balance_old = AcctAccountBalanceDetail::
+        where('acct_account_balance_detail.transaction_date','>=',date('Y-m-d', strtotime($sesi['start_date'])))
         ->where('acct_account_balance_detail.branch_id',Auth::user()->branch_id)
         ->where('account_id', $preferencecompany['account_cash_id'])
         ->orderBy('acct_account_balance_detail.account_balance_detail_id', 'ASC')
         ->first();
-        // return [$opening_balance];
+
         $data = AcctJournalVoucherItem::where('acct_journal_voucher_item.account_id', $preferencecompany['account_cash_id'])
         ->join('acct_journal_voucher','acct_journal_voucher.journal_voucher_id','=','acct_journal_voucher_item.journal_voucher_id')
         ->where('acct_journal_voucher.branch_id', $branch_id)
@@ -95,16 +83,20 @@ class DailyCashFlowReportController extends Controller
             $totaldebit     += $val['journal_voucher_debit_amount'];
             $totalkredit    += $val['journal_voucher_credit_amount'];
         }
-        $opening_balance = $opening_balance->opening_balance ;
+        $opening_balance = $opening_balance_old['opening_balance'];
         // $opening_balance = ($opening_balance->opening_balance + $totaldebit) - $totalkredit;
 
         $accountbalancedetail	= AcctJournalVoucherItem::where('acct_journal_voucher_item.account_id', $preferencecompany['account_cash_id'])
         ->join('acct_journal_voucher','acct_journal_voucher.journal_voucher_id','=','acct_journal_voucher_item.journal_voucher_id')
         ->where('acct_journal_voucher.branch_id', $branch_id)
-        ->where('acct_journal_voucher.journal_voucher_date', $sesi['start_date'])
+        ->where('acct_journal_voucher.journal_voucher_date','>=',$sesi['start_date'])
         ->orderBy('acct_journal_voucher.journal_voucher_date', 'ASC')
         ->orderBy('acct_journal_voucher_item.journal_voucher_item_id', 'ASC')
         ->get();
+        // dd($accountbalancedetail);
+
+       
+        
      
         $account_id_status = AcctAccount::where('account_id', $preferencecompany['account_cash_id'])
         ->where('data_state',0)
@@ -320,9 +312,11 @@ class DailyCashFlowReportController extends Controller
                                 
                 </table>";
             }
+        $pdf::writeHTML($tbl1.$tbl2.$tbl3.$tbl4, true, false, false, false, '');
+
         }
 
-        $pdf::writeHTML($tbl1.$tbl2.$tbl3.$tbl4, true, false, false, false, '');
+        // $pdf::writeHTML($tbl1.$tbl2.$tbl3, true, false, false, false, '');
 
         $filename = 'Kwitansi.pdf';
         $pdf::Output($filename, 'I');

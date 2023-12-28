@@ -134,184 +134,203 @@ class AcctCreditsAcquittanceController extends Controller
             'credits_account_id' => ['required'],
         ]);
 
-        DB::beginTransaction();
+        // notif jumlah pelunasan 
+        if($request->credits_account_last_balance < $request->credits_acquittance_principal)
+            {
+                $message = array(
+                    'pesan' => 'Jumlah pelunasan tidak boleh kurang atau melebihi sisa pokok!',
+                    'alert' => 'error'
+                );
+                return redirect('credits-acquittance/add')->with($message);
+            }else if($request->credits_account_last_balance > $request->credits_acquittance_principal)
+            {
+                $message = array(
+                    'pesan' => 'Jumlah pelunasan tidak boleh kurang atau melebihi sisa pokok!',
+                    'alert' => 'error'
+                );
+                return redirect('credits-acquittance/add')->with($message);
+            }else{
+                DB::beginTransaction();
 
-        try {
-            $data  = array(
-                'credits_account_id'                        => $fields['credits_account_id'],
-                'member_id'                                 => $request->member_id,
-                'credits_id'                                => $request->credits_id,
-                'credits_acquittance_date'                  => date('Y-m-d'),
-                'credits_acquittance_penalty_type'          => $request->penalty_type_id,
-                'credits_account_last_balance'              => $request->credits_account_last_balance,
-                'credits_account_interest_last_balance'     => $request->credits_account_interest_last_balance,
-                'credits_account_accumulated_fines'         => $request->credits_account_accumulated_fines,
-                'credits_acquittance_amount'                => $request->credits_acquittance_amount,
-                'credits_acquittance_principal'             => $request->credits_acquittance_principal,
-                'credits_acquittance_interest'              => $request->credits_acquittance_interest,
-                'credits_acquittance_fine'                  => $request->credits_acquittance_fine,
-                'credits_acquittance_penalty'               => $request->penalty,
-                'credits_acquittance_penalty_amount'        => $request->credits_acquittance_penalty,
-                'created_id'                                => auth()->user()->user_id,
-                'branch_id'                                 => auth()->user()->branch_id,
-            );
-            dd($data);
-            AcctCreditsAcquittance::create($data);
-            
-			$kerugian_pelunasan_peminjaman = $data['credits_account_last_balance'] - $data['credits_acquittance_principal'];
+            try {
+                $data  = array(
+                    'credits_account_id'                        => $fields['credits_account_id'],
+                    'member_id'                                 => $request->member_id,
+                    'credits_id'                                => $request->credits_id,
+                    'credits_acquittance_date'                  => date('Y-m-d'),
+                    'credits_acquittance_penalty_type'          => $request->penalty_type_id,
+                    'credits_account_last_balance'              => $request->credits_account_last_balance,
+                    'credits_account_interest_last_balance'     => $request->credits_account_interest_last_balance,
+                    'credits_account_accumulated_fines'         => $request->credits_account_accumulated_fines,
+                    'credits_acquittance_amount'                => $request->credits_acquittance_amount,
+                    'credits_acquittance_principal'             => $request->credits_acquittance_principal,
+                    'credits_acquittance_interest'              => $request->credits_acquittance_interest,
+                    'credits_acquittance_fine'                  => $request->credits_acquittance_fine,
+                    'credits_acquittance_penalty'               => $request->penalty,
+                    'credits_acquittance_penalty_amount'        => $request->credits_acquittance_penalty,
+                    'created_id'                                => auth()->user()->user_id,
+                    'branch_id'                                 => auth()->user()->branch_id,
+                );
+                // dd($data);
+                AcctCreditsAcquittance::create($data);
+                
+                $kerugian_pelunasan_peminjaman = $data['credits_account_last_balance'] - $data['credits_acquittance_principal'];
 
-            $journal_voucher_period 	= date("Ym", strtotime($data['credits_acquittance_date']));
-			$transaction_module_code 	= 'PP';
-			$transaction_module_id 		= PreferenceTransactionModule::select('transaction_module_id')
-            ->where('transaction_module_code', $transaction_module_code)
-            ->first()
-            ->transaction_module_id;
+                $journal_voucher_period 	= date("Ym", strtotime($data['credits_acquittance_date']));
+                $transaction_module_code 	= 'PP';
+                $transaction_module_id 		= PreferenceTransactionModule::select('transaction_module_id')
+                ->where('transaction_module_code', $transaction_module_code)
+                ->first()
+                ->transaction_module_id;
 
-            $acctcreditsaccount = AcctCreditsAccount::findOrFail($data['credits_account_id']);
-            $acctcreditsaccount->credits_account_last_balance       = $data['credits_account_last_balance'] - $data['credits_acquittance_principal'];
-            $acctcreditsaccount->credits_account_accumulated_fines  = $data['credits_account_accumulated_fines'] - $data['credits_acquittance_fine'];
-            $acctcreditsaccount->credits_account_status             = 2;
-            $acctcreditsaccount->save();
+                $acctcreditsaccount = AcctCreditsAccount::findOrFail($data['credits_account_id']);
+                $acctcreditsaccount->credits_account_last_balance       = $data['credits_account_last_balance'] - $data['credits_acquittance_principal'];
+                $acctcreditsaccount->credits_account_accumulated_fines  = $data['credits_account_accumulated_fines'] - $data['credits_acquittance_fine'];
+                $acctcreditsaccount->credits_account_status             = 2;
+                $acctcreditsaccount->save();
 
-            $acctcashacquittance_last   = AcctCreditsAcquittance::select('acct_credits_acquittance.credits_acquittance_id', 'acct_credits_acquittance.member_id', 'core_member.member_name', 'acct_credits_acquittance.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.credits_id', 'acct_credits.credits_name')
-			->join('core_member','acct_credits_acquittance.member_id', '=', 'core_member.member_id')
-			->join('acct_credits_account','acct_credits_acquittance.credits_account_id', '=', 'acct_credits_account.credits_account_id')
-			->join('acct_credits','acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
-			->where('acct_credits_acquittance.created_id', $data['created_id'])
-			->orderBy('acct_credits_acquittance.credits_acquittance_id', 'DESC')
-            ->first();
-            
-            $data_journal = array(
-                'branch_id'						=> auth()->user()->branch_id,
-                'journal_voucher_period' 		=> $journal_voucher_period,
-                'journal_voucher_date'			=> date('Y-m-d'),
-                'journal_voucher_title'			=> 'PELUNASAN PEMINJAMAN '.$acctcashacquittance_last['credits_name'].' '.$acctcashacquittance_last['member_name'],
-                'journal_voucher_description'	=> 'PELUNASAN PEMINJAMAN '.$acctcashacquittance_last['credits_name'].' '.$acctcashacquittance_last['member_name'],
-                'transaction_module_id'			=> $transaction_module_id,
-                'transaction_module_code'		=> $transaction_module_code,
-                'transaction_journal_id' 		=> $acctcashacquittance_last['credits_acquittance_id'],
-                'transaction_journal_no' 		=> $acctcashacquittance_last['credits_account_serial'],
-                'created_id' 					=> $data['created_id'],
-            );
-            AcctJournalVoucher::create($data_journal);
+                $acctcashacquittance_last   = AcctCreditsAcquittance::select('acct_credits_acquittance.credits_acquittance_id', 'acct_credits_acquittance.member_id', 'core_member.member_name', 'acct_credits_acquittance.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.credits_id', 'acct_credits.credits_name')
+                ->join('core_member','acct_credits_acquittance.member_id', '=', 'core_member.member_id')
+                ->join('acct_credits_account','acct_credits_acquittance.credits_account_id', '=', 'acct_credits_account.credits_account_id')
+                ->join('acct_credits','acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
+                ->where('acct_credits_acquittance.created_id', $data['created_id'])
+                ->orderBy('acct_credits_acquittance.credits_acquittance_id', 'DESC')
+                ->first();
+                
+                $data_journal = array(
+                    'branch_id'						=> auth()->user()->branch_id,
+                    'journal_voucher_period' 		=> $journal_voucher_period,
+                    'journal_voucher_date'			=> date('Y-m-d'),
+                    'journal_voucher_title'			=> 'PELUNASAN PEMINJAMAN '.$acctcashacquittance_last['credits_name'].' '.$acctcashacquittance_last['member_name'],
+                    'journal_voucher_description'	=> 'PELUNASAN PEMINJAMAN '.$acctcashacquittance_last['credits_name'].' '.$acctcashacquittance_last['member_name'],
+                    'transaction_module_id'			=> $transaction_module_id,
+                    'transaction_module_code'		=> $transaction_module_code,
+                    'transaction_journal_id' 		=> $acctcashacquittance_last['credits_acquittance_id'],
+                    'transaction_journal_no' 		=> $acctcashacquittance_last['credits_account_serial'],
+                    'created_id' 					=> $data['created_id'],
+                );
+                AcctJournalVoucher::create($data_journal);
 
-            $journal_voucher_id 				= AcctJournalVoucher::select('journal_voucher_id')
-            ->where('created_id', $data['created_id'])
-			->orderBy('journal_voucher_id', 'DESC')
-            ->first()
-            ->journal_voucher_id;
-
-            $account_id_default_status 			= AcctAccount::select('account_default_status')
-            ->where('account_id', $preferencecompany['account_cash_id'])
-            ->first()
-            ->account_default_status;
-
-            $data_debet = array (
-                'journal_voucher_id'			=> $journal_voucher_id,
-                'account_id'					=> $preferencecompany['account_cash_id'],
-                'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-                'journal_voucher_amount'		=> $data['credits_acquittance_amount'],
-                'journal_voucher_debit_amount'	=> $data['credits_acquittance_amount'],
-                'account_id_default_status'		=> $account_id_default_status,
-                'account_id_status'				=> 0,
-                'created_id' 					=> auth()->user()->user_id
-            );
-            AcctJournalVoucherItem::create($data_debet);
-
-            $receivable_account_id 				= AcctCredits::select('receivable_account_id')
-            ->where('credits_id', $data['credits_id'])
-            ->first()
-            ->receivable_account_id;
-
-            $account_id_default_status 			= AcctAccount::select('account_default_status')
-            ->where('account_id', $receivable_account_id)
-            ->first()
-            ->account_default_status;
-
-            $data_credit = array (
-                'journal_voucher_id'			=> $journal_voucher_id,
-                'account_id'					=> $receivable_account_id,
-                'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-                'journal_voucher_amount'		=> $data['credits_acquittance_principal'],
-                'journal_voucher_credit_amount'	=> $data['credits_acquittance_principal'],
-                'account_id_default_status'		=> $account_id_default_status,
-                'account_id_status'				=> 1,
-                'created_id' 					=> auth()->user()->user_id
-            );
-            AcctJournalVoucherItem::create($data_credit);
-
-            if($data['credits_acquittance_interest'] > 0){
+                $journal_voucher_id 				= AcctJournalVoucher::select('journal_voucher_id')
+                ->where('created_id', $data['created_id'])
+                ->orderBy('journal_voucher_id', 'DESC')
+                ->first()
+                ->journal_voucher_id;
 
                 $account_id_default_status 			= AcctAccount::select('account_default_status')
-                ->where('account_id', $preferencecompany['account_interest_id'])
+                ->where('account_id', $preferencecompany['account_cash_id'])
                 ->first()
                 ->account_default_status;
 
-                $data_credit =array(
+                $data_debet = array (
                     'journal_voucher_id'			=> $journal_voucher_id,
-                    'account_id'					=> $preferencecompany['account_interest_id'],
+                    'account_id'					=> $preferencecompany['account_cash_id'],
                     'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-                    'journal_voucher_amount'		=> $data['credits_acquittance_interest'],
-                    'journal_voucher_credit_amount'	=> $data['credits_acquittance_interest'],
+                    'journal_voucher_amount'		=> $data['credits_acquittance_amount'],
+                    'journal_voucher_debit_amount'	=> $data['credits_acquittance_amount'],
+                    'account_id_default_status'		=> $account_id_default_status,
+                    'account_id_status'				=> 0,
+                    'created_id' 					=> auth()->user()->user_id
+                );
+                AcctJournalVoucherItem::create($data_debet);
+
+                $receivable_account_id 				= AcctCredits::select('receivable_account_id')
+                ->where('credits_id', $data['credits_id'])
+                ->first()
+                ->receivable_account_id;
+
+                $account_id_default_status 			= AcctAccount::select('account_default_status')
+                ->where('account_id', $receivable_account_id)
+                ->first()
+                ->account_default_status;
+
+                $data_credit = array (
+                    'journal_voucher_id'			=> $journal_voucher_id,
+                    'account_id'					=> $receivable_account_id,
+                    'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
+                    'journal_voucher_amount'		=> $data['credits_acquittance_principal'],
+                    'journal_voucher_credit_amount'	=> $data['credits_acquittance_principal'],
                     'account_id_default_status'		=> $account_id_default_status,
                     'account_id_status'				=> 1,
-                    'created_id' 					=> auth()->user()->user_id,
+                    'created_id' 					=> auth()->user()->user_id
                 );
                 AcctJournalVoucherItem::create($data_credit);
-            }
 
-            if($data['credits_acquittance_fine'] > 0){
-                $account_id_default_status 			= AcctAccount::select('account_default_status')
-                ->where('account_id', $preferencecompany['account_credits_payment_fine'])
-                ->first()
-                ->account_default_status;
+                if($data['credits_acquittance_interest'] > 0){
 
-                $data_credit =array(
-                    'journal_voucher_id'			=> $journal_voucher_id,
-                    'account_id'					=> $preferencecompany['account_credits_payment_fine'],
-                    'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-                    'journal_voucher_amount'		=> $data['credits_acquittance_fine'],
-                    'journal_voucher_credit_amount'	=> $data['credits_acquittance_fine'],
-                    'account_id_default_status'		=> $account_id_default_status,
-                    'account_id_status'				=> 1,
-                    'created_id' 					=> auth()->user()->user_id,
+                    $account_id_default_status 			= AcctAccount::select('account_default_status')
+                    ->where('account_id', $preferencecompany['account_interest_id'])
+                    ->first()
+                    ->account_default_status;
+
+                    $data_credit =array(
+                        'journal_voucher_id'			=> $journal_voucher_id,
+                        'account_id'					=> $preferencecompany['account_interest_id'],
+                        'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
+                        'journal_voucher_amount'		=> $data['credits_acquittance_interest'],
+                        'journal_voucher_credit_amount'	=> $data['credits_acquittance_interest'],
+                        'account_id_default_status'		=> $account_id_default_status,
+                        'account_id_status'				=> 1,
+                        'created_id' 					=> auth()->user()->user_id,
+                    );
+                    AcctJournalVoucherItem::create($data_credit);
+                }
+
+                if($data['credits_acquittance_fine'] > 0){
+                    $account_id_default_status 			= AcctAccount::select('account_default_status')
+                    ->where('account_id', $preferencecompany['account_credits_payment_fine'])
+                    ->first()
+                    ->account_default_status;
+
+                    $data_credit =array(
+                        'journal_voucher_id'			=> $journal_voucher_id,
+                        'account_id'					=> $preferencecompany['account_credits_payment_fine'],
+                        'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
+                        'journal_voucher_amount'		=> $data['credits_acquittance_fine'],
+                        'journal_voucher_credit_amount'	=> $data['credits_acquittance_fine'],
+                        'account_id_default_status'		=> $account_id_default_status,
+                        'account_id_status'				=> 1,
+                        'created_id' 					=> auth()->user()->user_id,
+                    );
+                    AcctJournalVoucherItem::create($data_credit);
+                }
+
+                if(!empty($data['credits_acquittance_penalty_amount']) || $data['credits_acquittance_penalty_amount'] > 0){
+
+                    $account_id_default_status 			= AcctAccount::select('account_default_status')
+                    ->where('account_id', $preferencecompany['account_penalty_id'])
+                    ->first()
+                    ->account_default_status;
+
+                    $data_credit =array(
+                        'journal_voucher_id'			=> $journal_voucher_id,
+                        'account_id'					=> $preferencecompany['account_penalty_id'],
+                        'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
+                        'journal_voucher_amount'		=> $data['credits_acquittance_penalty_amount'],
+                        'journal_voucher_credit_amount'	=> $data['credits_acquittance_penalty_amount'],
+                        'account_id_status'				=> 1,
+                        'created_id' 					=> auth()->user()->user_id,
+                    );
+                    AcctJournalVoucherItem::create($data_credit);
+                }
+
+                DB::commit();
+                $message = array(
+                    'pesan' => 'Pelunasan Pinjaman berhasil ditambah',
+                    'alert' => 'success'
                 );
-                AcctJournalVoucherItem::create($data_credit);
-            }
-
-            if(!empty($data['credits_acquittance_penalty_amount']) || $data['credits_acquittance_penalty_amount'] > 0 || $data['credits_acquittance_penalty_amount'] != ''){
-
-                $account_id_default_status 			= AcctAccount::select('account_default_status')
-                ->where('account_id', $preferencecompany['account_penalty_id'])
-                ->first()
-                ->account_default_status;
-
-                $data_credit =array(
-                    'journal_voucher_id'			=> $journal_voucher_id,
-                    'account_id'					=> $preferencecompany['account_penalty_id'],
-                    'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-                    'journal_voucher_amount'		=> $data['credits_acquittance_penalty_amount'],
-                    'journal_voucher_credit_amount'	=> $data['credits_acquittance_penalty_amount'],
-                    'account_id_status'				=> 1,
-                    'created_id' 					=> auth()->user()->user_id,
+            } catch (\Exception $e) {
+                DB::rollback();
+                $message = array(
+                    'pesan' => 'Pelunasan Pinjaman gagal ditambah',
+                    'alert' => 'error'
                 );
-                AcctJournalVoucherItem::create($data_credit);
+            }
+            
+            return redirect('credits-acquittance')->with($message);
             }
 
-            DB::commit();
-            $message = array(
-                'pesan' => 'Pelunasan Pinjaman berhasil ditambah',
-                'alert' => 'success'
-            );
-        } catch (\Exception $e) {
-            DB::rollback();
-            $message = array(
-                'pesan' => 'Pelunasan Pinjaman gagal ditambah',
-                'alert' => 'error'
-            );
-        }
         
-        return redirect('credits-acquittance')->with($message);
     }
 
     public function printNote($credits_acquittance_id){
