@@ -432,6 +432,7 @@ class ApiController extends Controller
             ->join('core_member','acct_credits_account.member_id','core_member.member_id')
             ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
             ->where('acct_credits_account.data_state',0)
+            ->orderBy('core_member.member_name', 'asc')
             ->get();
         }else{
             $data = AcctCreditsAccount::withoutGlobalScopes()
@@ -439,6 +440,7 @@ class ApiController extends Controller
             ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
             ->where('acct_credits_account.data_state',0)
             ->where('acct_credits_account.branch_id',auth()->user()->branch_id)
+            ->orderBy('core_member.member_name', 'asc')
             ->get();
         }
         return response()->json([
@@ -539,8 +541,8 @@ class ApiController extends Controller
 				'credits_account_id'						=> $creditaccount->credits_account_id,
 				'credits_payment_date'						=> date('Y-m-d'),
 				'credits_payment_amount'					=> $request->angsuran_total,
-				'credits_payment_principal'					=> $request->angsuran_pokok,
-				'credits_payment_interest'					=> $request->angsuran_bunga,
+				'credits_payment_principal'					=> $angsuranpokok,
+				'credits_payment_interest'					=> $angsuranbunga,
 				'credits_others_income'						=> $request->others_income,
 				'credits_principal_opening_balance'			=> $creditaccount->credits_account_last_balance,
 				'credits_principal_last_balance'			=> $creditaccount->credits_account_last_balance - $request->angsuran_pokok,
