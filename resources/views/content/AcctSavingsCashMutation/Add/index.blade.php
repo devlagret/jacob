@@ -92,23 +92,23 @@ $(document).ready(function(){
     var mutationAmount = $("#savings_cash_mutation_amount_view").val();
     var rangeAmount = oldAmount - blockirAmount; 
 
-    if(blockirtype == 0){
-        alert('Rekening diblokir,Silahkan pilih rekening lainnya');
-        $.ajax({
-            type: "GET",
-            url : "{{route('savings-cash-mutation.modal-savings-account')}}",
-            success: function(msg){
-                $('#kt_modal_savings_account').modal('show');
-                $('#modal-body').html(msg);
-            }
-        });
-        $('#kt_savings_cash_mutation_add_submit').hide();
-        $('#kt_savings_cash_mutation_add_submit_2').show();
+    // if(blockirtype == 0){
+    //     alert('Rekening diblokir,Silahkan pilih rekening lainnya');
+    //     $.ajax({
+    //         type: "GET",
+    //         url : "{{route('savings-cash-mutation.modal-savings-account')}}",
+    //         success: function(msg){
+    //             $('#kt_modal_savings_account').modal('show');
+    //             $('#modal-body').html(msg);
+    //         }
+    //     });
+    //     $('#kt_savings_cash_mutation_add_submit').hide();
+    //     $('#kt_savings_cash_mutation_add_submit_2').show();
         
-    }else{
-        $('#kt_savings_cash_mutation_add_submit').show();
-        $('#kt_savings_cash_mutation_add_submit_2').hide();
-    }
+    // }else{
+    //     $('#kt_savings_cash_mutation_add_submit').show();
+    //     $('#kt_savings_cash_mutation_add_submit_2').hide();
+    // }
 
     $("#savings_cash_mutation_amount_view").change(function(){
         var savings_cash_mutation_amount                                    = $("#savings_cash_mutation_amount_view").val();
@@ -341,9 +341,9 @@ if(empty($sessiondata)){
                     <button type="submit" class="btn btn-primary" id="kt_savings_cash_mutation_add_submit">
                         @include('partials.general._button-indicator', ['label' => __('Simpan')])
                     </button>
-                    <button type="button" class="btn btn-danger" id="kt_savings_cash_mutation_add_submit_2">
+                    {{-- <button type="button" class="btn btn-danger" id="kt_savings_cash_mutation_add_submit_2">
                         @include('partials.general._button-indicator', ['label' => __('No Rekening Ini diblokir,Silahkan pilih rekening lainya!')])
-                    </button>
+                    </button> --}}
                 </div>
             </form>
         </div>

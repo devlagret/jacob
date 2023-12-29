@@ -171,7 +171,7 @@ class AcctCreditsAcquittanceController extends Controller
                     'created_id'                                => auth()->user()->user_id,
                     'branch_id'                                 => auth()->user()->branch_id,
                 );
-                // dd($data);
+                dd($data);
                 AcctCreditsAcquittance::create($data);
                 
                 $kerugian_pelunasan_peminjaman = $data['credits_account_last_balance'] - $data['credits_acquittance_principal'];
