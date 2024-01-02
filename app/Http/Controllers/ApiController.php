@@ -119,7 +119,7 @@ class ApiController extends Controller
         }else{
         $data = CoreMember::withoutGlobalScopes()
         ->where('data_state',0)
-        // ->where('branch_id',auth()->user()->branch_id)
+        ->where('branch_id',auth()->user()->branch_id)
         ->orderBy('member_name', 'asc') 
         ->get();
         }
