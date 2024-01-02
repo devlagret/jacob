@@ -21,6 +21,7 @@ use App\Models\AcctSavingsMemberDetail;
 use App\Models\CloseCashierLog;
 use App\Models\CoreEmployee;
 use App\Models\CoreMember;
+use App\Models\CoreBranch;
 use App\Models\PreferenceCompany;
 use App\Models\PreferenceTransactionModule;
 use App\Models\SystemLoginLog;
@@ -782,8 +783,8 @@ class ApiController extends Controller
         ]);
 
         // Check username
-        $preferencecompany = User::select('preference_company.printer_address')
-        ->join('preference_company', 'preference_company.company_id', 'system_user.company_id')
+        $preferencecompany = User::select('core_branch.printer_address')
+        ->join('core_branch', 'core_branch.branch_id', 'system_user.branch_id')
         ->where('system_user.user_id', $fields['user_id'])
         ->first();
 
@@ -805,12 +806,12 @@ class ApiController extends Controller
         ]);
 
         // Check username
-        $company_id = User::select('preference_company.company_id')
-        ->join('preference_company', 'preference_company.company_id', 'system_user.company_id')
+        $company_id = User::select('core_branch.branch_id')
+        ->join('core_branch', 'core_branch.branch_id', 'system_user.branch_id')
         ->where('system_user.user_id', $fields['user_id'])
         ->first();
 
-        $preferencecompany = PreferenceCompany::findOrFail($company_id['company_id']);
+        $preferencecompany = CoreBranch::findOrFail($company_id['branch_id']);
         $preferencecompany->printer_address = $fields['printer_address'];
 
         if($preferencecompany->save()){
