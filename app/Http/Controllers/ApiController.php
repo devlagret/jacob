@@ -776,6 +776,54 @@ class ApiController extends Controller
         
     }
 
+    public function printerAddress(Request $request){
+        $fields = $request->validate([
+            'user_id'       => 'required|string',
+        ]);
+
+        // Check username
+        $preferencecompany = User::select('preference_company.printer_address')
+        ->join('preference_company', 'preference_company.company_id', 'system_user.company_id')
+        ->where('system_user.user_id', $fields['user_id'])
+        ->first();
+
+        if($preferencecompany){
+            return response([
+                'data'    => $preferencecompany['printer_address'],
+            ],201);
+        }else{
+            return response([
+                'message' => 'Data Tidak Ditemukan'
+            ],401);
+        }
+    }
+
+    public function updatePrinterAddress(Request $request){
+        $fields = $request->validate([
+            'user_id'           => 'required|string',
+            'printer_address'   => 'required|string',
+        ]);
+
+        // Check username
+        $company_id = User::select('preference_company.company_id')
+        ->join('preference_company', 'preference_company.company_id', 'system_user.company_id')
+        ->where('system_user.user_id', $fields['user_id'])
+        ->first();
+
+        $preferencecompany = PreferenceCompany::findOrFail($company_id['company_id']);
+        $preferencecompany->printer_address = $fields['printer_address'];
+
+        if($preferencecompany->save()){
+            return response([
+                'message' => 'Ganti Alamat Printer Berhasil'
+            ],201);
+        }else{
+            return response([
+                'message' => 'Ganti Alamat Printer Tidak Berhasil'
+            ],401);
+        }
+    }
+
 
 
 }
