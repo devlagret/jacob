@@ -45,6 +45,10 @@ Route::post('processAddCreditsPaymentCash/{credit_account_id?}', [ApiController:
 Route::post('logout', [ApiController::class, 'logout']);
 Route::post('getLoginState', [ApiController::class, 'getLoginState']);
 
+//print
+Route::post('printer-address', [APIController::class, 'printerAddress']);
+Route::post('printer-address/update', [APIController::class, 'updatePrinterAddress']);
+
 Route::prefix('saving')->controller(ApiController::class)->group(function () {
     Route::get('account','getDataSavings');
     Route::post('deposit/{savings_account_id?}','deposit');
