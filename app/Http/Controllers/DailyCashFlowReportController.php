@@ -64,11 +64,12 @@ class DailyCashFlowReportController extends Controller
         // ->first();
 
         $opening_balance_old = AcctAccountBalanceDetail::
-        where('acct_account_balance_detail.transaction_date','=',date('Y-m-d', strtotime($sesi['start_date'])))
-        ->where('acct_account_balance_detail.branch_id',Auth::user()->branch_id)
+        // where('acct_account_balance_detail.transaction_date','=',date('Y-m-d', strtotime($sesi['start_date'])))
+        where('acct_account_balance_detail.branch_id',Auth::user()->branch_id)
         ->where('account_id', $preferencecompany['account_cash_id'])
         ->orderBy('acct_account_balance_detail.account_balance_detail_id', 'ASC')
         ->first();
+        // dd($opening_balance_old);
 
         $data = AcctJournalVoucherItem::where('acct_journal_voucher_item.account_id', $preferencecompany['account_cash_id'])
         ->join('acct_journal_voucher','acct_journal_voucher.journal_voucher_id','=','acct_journal_voucher_item.journal_voucher_id')

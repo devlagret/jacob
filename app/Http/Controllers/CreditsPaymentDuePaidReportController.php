@@ -64,6 +64,7 @@ class CreditsPaymentDuePaidReportController extends Controller
         }
 
         $acctcreditsaccount	= AcctCreditsAccount::select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_principal_amount', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_payment_date', 'acct_credits_account.credits_account_last_payment_date', 'acct_credits_account.credits_account_payment_amount', 'acct_credits_account.credits_account_accumulated_fines', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_status')
+        ->withoutGlobalScopes()
         ->join('core_member', 'acct_credits_account.member_id', '=' ,'core_member.member_id')
         ->where('acct_credits_account.credits_account_due_date', date('Y-m-d', strtotime($sesi['start_date'])))
         ->where('acct_credits_account.credits_account_status', 0)
@@ -140,6 +141,7 @@ class CreditsPaymentDuePaidReportController extends Controller
         $totaldenda         = 0;
         foreach ($acctcreditsaccount as $key => $val) {
             $acctcredits_fine   = AcctCreditsAccount::select('acct_credits.credits_fine')
+            ->withoutGlobalScopes()
 			->join('acct_credits', 'acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
 			->where('acct_credits_account.credits_account_id', $val['credits_account_id'])
             ->first();
@@ -217,6 +219,7 @@ class CreditsPaymentDuePaidReportController extends Controller
         }
 
         $acctcreditsaccount	= AcctCreditsAccount::select('acct_credits_account.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_credits_account.credits_account_amount', 'acct_credits_account.credits_account_principal_amount', 'acct_credits_account.credits_account_interest_amount', 'acct_credits_account.credits_account_last_balance', 'acct_credits_account.credits_account_payment_date', 'acct_credits_account.credits_account_last_payment_date', 'acct_credits_account.credits_account_payment_amount', 'acct_credits_account.credits_account_accumulated_fines', 'acct_credits_account.credits_account_period', 'acct_credits_account.credits_account_payment_to', 'acct_credits_account.credits_account_status')
+        ->withoutGlobalScopes()
         ->join('core_member', 'acct_credits_account.member_id', '=' ,'core_member.member_id')
         ->where('acct_credits_account.credits_account_due_date', date('Y-m-d', strtotime($sesi['start_date'])))
         ->where('acct_credits_account.credits_account_status', 0)
