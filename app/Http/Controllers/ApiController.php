@@ -432,6 +432,7 @@ class ApiController extends Controller
             ->join('core_member','acct_credits_account.member_id','core_member.member_id')
             ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
             ->where('acct_credits_account.data_state',0)
+            ->orderBy('core_member.member_name', 'asc') 
             ->get();
         }else{
             $data = AcctCreditsAccount::withoutGlobalScopes()
@@ -439,6 +440,7 @@ class ApiController extends Controller
             ->join('acct_credits','acct_credits.credits_id','acct_credits_account.credits_id')
             ->where('acct_credits_account.data_state',0)
             ->where('acct_credits_account.branch_id',auth()->user()->branch_id)
+            ->orderBy('core_member.member_name', 'asc') 
             ->get();
         }
         return response()->json([
@@ -554,7 +556,7 @@ class ApiController extends Controller
 				'created_id'								=> auth()->user()->user_id,
             );
             AcctCreditsPayment::create($data);
-            //
+            
 
 			$credits_account_status = 0;
 
