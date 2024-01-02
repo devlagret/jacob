@@ -25,10 +25,22 @@ class CreditsCollectibilityReportController extends Controller
         $path               = public_path('storage/'.$preferencecompany['logo_koperasi']);
         
         $preferencecollectibility   = PreferenceCollectibility::get();
-        $acctcreditsaccount			= AcctCreditsAccount::with('member')->where('credits_account_last_balance', '>=', 1)
-        ->where('credits_approve_status', 1)
-        ->orderBy('credits_account_serial', 'ASC')	
-        ->get();
+       
+
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $acctcreditsaccount			= AcctCreditsAccount::with('member')->where('credits_account_last_balance', '>=', 1)
+            ->where('credits_approve_status', 1)
+            ->orderBy('credits_account_serial', 'ASC')	
+            ->get();
+            
+        }else{
+            $acctcreditsaccount			= AcctCreditsAccount::with('member')->where('credits_account_last_balance', '>=', 1)
+            ->where('credits_approve_status', 1)
+            ->where('branch_id', $branch_id)
+            ->orderBy('credits_account_serial', 'ASC')	
+            ->get();
+        }
 
         $pdf = new TCPDF('L', PDF_UNIT, 'A4', true, 'UTF-8', false);
 
