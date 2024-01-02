@@ -49,6 +49,9 @@ Route::post('getLoginState', [ApiController::class, 'getLoginState']);
 Route::post('printer-address', [APIController::class, 'printerAddress']);
 Route::post('printer-address/update', [APIController::class, 'updatePrinterAddress']);
 
+Route::post('print-deposit', [APIController::class, 'PrintGetDeposit']);
+
+
 Route::prefix('saving')->controller(ApiController::class)->group(function () {
     Route::get('account','getDataSavings');
     Route::post('deposit/{savings_account_id?}','deposit');
