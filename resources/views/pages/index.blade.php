@@ -10,15 +10,16 @@
 @php
     use Carbon\Carbon;
     use App\Models\AcctDepositoAccount;
+    use App\Models\AcctDepositoProfitSharing;  
 
     //tgl hari ini
     $today = Carbon::today()->format('d-m-Y');
-    // $today = ' 2023-11-28';
+    // $today = '2024-12-19';
 
     //jatuh tempo simp berjangka 
-    $depositoAccount = AcctDepositoAccount::select('*')
-        ->where('deposito_account_due_date', '<', $today)
-        ->simplePaginate(3);
+    $depositoAccount = AcctDepositoProfitSharing::select('*')
+        ->where('deposito_profit_sharing_due_date', $today)
+        ->get();
 
     $depositoAccountCount = count($depositoAccount);
 @endphp
@@ -38,31 +39,8 @@
                     <?php if($depositoAccountCount == 0){ ?>
                         <p class="fw-bold">Hari Ini Tidak Ada Basil Simpanan Berjangka yang Jatuh Tempo</p> 
                     <?php }else{ ?>
-                        Daftar Jatuh Tempo Simpanan Berjangka  
-                        <table class="table table-border g-3 show-border">
-                            <thead>
-                            <tr class="text-dark fw-bold">
-                                <th>No.Simpanan</th>
-                                <th>Anggota</th>
-                                <th>Jenis</th>
-                                <th>No.Seri</th>
-                                <th>Jatuh Tempo</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($depositoAccount as $item)
-                                <tr>
-                                    <td>{{ $item->deposito_account_no }}</td>
-                                    <td>{{ $CoreMember->getMemberName($item->member_id) }}</td>
-                                    <td>{{ $AcctSavings->getSavingsName($item->savings_account_id) }}</td>
-                                    <td>{{ $item->deposito_account_serial_no }}</td>
-                                    <td>{{ $item->deposito_account_due_date }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                        <p class="fw-bold">Hari Ini Ada {{  $depositoAccountCount }} Basil Simpanan Berjangka yang Jatuh Tempo</p> 
                     <?php } ?>
-                    {{ $depositoAccount->links() }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

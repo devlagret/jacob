@@ -97,6 +97,7 @@ class AcctDepositoProfitSharingController extends Controller
         session()->put('data_depositoprofitsharingadd', $sessiondata);
         
         $acctdepositoaccount    = AcctDepositoProfitSharing::select('acct_deposito_account.*', 'core_member.member_name', 'core_member.member_phone', 'core_member.member_address')
+        ->withoutGlobalScopes() 
         ->join('acct_deposito_account', 'acct_deposito_account.deposito_account_id', 'acct_deposito_profit_sharing.deposito_account_id')
         ->join('core_member', 'core_member.member_id', 'acct_deposito_account.member_id')
         ->join('acct_deposito', 'acct_deposito.deposito_id', 'acct_deposito_account.deposito_id')
@@ -106,11 +107,13 @@ class AcctDepositoProfitSharingController extends Controller
         $acctsavingsaccount     = array();
         if(isset($sessiondata['savings_account_id'])){
             $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.*', 'acct_savings_account.savings_id', 'acct_savings_account.member_id', 'acct_savings_account.savings_account_last_balance', DB::raw('CONCAT(acct_savings_account.savings_account_no," - ",core_member.member_name) AS full_no'))
+            ->withoutGlobalScopes() 
             ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
             ->where('acct_savings_account.savings_account_id', $sessiondata['savings_account_id'])
             ->first();
         }else{
             $acctsavingsaccount = AcctSavingsAccount::select('acct_savings_account.savings_account_id', 'acct_savings_account.savings_id', 'acct_savings_account.member_id', 'acct_savings_account.savings_account_last_balance', DB::raw('CONCAT(acct_savings_account.savings_account_no," - ",core_member.member_name) AS full_no'))
+            ->withoutGlobalScopes() 
             ->join('core_member', 'core_member.member_id', '=', 'acct_savings_account.member_id')
             ->where('acct_savings_account.savings_account_id', $acctdepositoaccount['savings_account_id'])
             ->first();
@@ -220,7 +223,8 @@ class AcctDepositoProfitSharingController extends Controller
             AcctSavingsTransferMutationTo::create($data_transfer_to);
 
             $acctdepositoprofitsharing_last 	= AcctDepositoProfitSharing::select('acct_deposito_profit_sharing.deposito_profit_sharing_id', 'acct_deposito_profit_sharing.deposito_account_id', 'acct_deposito_account.deposito_account_no', 'acct_deposito_account.member_id', 'core_member.member_name')
-			->join('core_member','acct_deposito_profit_sharing.member_id', '=', 'core_member.member_id')
+			->withoutGlobalScopes() 
+            ->join('core_member','acct_deposito_profit_sharing.member_id', '=', 'core_member.member_id')
 			->join('acct_deposito_account','acct_deposito_profit_sharing.deposito_account_id', '=', 'acct_deposito_account.deposito_account_id')
 			->where('acct_deposito_profit_sharing.deposito_profit_sharing_id', $data['deposito_profit_sharing_id'])
             ->first();
