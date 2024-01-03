@@ -74,12 +74,13 @@ class AcctCreditsDailyMutationController extends Controller
             $branch_id = Auth::user()->branch_id;
       }else{$branch_id = $sesi['branch_id'];}
       $acctcreditspayment = AcctCreditsPayment::with('member','account')
-      ->where('credits_approve_status',1)
-      ->where('credits_account_date',">=",$sesi['start_date'])
-      ->where('credits_account_date',"<=",$sesi['end_date']);
-      if(!empty($branch_id)){$acctcreditspayment->where('branch_id', $branch_id);}
-      if(!empty($sesi['office_id'])){$acctcreditspayment->where('office_id', $sesi['office_id']);}
-      $acctcreditspayment = $acctcreditspayment->orderBy('credits_account_serial', 'ASC')
+      ->join('acct_credits_account','acct_credits_account.credits_account_id','acct_credits_payment.credits_account_id')
+      ->where('acct_credits_account.credits_approve_status',1)
+      ->where('acct_credits_account.credits_account_date',">=",$sesi['start_date'])
+      ->where('acct_credits_account.credits_account_date',"<=",$sesi['end_date']);
+      if(!empty($branch_id)){$acctcreditspayment->where('acct_credits_account.branch_id', $branch_id);}
+      if(!empty($sesi['office_id'])){$acctcreditspayment->where('acct_credits_account.office_id', $sesi['office_id']);}
+      $acctcreditspayment = $acctcreditspayment->orderBy('acct_credits_account.credits_account_serial', 'ASC')
       ->get();
       // dd($acctcreditspayment);
       $pdf = new TCPDF(['L', PDF_UNIT, 'F4', true, 'UTF-8', false]);

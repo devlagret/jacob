@@ -139,7 +139,7 @@ class AcctSavingsController extends Controller
         $savings_name = AcctSavings::select('*')
         ->where('savings_id',$savings_id)
         ->first();
-        return $savings_name['savings_name'];
+        return $savings_name['savings_name'] ?? '';
     }
 
 }
