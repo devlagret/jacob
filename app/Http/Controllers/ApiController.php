@@ -130,6 +130,29 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
+    //search member
+    public function searchMembers($member_name){
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+        $data = CoreMember::withoutGlobalScopes()
+        ->where('data_state',0)
+        ->where('member_name','LIKE', '%' . $member_name . '%')
+        ->orderBy('member_name', 'asc') 
+        ->get();
+        }else{
+        $data = CoreMember::withoutGlobalScopes()
+        ->where('data_state',0)
+        ->where('member_name','LIKE', '%' . $member_name . '%')
+        ->where('branch_id',auth()->user()->branch_id)
+        ->orderBy('member_name', 'asc') 
+        ->get();
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+        // return json_encode($data);
+    }
+
      //data simpanan by id simpanan
     public function PostSavingsById($savings_account_id){
         $data = AcctSavingsAccount::withoutGlobalScopes()
@@ -470,6 +493,28 @@ class ApiController extends Controller
             ->where('acct_credits_account.data_state',0)
             ->where('acct_credits_account.branch_id',auth()->user()->branch_id)
             ->orderBy('core_member.member_name', 'asc') 
+            ->get();
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+
+    //data setor angsuran tunai by branch 
+    public function getCreditstPaymentList(){
+
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $data = AcctCreditsPayment::withoutGlobalScopes()
+            ->where('acct_credits_payment.data_state',0)
+            ->where('credits_payment_date',Carbon::today())
+            ->get();
+        }else{
+            $data = AcctCreditsPayment::withoutGlobalScopes()
+            ->where('acct_credits_payment.data_state',0)
+            ->where('credits_payment_date',Carbon::today())
+            ->where('acct_credits_payment.branch_id',auth()->user()->branch_id)
             ->get();
         }
         return response()->json([
