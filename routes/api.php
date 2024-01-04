@@ -59,6 +59,10 @@ Route::post('get-list-credits-payment', [ApiController::class, 'getCreditstPayme
 Route::post('printer-address', [APIController::class, 'printerAddress']);
 Route::post('printer-address/update', [APIController::class, 'updatePrinterAddress']);
 Route::post('print-deposit', [APIController::class, 'PrintGetDeposit']);
+Route::post('print-withdraw', [APIController::class, 'PrintGetWithdraw']);
+Route::post('print-credits-payment', [APIController::class, 'PrintGetAngsuran']);
+
+
 
 //save mutasi simpanan
 Route::prefix('saving')->controller(ApiController::class)->group(function () {

@@ -552,6 +552,32 @@ class ApiController extends Controller
         ]);
     }
 
+     //print History Angsuran
+     public function PrintGetAngsuran(Request $request){
+
+        $fields = $request->validate([
+            'user_id'           => 'required',
+            'credits_payment_id' => 'required'
+        ]);
+        $data = AcctCreditsPayment::withoutGlobalScopes()
+        ->where('acct_credits_payment.data_state',0)
+        ->where('credits_payment_date',Carbon::today())
+        ->where('acct_credits_payment.branch_id',auth()->user()->branch_id)
+        ->where('acct_credits_payment.credits_payment_id',$fields['credits_payment_id'])
+        ->get();
+        
+
+        $preferencecompany = User::select('core_branch.*')
+        ->join('core_branch', 'core_branch.branch_id', 'system_user.branch_id')
+        ->where('system_user.user_id', $fields['user_id'])
+        ->first();
+        
+        return response([
+            'data'           => $data,
+            'preferencecompany'     => $preferencecompany
+        ],201);
+    }
+
     //data Pinjaman by id Pinjaman
     public function PostCreditsById($credits_account_id){
         $data = AcctCreditsAccount::withoutGlobalScopes()
