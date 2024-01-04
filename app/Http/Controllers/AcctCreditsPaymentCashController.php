@@ -132,7 +132,7 @@ class AcctCreditsPaymentCashController extends Controller
                 $angsuranke = $acctcreditsaccount['credits_account_payment_to'] + 1;
             }
 
-            $credits_payment_fine_amount 		= (($acctcreditsaccount['credits_account_payment_amount'] * $acctcreditsaccount['credits_fine']) / 100 ) * $credits_payment_day_of_delay;
+            $credits_payment_fine_amount 		= (($acctcreditsaccount['credits_account_payment_amount'] * $acctcreditsaccount['credit']['credits_fine']) / 100 ) * $credits_payment_day_of_delay;
             $credits_account_accumulated_fines 	= $acctcreditsaccount['credits_account_accumulated_fines'] + $credits_payment_fine_amount;
 
             if($acctcreditsaccount['payment_type_id'] == 1){

@@ -621,7 +621,7 @@ class ApiController extends Controller
                 $angsuranke = $acctcreditsaccount['credits_account_payment_to'] + 1;
             }
 
-            $credits_payment_fine_amount 		= (($acctcreditsaccount['credits_account_payment_amount'] * $acctcreditsaccount['credits_fine']) / 100 ) * $credits_payment_day_of_delay;
+            $credits_payment_fine_amount 		= (($acctcreditsaccount['credits_account_payment_amount'] * $acctcreditsaccount['credit']['credits_fine']) / 100 ) * $credits_payment_day_of_delay;
             $credits_account_accumulated_fines 	= $acctcreditsaccount['credits_account_accumulated_fines'] + $credits_payment_fine_amount;
 
             if($acctcreditsaccount['payment_type_id'] == 1){
@@ -678,7 +678,7 @@ class ApiController extends Controller
 				'credits_principal_last_balance'			=> $creditaccount->credits_account_last_balance - $request->angsuran_pokok,
 				'credits_interest_opening_balance'			=> $creditaccount->credits_account_interest_last_balance,
 				'credits_interest_last_balance'				=> $creditaccount->credits_account_interest_last_balance + $request->angsuran_bunga,				
-				'credits_payment_fine'						=> $credits_payment_fine_amount + $request->credits_payment_fine_amount,
+				'credits_payment_fine'						=> $request->credits_payment_fine_amount,
 				'credits_account_payment_date'				=> $credits_account_payment_date,
 				'credits_payment_to'						=> $angsuranke,
 				'credits_payment_day_of_delay'				=> $credits_payment_day_of_delay,
