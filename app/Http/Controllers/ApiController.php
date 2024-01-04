@@ -344,7 +344,7 @@ class ApiController extends Controller
         ]);
     }
 
-      //data mutasi setor simpanan tunai
+      //data tarik tunai simpanan tunai
       public function GetWithdraw(){
         $branch_id          = auth()->user()->branch_id;
         if($branch_id == 0){
