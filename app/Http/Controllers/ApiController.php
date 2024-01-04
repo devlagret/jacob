@@ -553,15 +553,17 @@ class ApiController extends Controller
     }
     
     //History Angsuran
-        public function GetAngsuran(Request $request){
+        public function GetAngsuran(){
             $branch_id          = auth()->user()->branch_id;
             if($branch_id == 0){
                 $data = AcctCreditsPayment::withoutGlobalScopes()
+                ->with('member','account')
                 ->where('acct_credits_payment.data_state',0)
                 ->where('credits_payment_date',Carbon::today())
                 ->get();
             }else{
                 $data = AcctCreditsPayment::withoutGlobalScopes()
+                ->with('member','account')
                 ->where('acct_credits_payment.data_state',0)
                 ->where('credits_payment_date',Carbon::today())
                 ->where('acct_credits_payment.branch_id',auth()->user()->branch_id)

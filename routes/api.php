@@ -52,6 +52,9 @@ Route::post('PostCreditsById', [ApiController::class, 'PostCreditsById']);
 //save angsuran
 Route::post('processAddCreditsPaymentCash/{credit_account_id?}', [ApiController::class, 'processAddCreditsPaymentCash']);
 
+//history angsuran
+Route::post('GetAngsuran', [ApiController::class, 'GetAngsuran']);
+
 //getList angsuran
 Route::post('get-list-credits-payment', [ApiController::class, 'getCreditstPaymentList']);
 
