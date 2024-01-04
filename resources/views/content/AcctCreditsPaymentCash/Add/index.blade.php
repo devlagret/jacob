@@ -299,11 +299,11 @@ if(empty($sessiondata)){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Angsuran Pokok') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                        {{-- @if($acctcreditsaccount['payment_type_id'] == 1)
+                                        @if($acctcreditsaccount['credits_id'] == 3)
                                             <input type="text" name="angsuran_pokok_view" id="angsuran_pokok_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('angsuran_pokok_view', number_format($angsuranpokok, 2) ?? '') }}" autocomplete="off" readonly/>
-                                        @else --}}
+                                        @else
                                         <input type="text" name="angsuran_pokok_view" id="angsuran_pokok_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('angsuran_pokok_view', number_format($angsuranpokok, 2) ?? '') }}" autocomplete="off"/>
-                                    {{-- @endif --}}
+                                    @endif
                                     <input type="hidden" name="angsuran_pokok" id="angsuran_pokok" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('angsuran_pokok', $angsuranpokok ?? '') }}" autocomplete="off"/>
                                 </div>
                             </div>
