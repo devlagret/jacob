@@ -334,6 +334,34 @@ class ApiController extends Controller
         // return json_encode($data);
     }
 
+    //print History Withdraw
+    public function PrintGetWithdraw(Request $request){
+
+        $fields = $request->validate([
+            'user_id'           => 'required',
+            'savings_cash_mutation_id' => 'required'
+        ]);
+            $data = AcctSavingsCashMutation::with('member','mutation')
+            ->withoutGlobalScopes() 
+            ->where('savings_cash_mutation_date',Carbon::today())
+            ->where('mutation_id',2)
+            ->where('data_state',0)
+            ->where('savings_cash_mutation_id', $fields['savings_cash_mutation_id'])
+            ->first();
+        
+
+        $preferencecompany = User::select('core_branch.*')
+        ->join('core_branch', 'core_branch.branch_id', 'system_user.branch_id')
+        ->where('system_user.user_id', $fields['user_id'])
+        ->first();
+        
+        return response([
+            'data'           => $data,
+            'preferencecompany'     => $preferencecompany
+        ],201);
+    }
+
+    //save tarik tunai
     public function withdraw(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
         $sai = $request->savings_account_id;
@@ -393,7 +421,7 @@ class ApiController extends Controller
     }
 
 
-    //simpanan wajib
+    //save simpanan wajib
     public function processAddMemberSavings(Request $request,$member_id)
     {
 
