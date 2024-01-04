@@ -324,7 +324,7 @@ class MemberSavingsPaymentController extends Controller
 
                             AcctJournalVoucherItem::create($data_debet);
                         }
-
+                        //tes
                         if($data['member_special_savings'] <> 0 || $data['member_special_savings'] <> ''){
                             $account_id = AcctSavings::where('savings_id',$preferencecompany->special_savings_id)
                             ->first()
