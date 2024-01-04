@@ -299,7 +299,10 @@ if(empty($sessiondata)){
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Angsuran Pokok') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                        @if($acctcreditsaccount['credits_id'] == 3)
+                                    @php
+                                        $credits_id = $acctcreditsaccount['credits_id'] ?? 0;
+                                    @endphp
+                                        @if($credits_id == 3)
                                             <input type="text" name="angsuran_pokok_view" id="angsuran_pokok_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('angsuran_pokok_view', number_format($angsuranpokok, 2) ?? '') }}" autocomplete="off" readonly/>
                                         @else
                                         <input type="text" name="angsuran_pokok_view" id="angsuran_pokok_view" class="form-control form-control-lg form-control-solid" placeholder="Rupiah" value="{{ old('angsuran_pokok_view', number_format($angsuranpokok, 2) ?? '') }}" autocomplete="off"/>
