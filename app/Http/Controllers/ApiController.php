@@ -252,45 +252,7 @@ class ApiController extends Controller
         return response($e,500);
         }
     }
-    public function withdraw(Request $request,$savings_account_id) {
-        $request->validate(['savings_cash_mutation_amount'=>'required']);
-        $sai = $request->savings_account_id;
-        $savingacc1 = AcctSavingsAccount::find($sai);
-        if(!empty($savings_account_id)){
-            $sai = $savings_account_id;
-        }
-        print($savingacc1);
-
-        // if($request->savings_cash_mutation_amount > $savingacc1['savings_cash_mutation_last_balance']){
-        //     return response('Withdraw Failed');
-        // }
-        try {
-            $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
-        DB::beginTransaction();
-        AcctSavingsCashMutation::create( [
-            'savings_account_id' => $request['savings_account_id'],
-            'mutation_id' => 2,
-            'member_id' => $savingacc->member_id,
-            'savings_id' => $savingacc->savings_id,
-            'savings_cash_mutation_date' => date('Y-m-d'),
-            'pickup_date' => date('Y-m-d'),
-            'savings_cash_mutation_opening_balance' => $savingacc->savings_cash_mutation_last_balance,
-            'savings_cash_mutation_amount' => $request->savings_cash_mutation_amount,
-            'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
-            'savings_cash_mutation_last_balance' => $savingacc->savings_cash_mutation_last_balance,
-            'savings_cash_mutation_remark' => $request->savings_cash_mutation_remark,
-            'branch_id' =>  $savingacc->branch_id,
-            'operated_name' => Auth::user()->username,
-            'created_id' => Auth::user()->user_id,
-        ]);
-        DB::commit();
-        return response('Withdraw Success');
-        } catch (Exception $e) {
-        DB::rollBack();
-        report($e);
-        return response($e,500);
-        }
-    }
+  
 
     //print History Deposit
     public function PrintGetDeposit(Request $request){
@@ -370,6 +332,46 @@ class ApiController extends Controller
             'data' => $data,
         ]);
         // return json_encode($data);
+    }
+
+    public function withdraw(Request $request,$savings_account_id) {
+        $request->validate(['savings_cash_mutation_amount'=>'required']);
+        $sai = $request->savings_account_id;
+        $savingacc1 = AcctSavingsAccount::find($sai);
+        if(!empty($savings_account_id)){
+            $sai = $savings_account_id;
+        }
+        print($savingacc1);
+
+        // if($request->savings_cash_mutation_amount > $savingacc1['savings_cash_mutation_last_balance']){
+        //     return response('Withdraw Failed');
+        // }
+        try {
+            $savingacc = AcctSavingsAccount::find(trim(preg_replace("/[^0-9]/", '', $sai)));
+        DB::beginTransaction();
+        AcctSavingsCashMutation::create( [
+            'savings_account_id' => $request['savings_account_id'],
+            'mutation_id' => 2,
+            'member_id' => $savingacc->member_id,
+            'savings_id' => $savingacc->savings_id,
+            'savings_cash_mutation_date' => date('Y-m-d'),
+            'pickup_date' => date('Y-m-d'),
+            'savings_cash_mutation_opening_balance' => $savingacc->savings_cash_mutation_last_balance,
+            'savings_cash_mutation_amount' => $request->savings_cash_mutation_amount,
+            'savings_cash_mutation_amount_adm' => $request->savings_cash_mutation_amount_adm,
+            'savings_cash_mutation_last_balance' => $savingacc->savings_cash_mutation_last_balance,
+            'savings_cash_mutation_remark' => $request->savings_cash_mutation_remark,
+            'branch_id' =>  $savingacc->branch_id,
+            'operated_name' => Auth::user()->username,
+            'created_id' => Auth::user()->user_id,
+        ]);
+        DB::commit();
+        return response('Withdraw Success');
+        } catch (Exception $e) {
+        DB::rollBack();
+        report($e);
+        return response($e,500);
+        }
     }
 
 
