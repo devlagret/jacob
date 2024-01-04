@@ -306,8 +306,8 @@ class ApiController extends Controller
         ]);
     }
 
-      //data tarik tunai simpanan tunai
-      public function GetWithdraw(){
+    //data histori tarik tunai simpanan tunai
+    public function GetWithdraw(){
         $branch_id          = auth()->user()->branch_id;
         if($branch_id == 0){
             $data = AcctSavingsCashMutation::with('member','mutation')
@@ -551,6 +551,26 @@ class ApiController extends Controller
             'data' => $data,
         ]);
     }
+    
+    //History Angsuran
+        public function GetAngsuran(Request $request){
+            $branch_id          = auth()->user()->branch_id;
+            if($branch_id == 0){
+                $data = AcctCreditsPayment::withoutGlobalScopes()
+                ->where('acct_credits_payment.data_state',0)
+                ->where('credits_payment_date',Carbon::today())
+                ->get();
+            }else{
+                $data = AcctCreditsPayment::withoutGlobalScopes()
+                ->where('acct_credits_payment.data_state',0)
+                ->where('credits_payment_date',Carbon::today())
+                ->where('acct_credits_payment.branch_id',auth()->user()->branch_id)
+                ->get();
+            }
+                return response([
+                    'data'           => $data,
+                ],201);
+        }
 
      //print History Angsuran
      public function PrintGetAngsuran(Request $request){
