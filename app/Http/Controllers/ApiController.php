@@ -678,7 +678,7 @@ class ApiController extends Controller
 				'credits_principal_last_balance'			=> $creditaccount->credits_account_last_balance - $request->angsuran_pokok,
 				'credits_interest_opening_balance'			=> $creditaccount->credits_account_interest_last_balance,
 				'credits_interest_last_balance'				=> $creditaccount->credits_account_interest_last_balance + $request->angsuran_bunga,				
-				'credits_payment_fine'						=> $credits_payment_fine_amount,
+				'credits_payment_fine'						=> $credits_payment_fine_amount + $request->credits_payment_fine_amount,
 				'credits_account_payment_date'				=> $credits_account_payment_date,
 				'credits_payment_to'						=> $angsuranke,
 				'credits_payment_day_of_delay'				=> $credits_payment_day_of_delay,
