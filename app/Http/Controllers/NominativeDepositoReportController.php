@@ -60,11 +60,13 @@ class NominativeDepositoReportController extends Controller
                 $branch_id = $sesi['branch_id'];
             }
         }
+
+        // dd(date('Y-m-d', strtotime($sesi['start_date'])));
         
         $acctdepositoaccount = AcctDepositoAccount::select('acct_deposito_account.deposito_account_id', 'acct_deposito_account.deposito_id', 'acct_deposito_account.member_id', 'core_member.member_name', 'core_member.member_address', 'acct_deposito_account.deposito_account_date', 'acct_deposito_account.deposito_account_due_date', 'acct_deposito_account.deposito_account_amount', 'acct_deposito_account.deposito_account_no', 'acct_deposito_account.deposito_account_period', 'acct_deposito_account.deposito_account_status', 'acct_deposito.deposito_interest_rate')
         ->join('acct_deposito', 'acct_deposito_account.deposito_id', '=', 'acct_deposito.deposito_id')
         ->join('core_member', 'acct_deposito_account.member_id', '=', 'core_member.member_id')
-        ->where('acct_deposito_account.deposito_account_date', '<=', date('Y-m-d', strtotime($sesi['start_date'])))
+        ->where('acct_deposito_account.deposito_account_date', '<', date('Y-m-d', strtotime($sesi['start_date'])))
         ->where('acct_deposito_account.deposito_account_status', 0)
         ->where('acct_deposito_account.data_state', 0);
         if(!empty($branch_id)){
