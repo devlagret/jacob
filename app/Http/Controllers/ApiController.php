@@ -216,7 +216,7 @@ class ApiController extends Controller
         ],201);
     }
 
-    //Insert simpanan biasa
+    //save simpanan biasa
     public function deposit(Request $request,$savings_account_id) {
         $request->validate(['savings_cash_mutation_amount'=>'required']);
         $sai = $request->savings_account_id;
@@ -620,7 +620,7 @@ class ApiController extends Controller
         
     }
 
-    //Save Angsuran
+    //save Angsuran
     public function processAddCreditsPaymentCash(Request $request,$credits_account_id)
     {
 
