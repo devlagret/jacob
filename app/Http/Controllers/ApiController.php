@@ -346,7 +346,7 @@ class ApiController extends Controller
             'user_id'           => 'required',
             'savings_cash_mutation_id' => 'required'
         ]);
-            $data = AcctSavingsCashMutation::with('member','mutation')
+            $data = AcctSavingsCashMutation::with('member','mutation','savings','savingsaccount')
             ->withoutGlobalScopes() 
             ->where('savings_cash_mutation_date',Carbon::today())
             ->where('mutation_id',2)
@@ -359,10 +359,15 @@ class ApiController extends Controller
         ->join('core_branch', 'core_branch.branch_id', 'system_user.branch_id')
         ->where('system_user.user_id', $fields['user_id'])
         ->first();
+
+        $company = PreferenceCompany::select('company_name')
+        ->first();
         
         return response([
             'data'           => $data,
-            'preferencecompany'     => $preferencecompany
+            'preferencecompany'     => $preferencecompany,
+            'company'     => $company
+
         ],201);
     }
 
