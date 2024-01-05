@@ -225,6 +225,7 @@ class AcctCreditsPaymentCashController extends Controller
 				'credits_payment_day_of_delay'				=> $request->credits_payment_day_of_delay,
 				'branch_id'									=> auth()->user()->branch_id,
 				'created_id'								=> auth()->user()->user_id,
+                'pickup_state'                              => 1,
             );
             AcctCreditsPayment::create($data);
 
