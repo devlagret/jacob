@@ -35,4 +35,10 @@ class AcctSavingsCashMutation extends Model
     public function mutation() {
         return $this->belongsTo(AcctMutation::class,'mutation_id','mutation_id');
     }
+    public function savings() {
+        return $this->belongsTo(AcctSavings::class,'savings_id','savings_id');
+    }
+    public function savingsaccount() {
+        return $this->belongsTo(AcctSavingsAccount::class,'savings_account_id','savings_account_id');
+    }
 }
