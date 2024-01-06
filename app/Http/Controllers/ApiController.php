@@ -717,6 +717,9 @@ class ApiController extends Controller
 				'credits_payment_day_of_delay'				=> $credits_payment_day_of_delay,
 				'branch_id'									=> auth()->user()->branch_id,
 				'created_id'								=> auth()->user()->user_id,
+				'pickup_state'								=> 0,
+				'pickup_date'								=> date('Y-m-d'),
+
             );
             AcctCreditsPayment::create($data);
             
@@ -733,194 +736,6 @@ class ApiController extends Controller
 				}
 			}
 
-//---------Jurnal Header
-			// $transaction_module_code    = 'ANGS';
-			// $journal_voucher_period     = date("Ym", strtotime($data['credits_payment_date']));
-			// $transaction_module_id      = PreferenceTransactionModule::select('transaction_module_id')
-            // ->where('transaction_module_code', $transaction_module_code)
-            // ->first()
-            // ->transaction_module_id;
-
-            // $acctcreditsaccount = AcctCreditsAccount::findOrFail($data['credits_account_id']);
-            // $acctcreditsaccount->credits_account_last_balance           = $data['credits_principal_last_balance'];
-            // $acctcreditsaccount->credits_account_last_payment_date      = $data['credits_payment_date'];
-            // $acctcreditsaccount->credits_account_interest_last_balance  = $data['credits_interest_last_balance'];
-            // $acctcreditsaccount->credits_account_payment_date           = $credits_account_payment_date;
-            // $acctcreditsaccount->credits_account_payment_to             = $data['credits_payment_to'];
-            // $acctcreditsaccount->credits_account_accumulated_fines      = $credits_account_accumulated_fines;
-            // $acctcreditsaccount->credits_account_status                 = $credits_account_status;
-            // $acctcreditsaccount->save();
-
-            // if($request->member_mandatory_savings > 0 && $request->member_mandatory_savings != ''){
-            //     $data_detail = array (
-            //         'member_id'						=> $data['member_id'],
-            //         'mutation_id'					=> 1,
-            //         'transaction_date'				=> date('Y-m-d'),
-            //         'mandatory_savings_amount'		=> $request->member_mandatory_savings,
-            //         'branch_id'						=> auth()->user()->branch_id,
-            //         'operated_name'					=> auth()->user()->username,
-            //     );
-            //     AcctSavingsMemberDetail::create($data_detail);
-            // }
-
-            // $acctcashpayment_last 				= AcctCreditsPayment::select('acct_credits_payment.credits_payment_id', 'acct_credits_payment.member_id', 'core_member.member_name', 'acct_credits_payment.credits_account_id', 'acct_credits_account.credits_account_serial', 'acct_credits_account.credits_id', 'acct_credits.credits_name')
-			// ->join('core_member','acct_credits_payment.member_id', '=', 'core_member.member_id')
-			// ->join('acct_credits_account','acct_credits_payment.credits_account_id', '=', 'acct_credits_account.credits_account_id')
-			// ->join('acct_credits','acct_credits_account.credits_id', '=', 'acct_credits.credits_id')
-			// ->where('acct_credits_payment.created_id', $data['created_id'])
-			// ->orderBy('acct_credits_payment.credits_payment_id','DESC')
-            // ->first();
-
-
-//---------Jurnal Header Angsuran
-            // $data_journal = array(
-            //     'branch_id'						=> auth()->user()->branch_id,
-            //     'journal_voucher_period' 		=> $journal_voucher_period,
-            //     'journal_voucher_date'			=> date('Y-m-d'),
-            //     'journal_voucher_title'			=> 'ANGSURAN TUNAI '.$acctcashpayment_last['credits_name'].' '.$acctcashpayment_last['member_name'],
-            //     'journal_voucher_description'	=> 'ANGSURAN TUNAI '.$acctcashpayment_last['credits_name'].' '.$acctcashpayment_last['member_name'],
-            //     'transaction_module_id'			=> $transaction_module_id,
-            //     'transaction_module_code'		=> $transaction_module_code,
-            //     'transaction_journal_id' 		=> $acctcashpayment_last['credits_payment_id'],
-            //     'transaction_journal_no' 		=> $acctcashpayment_last['credits_account_serial'],
-            //     'created_id' 					=> $data['created_id'],
-            // );
-            // AcctJournalVoucher::create($data_journal);
-
-            // $journal_voucher_id 				= AcctJournalVoucher::select('journal_voucher_id')
-			// ->where('created_id', $data['created_id'])
-			// ->orderBy('journal_voucher_id', 'DESC')
-            // ->first()
-            // ->journal_voucher_id;
-//-----------Jurnal Voucher Item
-            // if($data['credits_others_income']!='' && $data['credits_others_income'] > 0){
-            //     $account_id_default_status  = AcctAccount::select('account_default_status')
-            //     ->where('account_id', $preferencecompany['account_others_income_id'])
-            //     ->where('data_state', 0)
-            //     ->first()
-            //     ->account_default_status;
-
-            //     $data_credit = array (
-            //         'journal_voucher_id'			=> $journal_voucher_id,
-            //         'account_id'					=> $preferencecompany['account_others_income_id'],
-            //         'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-            //         'journal_voucher_amount'		=> $data['credits_others_income'],
-            //         'journal_voucher_credit_amount'	=> $data['credits_others_income'],
-            //         'account_id_default_status'		=> $account_id_default_status,
-            //         'account_id_status'				=> 1,
-            //         'created_id' 					=> auth()->user()->user_id,
-            //     );
-            //     AcctJournalVoucherItem::create($data_credit);
-            // }
-
-            // $account_id_default_status  = AcctAccount::select('account_default_status')
-            // ->where('account_id', $preferencecompany['account_cash_id'])
-            // ->where('data_state', 0)
-            // ->first()
-            // ->account_default_status;
-
-            // $data_debet = array (
-            //     'journal_voucher_id'			=> $journal_voucher_id,
-            //     'account_id'					=> $preferencecompany['account_cash_id'],
-            //     'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-            //     'journal_voucher_amount'		=> $data['credits_payment_amount'],
-            //     'journal_voucher_debit_amount'	=> $data['credits_payment_amount'],
-            //     'account_id_default_status'		=> $account_id_default_status,
-            //     'account_id_status'				=> 0,
-            //     'created_id' 					=> auth()->user()->user_id,
-            // );
-            // AcctJournalVoucherItem::create($data_debet);
-
-            // $receivable_account_id 				= AcctCredits::select('receivable_account_id')
-            // ->where('credits_id', $data['credits_id'])
-            // ->first()
-            // ->receivable_account_id;
-
-            // $account_id_default_status  = AcctAccount::select('account_default_status')
-            // ->where('account_id', $receivable_account_id)
-            // ->where('data_state', 0)
-            // ->first()
-            // ->account_default_status;
-
-            // $data_credit = array (
-            //     'journal_voucher_id'			=> $journal_voucher_id,
-            //     'account_id'					=> $receivable_account_id,
-            //     'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-            //     'journal_voucher_amount'		=> $data['credits_payment_principal'],
-            //     'journal_voucher_credit_amount'	=> $data['credits_payment_principal'],
-            //     'account_id_default_status'		=> $account_id_default_status,
-            //     'account_id_status'				=> 1,
-            //     'created_id' 					=> auth()->user()->user_id
-            // );
-            // AcctJournalVoucherItem::create($data_credit);
-
-            // $account_id_default_status  = AcctAccount::select('account_default_status')
-            // ->where('account_id', $preferencecompany['account_interest_id'])
-            // ->where('data_state', 0)
-            // ->first()
-            // ->account_default_status;
-
-            // $data_credit =array(
-            //     'journal_voucher_id'			=> $journal_voucher_id,
-            //     'account_id'					=> $preferencecompany['account_interest_id'],
-            //     'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-            //     'journal_voucher_amount'		=> $data['credits_payment_interest'],
-            //     'journal_voucher_credit_amount'	=> $data['credits_payment_interest'],
-            //     'account_id_default_status'		=> $account_id_default_status,
-            //     'account_id_status'				=> 1,
-            //     'created_id' 					=> auth()->user()->user_id
-            // );
-            // AcctJournalVoucherItem::create($data_credit);
-
-            // if($data['credits_payment_fine'] > 0){
-            //     $account_id_default_status  = AcctAccount::select('account_default_status')
-            //     ->where('account_id', $preferencecompany['account_credits_payment_fine'])
-            //     ->where('data_state', 0)
-            //     ->first()
-            //     ->account_default_status;
-
-            //     $data_credit =array(
-            //         'journal_voucher_id'			=> $journal_voucher_id,
-            //         'account_id'					=> $preferencecompany['account_credits_payment_fine'],
-            //         'journal_voucher_description'	=> $data_journal['journal_voucher_title'],
-            //         'journal_voucher_amount'		=> $data['credits_payment_fine'],
-            //         'journal_voucher_credit_amount'	=> $data['credits_payment_fine'],
-            //         'account_id_default_status'		=> $account_id_default_status,
-            //         'account_id_status'				=> 1,
-            //         'created_id' 					=> auth()->user()->user_id,
-            //     );
-            //     AcctJournalVoucherItem::create($data_credit);
-            // }
-
-            // if($request->member_mandatory_savings > 0 && $request->member_mandatory_savings != ''){
-            //     $savings_id = $preferencecompany['mandatory_savings_id'];
-
-            //     $account_id = AcctSavings::select('account_id')
-            //     ->where('savings_id', $savings_id)
-            //     ->where('data_state', 0)
-            //     ->first()
-            //     ->account_id;
-
-            //     $account_id_default_status  = AcctAccount::select('account_default_status')
-            //     ->where('account_id', $account_id)
-            //     ->where('data_state', 0)
-            //     ->first()
-            //     ->account_default_status;
-
-            //     $data_credit =array(
-            //         'journal_voucher_id'			=> $journal_voucher_id,
-            //         'account_id'					=> $account_id,
-            //         'journal_voucher_description'	=> 'SETORAN TUNAI '.$acctcashpayment_last['member_name'],
-            //         'journal_voucher_amount'		=> $request->member_mandatory_savings,
-            //         'journal_voucher_credit_amount'	=> $request->member_mandatory_savings,
-            //         'account_id_default_status'		=> $account_id_default_status,
-            //         'account_id_status'				=> 1,
-            //         'created_id' 					=> auth()->user()->user_id,
-            //     );
-            //     AcctJournalVoucherItem::create($data_credit);
-            // }
-//----------End Journal Voucher Item
-
             DB::commit();
             $message = array(
                 'pesan' => 'Angsuran Tunai berhasil ditambah',
@@ -932,7 +747,7 @@ class ApiController extends Controller
             DB::rollback();
             $message = array(
                 'pesan' => 'Angsuran Tunai gagal ditambah',
-                'alert' => 'error'
+                'alert' => 'error',
             );
             return $message;
         }
