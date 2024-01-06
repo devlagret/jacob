@@ -62,7 +62,8 @@ class NominativeSavingsPickupDataTable extends DataTable
         member_name As anggota,
         credits_account_serial As no_transaksi,
         credits_payment_amount As jumlah,
-        CONCAT("Angsuran ",credits_name) As keterangan')
+        CONCAT("Angsuran ",credits_name) As keterangan,
+        acct_credits_payment.pickup_state AS pickup_state')
 
         ->join('core_member','acct_credits_payment.member_id', '=', 'core_member.member_id')			
         ->join('acct_credits','acct_credits_payment.credits_id', '=', 'acct_credits.credits_id')
@@ -73,7 +74,9 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->where('acct_credits_payment.pickup_state', 0)
         // ->where('acct_credits_payment.credits_payment_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_credits_payment.credits_payment_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', $sessiondata['branch_id']);
+        ->where('core_member.branch_id', $sessiondata['branch_id'])
+        ->where('acct_credits_payment.pickup_state', 0);
+
 
 //------Setor Tunai Simpanan Biasa
         $querydata2 = AcctSavingsCashMutation::selectRaw(
@@ -84,8 +87,9 @@ class NominativeSavingsPickupDataTable extends DataTable
             member_name As anggota,
             savings_account_no As no_transaksi,
             savings_cash_mutation_amount As jumlah,
-            CONCAT("Setoran Tunai ",savings_name) As keterangan'
-        )
+            CONCAT("Setoran Tunai ",savings_name) As keterangan,
+            acct_savings_cash_mutation.pickup_state AS pickup_state')
+
         ->withoutGlobalScopes()
         ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
         ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
@@ -95,7 +99,9 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->where('acct_savings_cash_mutation.mutation_id', 1)
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', auth()->user()->branch_id);
+        ->where('core_member.branch_id', auth()->user()->branch_id)
+        ->where('acct_savings_cash_mutation.pickup_state', 0);
+
 
 //------Tarik Tunai Simpanan Biasa
         $querydata3 = AcctSavingsCashMutation::selectRaw(
@@ -106,8 +112,8 @@ class NominativeSavingsPickupDataTable extends DataTable
             member_name As anggota,
             savings_account_no As no_transaksi,
             savings_cash_mutation_amount As jumlah,
-            CONCAT("Tarik Tunai ",savings_name) As keterangan'
-        )
+            CONCAT("Tarik Tunai ",savings_name) As keterangan,
+            acct_savings_cash_mutation.pickup_state AS pickup_state')
         ->withoutGlobalScopes()
         ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
         ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
@@ -117,7 +123,9 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->where('acct_savings_cash_mutation.mutation_id', 2)
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', auth()->user()->branch_id);
+        ->where('core_member.branch_id', auth()->user()->branch_id)
+        ->where('acct_savings_cash_mutation.pickup_state', 0);
+
 
 //------Setor Tunai Simpanan Wajib
         $querydata4 = CoreMember::selectRaw(
@@ -128,13 +136,15 @@ class NominativeSavingsPickupDataTable extends DataTable
             member_name As anggota,
             member_no As no_transaksi,
             member_mandatory_savings As jumlah,
-            CONCAT("Setor Tunai Simpanan Wajib ") As keterangan'
-        )
+            CONCAT("Setor Tunai Simpanan Wajib ") As keterangan,
+            core_member.pickup_state AS pickup_state')
         ->withoutGlobalScopes()
         ->join('system_user','system_user.user_id', '=', 'core_member.created_id')
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', auth()->user()->branch_id);
+        ->where('core_member.branch_id', auth()->user()->branch_id)
+        ->where('core_member.pickup_state', 0);
+
 
 
 
