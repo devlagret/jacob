@@ -364,9 +364,9 @@ class ApiController extends Controller
         ->first();
         
         return response([
-            'data'           => $data,
+            'data'                  => $data,
             'preferencecompany'     => $preferencecompany,
-            'company'     => $company
+            'company'               => $company
 
         ],201);
     }
