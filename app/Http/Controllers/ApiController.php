@@ -478,6 +478,7 @@ class ApiController extends Controller
                 'member_special_savings_last_balance'	=> $data['member_special_savings_last_balance'],
                 'member_mandatory_savings_last_balance'	=> $data['member_mandatory_savings_last_balance'],
                 'updated_id'                            => $data['updated_id'],
+                'pickup_state'                          => 0,
             ]);
 
             if($data['member_principal_savings'] <> 0 || $data['member_principal_savings'] <> '' || $data['member_mandatory_savings'] <> 0 || $data['member_mandatory_savings'] <> ''  || $data['member_special_savings'] <> 0 || $data['member_special_savings'] <> ''){
