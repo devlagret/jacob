@@ -59,7 +59,7 @@ Route::post('GetAngsuran', [ApiController::class, 'GetAngsuran']);
 //getList angsuran
 Route::post('get-list-credits-payment', [ApiController::class, 'getCreditstPaymentList']);
 
-//print
+//print 
 Route::post('printer-address', [APIController::class, 'printerAddress']);
 Route::post('printer-address/update', [APIController::class, 'updatePrinterAddress']);
 Route::post('print-deposit', [APIController::class, 'PrintGetDeposit']);
