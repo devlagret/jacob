@@ -32,15 +32,15 @@
                     <div class="row mb-6">
                         <div class="col-lg-6">
                             <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tanggal Pickup') }}</label>
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Tanggal Transaksi') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="date" name="savings_cash_mutation_date" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Tgl Pickup" value="{{ $data->savings_cash_mutation_date }}" autocomplete="off" />
+                                    <input type="date" name="savings_cash_mutation_date" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Tgl Pickup" value="{{ $data->tanggal }}" autocomplete="off" />
                                 </div>
                             </div>
                             <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Transaksi') }}</label>
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('NO Transaksi') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="mutation_name" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Transaksi" value="{{  $data->mutation->mutation_name }}" autocomplete="off" />
+                                    <input type="text" name="mutation_name" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Transaksi" value="{{  $data->no_transaksi }}" autocomplete="off" />
                                 </div>
                             </div>
                         </div>
@@ -48,13 +48,27 @@
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Nama') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="member_name" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Nama Panggilan" value="{{  $data->member->member_name }}" autocomplete="off" />
+                                    <input type="text" name="member_name" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Nama Panggilan" value="{{  $data->anggota }}" autocomplete="off" />
                                 </div>
                             </div>
                             <div class="row mb-6">
                                 <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jumlah') }}</label>
                                 <div class="col-lg-8 fv-row">
-                                    <input type="text" name="savings_cash_mutation_amount" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Nama Perusahaan" value="{{  number_format($data->savings_cash_mutation_amount,2,',','.') }}" autocomplete="off" />
+                                    <input type="text" name="savings_cash_mutation_amount" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Nama Perusahaan" value="{{  number_format($data->jumlah,2,',','.') }}" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jenis') }}</label>
+                                <div class="col-lg-8 fv-row">
+                                    <input type="text" name="member_name" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Nama Panggilan" value="{{  $data->keterangan }}" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Keterangan') }}</label>
+                                <div class="col-lg-8 fv-row">
+                                    <input type="text" name="savings_cash_mutation_amount" readonly class="form-control readonly form-control-lg form-control-solid" placeholder="Keterangan" value="" autocomplete="off" />
                                 </div>
                             </div>
                         </div>
