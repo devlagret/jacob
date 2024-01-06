@@ -343,8 +343,8 @@ class ApiController extends Controller
     public function PrintGetWithdraw(Request $request){
 
         $fields = $request->validate([
-            'user_id'           => 'required',
-            'savings_cash_mutation_id' => 'required'
+            'user_id'                   => 'required',
+            'savings_cash_mutation_id'  => 'required'
         ]);
             $data = AcctSavingsCashMutation::with('member','mutation','savings','savingsaccount')
             ->withoutGlobalScopes() 

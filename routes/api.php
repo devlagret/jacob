@@ -49,6 +49,7 @@ Route::post('processAddMemberSavings/{member_id?}', [ApiController::class, 'proc
 Route::post('getDataCredit', [ApiController::class, 'getDataCredit']);
 Route::post('PostCreditsById', [ApiController::class, 'PostCreditsById']);
 
+
 //save angsuran
 Route::post('processAddCreditsPaymentCash/{credit_account_id?}', [ApiController::class, 'processAddCreditsPaymentCash']);
 
@@ -65,9 +66,7 @@ Route::post('print-deposit', [APIController::class, 'PrintGetDeposit']);
 Route::post('print-withdraw', [APIController::class, 'PrintGetWithdraw']);
 Route::post('print-credits-payment', [APIController::class, 'PrintGetAngsuran']);
 
-
-
-//save mutasi simpanan
+//save mutasi simpanan biasa
 Route::prefix('saving')->controller(ApiController::class)->group(function () {
     Route::get('account','getDataSavings');
     Route::post('deposit/{savings_account_id?}','deposit');

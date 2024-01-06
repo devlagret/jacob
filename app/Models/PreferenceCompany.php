@@ -12,7 +12,7 @@ class PreferenceCompany extends Model
      *
      * @var string[]
      */
-    //test
+    
     protected $table        = 'preference_company'; 
     protected $primaryKey   = 'company_id';
     
