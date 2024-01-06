@@ -174,12 +174,23 @@ class NominativeSavingsPickupDataTable extends DataTable
         return [
             Column::make('id')->title(__('No'))->data('DT_RowIndex'),
             Column::make('id')->title(__('ID')),
-            Column::make('tanggal')->title(__('Tanggal')),
+            Column::make('tanggal')
+                    ->addClass('text-right')
+                    ->width(200)
+                    ->title(__('Tanggal')),
             Column::make('operator')->title(__('Nama Operator')),
-            Column::make('anggota')->title(__('Nama Anggota')),
+            Column::make('anggota')
+                    ->addClass('text-right')
+                    ->width(200)
+                    ->title(__('Nama Anggota')),
             Column::make('no_transaksi')->title(__('No Transaksi')),
-            Column::make('jumlah')->title(__('Jumlah')),
-            Column::make('keterangan')->title(__('Jenis')),
+            Column::make('jumlah')
+                    ->addClass('text-right')
+                    ->width(200)
+                    ->title(__('Jumlah')),
+            Column::make('keterangan')
+                    ->width(200)
+                    ->title(__('Jenis')),
             Column::computed('action')
                     ->title(__('Aksi'))
                     ->exportable(false)
