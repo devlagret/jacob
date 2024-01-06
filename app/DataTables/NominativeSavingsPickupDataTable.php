@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\AcctCreditsPayment;
 use App\Models\AcctSavings;
 use App\Models\AcctSavingsCashMutation;
+use App\Models\CoreMember;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Html\Column;
@@ -52,15 +53,15 @@ class NominativeSavingsPickupDataTable extends DataTable
             $sessiondata['branch_id'] = auth()->user()->branch_id;
         }
 
-        //Angsuran
-        $querydata1 = AcctCreditsPayment::select(
-        'credits_payment_id As id',
-        'credits_payment_date As tanggal',
-        'username As operator',
-        'member_name As anggota',
-        'credits_account_serial As no_transaksi',
-        'credits_payment_amount As jumlah',
-        'credits_name As keterangan')
+//------Angsuran
+        $querydata1 = AcctCreditsPayment::selectRaw(
+        'credits_payment_id As id,
+        credits_payment_date As tanggal,
+        username As operator,
+        member_name As anggota,
+        credits_account_serial As no_transaksi,
+        credits_payment_amount As jumlah,
+        CONCAT("Angsuran ",credits_name) As keterangan')
 
         ->join('core_member','acct_credits_payment.member_id', '=', 'core_member.member_id')			
         ->join('acct_credits','acct_credits_payment.credits_id', '=', 'acct_credits.credits_id')
@@ -68,19 +69,20 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->join('acct_credits_account','acct_credits_payment.credits_account_id', '=', 'acct_credits_account.credits_account_id')
         ->where('acct_credits_payment.credits_payment_type', 0)
         ->where('acct_credits_payment.credits_branch_status', 0)
+        ->where('acct_credits_payment.pickup_state', 0)
         // ->where('acct_credits_payment.credits_payment_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_credits_payment.credits_payment_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', $sessiondata['branch_id']);
 
-        //Setor Tunai Tabungan
-        $querydata2 = AcctSavingsCashMutation::select(
-            'savings_cash_mutation_id As id',
-            'savings_cash_mutation_date As tanggal',
-            'username As operator',
-            'member_name As anggota',
-            'savings_account_no As no_transaksi',
-            'savings_cash_mutation_amount As jumlah',
-            'savings_name As keterangan'
+//------Setor Tunai Tabungan
+        $querydata2 = AcctSavingsCashMutation::selectRaw(
+            'savings_cash_mutation_id As id,
+            savings_cash_mutation_date As tanggal,
+            username As operator,
+            member_name As anggota,
+            savings_account_no As no_transaksi,
+            savings_cash_mutation_amount As jumlah,
+            CONCAT("Setoran Tunai ",savings_name) As keterangan'
         )
         ->withoutGlobalScopes()
         ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
@@ -88,12 +90,57 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->join('acct_savings_account', 'acct_savings_cash_mutation.savings_account_id', '=', 'acct_savings_account.savings_account_id')
         ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
         ->join('acct_savings', 'acct_savings_cash_mutation.savings_id', '=', 'acct_savings.savings_id')
+        ->where('acct_savings_cash_mutation.mutation_id', 1)
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', auth()->user()->branch_id);
 
-        // Combine the queries using UNION
-        $querydata = $querydata1->union($querydata2);
+//------Tarik Tunai Tabungan
+        $querydata3 = AcctSavingsCashMutation::selectRaw(
+            'savings_cash_mutation_id As id,
+            savings_cash_mutation_date As tanggal,
+            username As operator,
+            member_name As anggota,
+            savings_account_no As no_transaksi,
+            savings_cash_mutation_amount As jumlah,
+            CONCAT("Tarik Tunai ",savings_name) As keterangan'
+        )
+        ->withoutGlobalScopes()
+        ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
+        ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
+        ->join('acct_savings_account', 'acct_savings_cash_mutation.savings_account_id', '=', 'acct_savings_account.savings_account_id')
+        ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
+        ->join('acct_savings', 'acct_savings_cash_mutation.savings_id', '=', 'acct_savings.savings_id')
+        ->where('acct_savings_cash_mutation.mutation_id', 2)
+        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->where('core_member.branch_id', auth()->user()->branch_id);
+
+//-----Simpanan Wajib
+        $querydata3 = CoreMember::selectRaw(
+            'member_id As id,
+            update_at As tanggal,
+            username As operator,
+            member_name As anggota,
+            member_no As no_transaksi,
+            savings_cash_mutation_amount As jumlah,
+            CONCAT("Tarik Tunai ",savings_name) As keterangan'
+        )
+        ->withoutGlobalScopes()
+        ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
+        ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
+        ->join('acct_savings_account', 'acct_savings_cash_mutation.savings_account_id', '=', 'acct_savings_account.savings_account_id')
+        ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
+        ->join('acct_savings', 'acct_savings_cash_mutation.savings_id', '=', 'acct_savings.savings_id')
+        ->where('acct_savings_cash_mutation.mutation_id', 2)
+        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->where('core_member.branch_id', auth()->user()->branch_id);
+
+
+
+//------Combine the queries using UNION
+        $querydata = $querydata1->union($querydata2)->union($querydata3);
         return $querydata;
     }
 
