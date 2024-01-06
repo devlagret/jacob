@@ -14,18 +14,18 @@
                 </span>
             </div>
         </div>
-        <form id="kt_filter_savings_account_form" class="form" method="POST" action="{{ route('nomv-sv-pickup.filter') }}" enctype="multipart/form-data">
+        <form id="kt_filter_savings_account_form" class="form" method="POST" action="{{ route('nomv-sv-pickup.filter') }}   " enctype="multipart/form-data">
             @csrf
             @method('POST')
             <div id="kt_card_collapsible" class="collapse">
                 <div class="card-body pt-6">
                     <div class="row mb-6">
                         <div class="col-lg-6 col-md-6 fv-row">
-                            <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tanggal Mulai') }}</label>
+                            <label class="col-lg-6 col-form-label fw-bold fs-6 required">{{ __('Tanggal Mulai') }}</label>
                             <input name="start_date" class="date form-control form-control-lg form-control-solid" placeholder="Tanggal" autocomplete="off" value="{{ old('start_date', $sessiondata['start_date'] ?? '') }}"/>
                         </div>
                         <div class="col-lg-6 col-md-6 fv-row">
-                            <label class="col-lg-4 col-form-label fw-bold fs-6 required">{{ __('Tanggal Akhir') }}</label>
+                            <label class="col-lg-6 col-form-label fw-bold fs-6 required">{{ __('Tanggal Akhir') }}</label>
                             <input name="end_date" class="date form-control form-control-lg form-control-solid" placeholder="Tanggal" autocomplete="off" value="{{ old('end_date', $sessiondata['end_date'] ?? '') }}"/>
                         </div>
                     </div>

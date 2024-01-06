@@ -12,13 +12,17 @@ use App\Models\CoreMember;
 class AcctNominativeSavingsPickupController extends Controller
 {
     public function index(NominativeSavingsPickupDataTable $datatable) {
+
        $sessiondata = Session::get('pickup-data');
-        return $datatable->render('content.NominativeSavings.Pickup.List.index',['sessiondata'=>$sessiondata]);
+       
+    //    dd($sessiondata);
+       return $datatable->render('content.NominativeSavings.Pickup.List.index',['sessiondata'=>$sessiondata]);
     }
     public function filter(Request $request) {
         $filter = Session::get('pickup-data');
         $filter['start_date'] = $request->start_date;
         $filter['end_date'] = $request->end_date;
+        $filter['pickup_type'] = $request->pickup_type;
         Session::put('pickup-data', $filter);
         return redirect()->route('nomv-sv-pickup.index');
     }
