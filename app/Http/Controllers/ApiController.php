@@ -226,7 +226,7 @@ class ApiController extends Controller
         try {
             $savingacc = AcctSavingsAccount::find($sai);
             $savingacc->savings_account_pickup_date=date('Y-m-d');
-            $savingacc->save();
+            $savingacc->save(); 
         DB::beginTransaction(); 
         AcctSavingsCashMutation::create( [
             'savings_account_id' => $request['savings_account_id'],
