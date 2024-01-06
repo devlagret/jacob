@@ -21,6 +21,7 @@ use App\DataTables\AcctSavingsCashMutation\AcctSavingsAccountDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
+use Carbon\Carbon;
 use Elibyy\TCPDF\Facades\TCPDF;
 
 class AcctSavingsCashMutationController extends Controller
@@ -153,6 +154,8 @@ class AcctSavingsCashMutationController extends Controller
                     'branch_id' => auth()->user()->branch_id,
                     'operated_name' => auth()->user()->username,
                     'created_id' => auth()->user()->user_id,
+                    'pickup_state'=> 1,
+                    'pickup_date'=> Carbon::now(),
                 ];
                 AcctSavingsCashMutation::create($data);
 
@@ -589,6 +592,8 @@ class AcctSavingsCashMutationController extends Controller
                             'branch_id' => auth()->user()->branch_id,
                             'operated_name' => auth()->user()->username,
                             'created_id' => auth()->user()->user_id,
+                            'pickup_state'=> 1,
+                            'pickup_date'=> Carbon::now(),
                         ];
                         AcctSavingsCashMutation::create($data);
 

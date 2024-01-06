@@ -21,6 +21,7 @@ use App\DataTables\CoreMemberDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Configuration;
+use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -154,6 +155,8 @@ class CoreMemberController extends Controller
                 'member_heir_mobile_phone'    => $request->member_heir_mobile_phone,
                 'member_heir_address'         => $request->member_heir_address,
                 'created_id'                  => auth()->user()->user_id,
+                'pickup_state'                =>1,
+                'pickup_date'                 => Carbon::now(),
             );
             CoreMember::create($member);
 
@@ -369,6 +372,8 @@ class CoreMemberController extends Controller
             $member->member_heir_mobile_phone           = $request->member_heir_mobile_phone;
             $member->member_heir_address                = $request->member_heir_address;
             $member->updated_id                         = auth()->user()->user_id;
+            $member->pickup_state                       = 1;
+            $member->pickup_date                        = Carbon::now();
             $member->save();
 
             if($request->member_working_type == 3){
