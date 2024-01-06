@@ -55,7 +55,8 @@ class NominativeSavingsPickupDataTable extends DataTable
 
 //------Angsuran
         $querydata1 = AcctCreditsPayment::selectRaw(
-        'credits_payment_id As id,
+        '1 As type,
+        credits_payment_id As id,
         credits_payment_date As tanggal,
         username As operator,
         member_name As anggota,
@@ -74,9 +75,10 @@ class NominativeSavingsPickupDataTable extends DataTable
         // ->where('acct_credits_payment.credits_payment_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', $sessiondata['branch_id']);
 
-//------Setor Tunai Tabungan
+//------Setor Tunai Simpanan Biasa
         $querydata2 = AcctSavingsCashMutation::selectRaw(
-            'savings_cash_mutation_id As id,
+            '2 As type,
+            savings_cash_mutation_id As id,
             savings_cash_mutation_date As tanggal,
             username As operator,
             member_name As anggota,
@@ -95,9 +97,10 @@ class NominativeSavingsPickupDataTable extends DataTable
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', auth()->user()->branch_id);
 
-//------Tarik Tunai Tabungan
+//------Tarik Tunai Simpanan Biasa
         $querydata3 = AcctSavingsCashMutation::selectRaw(
-            'savings_cash_mutation_id As id,
+            '3 As type,
+            savings_cash_mutation_id As id,
             savings_cash_mutation_date As tanggal,
             username As operator,
             member_name As anggota,
@@ -116,23 +119,19 @@ class NominativeSavingsPickupDataTable extends DataTable
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', auth()->user()->branch_id);
 
-//-----Simpanan Wajib
-        $querydata3 = CoreMember::selectRaw(
-            'member_id As id,
-            update_at As tanggal,
+//------Setor Tunai Simpanan Wajib
+        $querydata4 = CoreMember::selectRaw(
+            '4 As type,
+            member_id As id,
+            core_member.updated_at As tanggal,
             username As operator,
             member_name As anggota,
             member_no As no_transaksi,
-            savings_cash_mutation_amount As jumlah,
-            CONCAT("Tarik Tunai ",savings_name) As keterangan'
+            member_mandatory_savings As jumlah,
+            CONCAT("Setor Tunai Simpanan Wajib ") As keterangan'
         )
         ->withoutGlobalScopes()
-        ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
-        ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
-        ->join('acct_savings_account', 'acct_savings_cash_mutation.savings_account_id', '=', 'acct_savings_account.savings_account_id')
-        ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
-        ->join('acct_savings', 'acct_savings_cash_mutation.savings_id', '=', 'acct_savings.savings_id')
-        ->where('acct_savings_cash_mutation.mutation_id', 2)
+        ->join('system_user','system_user.user_id', '=', 'core_member.created_id')
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', auth()->user()->branch_id);
@@ -140,7 +139,9 @@ class NominativeSavingsPickupDataTable extends DataTable
 
 
 //------Combine the queries using UNION
-        $querydata = $querydata1->union($querydata2)->union($querydata3);
+        $querydata = $querydata1->union($querydata2)->union($querydata3)->union($querydata4);
+        // Add ORDER BY clause to sort by the "keterangan" column
+        $querydata = $querydata->orderBy('tanggal','DESC');
         return $querydata;
     }
 
@@ -162,12 +163,13 @@ class NominativeSavingsPickupDataTable extends DataTable
     {
         return [
             Column::make('id')->title(__('No'))->data('DT_RowIndex'),
+            Column::make('id')->title(__('ID')),
             Column::make('tanggal')->title(__('Tanggal')),
             Column::make('operator')->title(__('Nama Operator')),
             Column::make('anggota')->title(__('Nama Anggota')),
             Column::make('no_transaksi')->title(__('No Transaksi')),
             Column::make('jumlah')->title(__('Jumlah')),
-            Column::make('keterangan')->title(__('Keterangan')),
+            Column::make('keterangan')->title(__('Jenis')),
             Column::computed('action')
                     ->title(__('Aksi'))
                     ->exportable(false)
