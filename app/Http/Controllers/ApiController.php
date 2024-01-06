@@ -454,7 +454,7 @@ class ApiController extends Controller
             'member_mandatory_savings'				=> $request->member_mandatory_savings,
             'member_principal_savings_last_balance'	=> $member->member_principal_savings_last_balance,
             'member_special_savings_last_balance'	=> $member->member_special_savings_last_balance,
-            'member_mandatory_savings_last_balance'	=> $request->member_mandatory_savings_last_balance + $request->member_mandatory_savings,
+            'member_mandatory_savings_last_balance'	=> $request->member_mandatory_savings_last_balance ,
             'updated_id'                            => auth()->user()->user_id,
         );
 
