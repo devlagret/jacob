@@ -45,6 +45,9 @@ Route::post('searchMembers/{member_name?}', [ApiController::class, 'searchMember
 //save simp wajib
 Route::post('processAddMemberSavings/{member_id?}', [ApiController::class, 'processAddMemberSavings']);
 
+//getList simpanan wajib
+Route::post('get-history-simpanan-wajib', [ApiController::class, 'getHistoryMemberSavings']);
+
 //data pinjaman
 Route::post('getDataCredit', [ApiController::class, 'getDataCredit']);
 Route::post('PostCreditsById', [ApiController::class, 'PostCreditsById']);
@@ -65,6 +68,8 @@ Route::post('printer-address/update', [APIController::class, 'updatePrinterAddre
 Route::post('print-deposit', [APIController::class, 'PrintGetDeposit']);
 Route::post('print-withdraw', [APIController::class, 'PrintGetWithdraw']);
 Route::post('print-credits-payment', [APIController::class, 'PrintGetAngsuran']);
+Route::post('print-member-savings', [APIController::class, 'PrintGetMemberSavings']);
+
 
 //save mutasi simpanan biasa
 Route::prefix('saving')->controller(ApiController::class)->group(function () {

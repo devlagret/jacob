@@ -48,9 +48,8 @@ class AcctNominativeSavingsPickupController extends Controller
                 credits_payment_principal As jumlah_2,
                 credits_payment_interest As jumlah_3,
                 credits_others_income As jumlah_4,
-                credits_payment_fine As jumlah_5
+                credits_payment_fine As jumlah_5,
                 CONCAT("Angsuran ",credits_name) As keterangan')
-        
                 ->join('core_member','acct_credits_payment.member_id', '=', 'core_member.member_id')			
                 ->join('acct_credits','acct_credits_payment.credits_id', '=', 'acct_credits.credits_id')
                 ->join('system_user','system_user.user_id', '=', 'acct_credits_payment.created_id')
@@ -70,9 +69,8 @@ class AcctNominativeSavingsPickupController extends Controller
                 savings_cash_mutation_amount_adm As jumlah_2,
                 0 As jumlah_3,
                 0 As jumlah_4,
-                0 As jumlah_5
-                CONCAT("Setoran Tunai ",savings_name) As keterangan'
-            )
+                0 As jumlah_5,
+                CONCAT("Setoran Tunai ",savings_name) As keterangan')
             ->withoutGlobalScopes()
             ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
             ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
@@ -95,8 +93,7 @@ class AcctNominativeSavingsPickupController extends Controller
                 0 As jumlah_3,
                 0 As jumlah_4,
                 0 As jumlah_5,
-                CONCAT("Tarik Tunai ",savings_name) As keterangan'
-            )
+                CONCAT("Tarik Tunai ",savings_name) As keterangan')
             ->withoutGlobalScopes()
             ->join('system_user','system_user.user_id', '=', 'acct_savings_cash_mutation.created_id')
             ->join('acct_mutation', 'acct_savings_cash_mutation.mutation_id', '=', 'acct_mutation.mutation_id')
@@ -119,15 +116,14 @@ class AcctNominativeSavingsPickupController extends Controller
                 0 As jumlah_3,
                 0 As jumlah_4,
                 0 As jumlah_5,
-                CONCAT("Setor Tunai Simpanan Wajib ") As keterangan'
-            )
+                CONCAT("Setor Tunai Simpanan Wajib ") As keterangan')
             ->withoutGlobalScopes()
             ->join('system_user','system_user.user_id', '=', 'core_member.created_id')
             ->where('member_id', $id)->first();
         }
 
         // dd($data);
-        return view('content.NominativeSavings.Pickup.Add.index',compact('data'));
+        return view('content.NominativeSavings.Pickup.Add.index',compact('data','type'));
     }
 
 

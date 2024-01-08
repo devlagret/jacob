@@ -151,7 +151,7 @@ class NominativeSavingsPickupDataTable extends DataTable
 //------Combine the queries using UNION
         $querydata = $querydata1->union($querydata2)->union($querydata3)->union($querydata4);
         // Add ORDER BY clause to sort by the "keterangan" column
-        $querydata = $querydata->orderBy('id','DESC');
+        $querydata = $querydata->orderBy('tanggal','DESC');
         return $querydata;
     }
 

@@ -516,6 +516,58 @@ class ApiController extends Controller
 
     }
 
+    //histori simp wajib 
+    public function getHistoryMemberSavings()
+    {
+        $branch_id          = auth()->user()->branch_id;
+        if($branch_id == 0){
+            $data = CoreMember::withoutGlobalScopes() 
+            ->where('updated_at',Carbon::today())
+            ->where('data_state',0)
+            ->get();
+        }else{
+            $data = CoreMember::withoutGlobalScopes() 
+            ->where('updated_at',Carbon::today())
+            ->where('branch_id',auth()->user()->branch_id)
+            ->where('data_state',0)
+            ->get();
+        }
+
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+
+    //print simp wajib
+    public function PrintGetMemberSavings(Request $request){
+
+        $fields = $request->validate([
+            'user_id'                   => 'required',
+            'member_id'                 => 'required'
+        ]);
+            $data = CoreMember::withoutGlobalScopes() 
+            ->where('updated_at',Carbon::today())
+            ->where('data_state',0)
+            ->where('member_id', $fields['member_id'])
+            ->first();
+        
+
+        $preferencecompany = User::select('core_branch.*')
+        ->join('core_branch', 'core_branch.branch_id', 'system_user.branch_id')
+        ->where('system_user.user_id', $fields['user_id'])
+        ->first();
+
+        $company = PreferenceCompany::select('company_name')
+        ->first();
+        
+        return response([
+            'data'                  => $data,
+            'preferencecompany'     => $preferencecompany,
+            'company'               => $company
+
+        ],201);
+    }
     
     //ANGSURAN
     public function getDataCredit(){
