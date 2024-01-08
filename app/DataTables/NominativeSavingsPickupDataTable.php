@@ -71,11 +71,11 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->join('acct_credits_account','acct_credits_payment.credits_account_id', '=', 'acct_credits_account.credits_account_id')
         ->where('acct_credits_payment.credits_payment_type', 0)
         ->where('acct_credits_payment.credits_branch_status', 0)
-        ->where('acct_credits_payment.pickup_state', 0)
         // ->where('acct_credits_payment.credits_payment_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         // ->where('acct_credits_payment.credits_payment_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', $sessiondata['branch_id'])
+        ->where('acct_credits_payment.branch_id', $sessiondata['branch_id'])
         ->where('acct_credits_payment.pickup_state', 0);
+        ;
 
 
 //------Setor Tunai Simpanan Biasa
