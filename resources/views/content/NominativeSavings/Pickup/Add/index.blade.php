@@ -28,8 +28,13 @@
 
         <div id="process_pickup">
             <div class="card-body border-top p-9">
+                <form id="process_pickup_form" class="form" method="POST"
+                action="{{ route('nomv-sv-pickup.process-add') }}" enctype="multipart/form-data">
+                @csrf
                 <div class="row mb-6">
                     <input class="form-control" type="text" hidden name="type" value="{{ $type }}">
+                    <input class="form-control" type="text" hidden name="id" value="{{ $data->id }}">
+
                     <div class="col-lg-6">
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Tanggal Transaksi') }}</label>
@@ -60,9 +65,13 @@
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Jumlah') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="jumlah" readonly
+                                <input type="text" name="jumlah_view" readonly
                                     class="form-control readonly form-control-lg form-control-solid"
                                     placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah, 2, ',', '.') }}"
+                                    autocomplete="off" />
+                                    <input type="text" name="jumlah" readonly
+                                    class="form-control readonly form-control-lg form-control-solid"
+                                    placeholder="Nama Perusahaan" value="{{ $data->jumlah }}"
                                     autocomplete="off" />
                             </div>
                         </div>
@@ -71,7 +80,7 @@
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Keterangan') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="" readonly
+                                <input type="text"  readonly
                                     class="form-control readonly form-control-lg form-control-solid"
                                     placeholder="Nama Panggilan" value="{{ $data->keterangan }}" autocomplete="off" />
                             </div>
@@ -84,41 +93,70 @@
                         <div class="row mb-6">
                             <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Biaya Adm') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="jumlah_2" readonly
+                                <input type="text" name="jumlah_2_view" readonly
                                     class="form-control readonly form-control-lg form-control-solid"
                                     placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah2, 2, ',', '.') }}"
                                     autocomplete="off" />
+                                    <input type="text" name="jumlah_2" readonly
+                                    class="form-control readonly form-control-lg form-control-solid"
+                                    placeholder="Nama Perusahaan" value="{{ $data->jumlah2 }}"
+                                    autocomplete="off" hidden/>
                             </div>
                         </div>
                         @endif
                         @if ($type == 1)
                         <div class="row mb-6">
-                            <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Angsuran Bunga') }}</label>
+                            <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Angsuran Pokok') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="jumlah_2" readonly
+                                <input type="text" name="jumlah_2_view" readonly
                                     class="form-control readonly form-control-lg form-control-solid"
-                                    placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah2, 2, ',', '.') }}"
+                                    placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah_2, 2, ',', '.') }}"
+                                    autocomplete="off" />
+                                    <input type="text" name="jumlah_2" readonly
+                                    class="form-control readonly form-control-lg form-control-solid"
+                                    placeholder="Nama Perusahaan" value="{{ $data->jumlah_2 }}"
+                                    autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Angsuran Bunga ') }}</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="jumlah_3_view" readonly
+                                    class="form-control readonly form-control-lg form-control-solid"
+                                    placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah_3, 2, ',', '.') }}"
+                                    autocomplete="off" />
+                                    <input type="text" name="jumlah_3" readonly
+                                    class="form-control readonly form-control-lg form-control-solid"
+                                    placeholder="Nama Perusahaan" value="{{ $data->jumlah_3 }}"
                                     autocomplete="off" />
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="row mb-6">
-                            <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Denda') }}</label>
+                            <label
+                                class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Pendapatan Lain Lain') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="jumlah_2" readonly
+                                <input type="text" name="jumlah_3_view" readonly
                                     class="form-control readonly form-control-lg form-control-solid"
-                                    placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah2, 2, ',', '.') }}"
+                                    placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah_4, 2, ',', '.') }}"
+                                    autocomplete="off" />
+                                    <input type="text" name="jumlah_3" readonly
+                                    class="form-control readonly form-control-lg form-control-solid"
+                                    placeholder="Nama Perusahaan" value="{{ $data->jumlah_4 }}"
                                     autocomplete="off" />
                             </div>
                         </div>
                         <div class="row mb-6">
-                            <label
-                                class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Pendapatan Lain Lain') }}</label>
+                            <label class="col-lg-4 col-form-label fw-bold fs-6">{{ __('Denda') }}</label>
                             <div class="col-lg-8 fv-row">
-                                <input type="text" name="jumlah_2" readonly
+                                <input type="text" name="jumlah_4_view" readonly
                                     class="form-control readonly form-control-lg form-control-solid"
-                                    placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah2, 2, ',', '.') }}"
+                                    placeholder="Nama Perusahaan" value="{{ number_format($data->jumlah_5, 2, ',', '.') }}"
+                                    autocomplete="off" />
+                                    <input type="text" name="jumlah_4" readonly
+                                    class="form-control readonly form-control-lg form-control-solid"
+                                    placeholder="Nama Perusahaan" value="{{ $data->jumlah_5 }}"
                                     autocomplete="off" />
                             </div>
                         </div>
@@ -130,13 +168,15 @@
                 <a type="button" href="{{ route('nomv-sv-pickup.index') }}"
                     class="btn btn-white btn-active-light-primary me-2 ">{{ __('Batal') }}</a>
 
-                <button type="button" class="btn btn-primary" id="process_pickup_submit" data-bs-toggle="modal"
-                    data-bs-target="#pickup-modal">
+                <button class="btn btn-primary" type="submit">
                     @include('partials.general._button-indicator', ['label' => __('Simpan')])
                 </button>
             </div>
+        </form>
         </div>
     </div>
+
+
     <div class="modal fade" tabindex="-1" id="pickup-modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -152,9 +192,7 @@
                 </div>
 
                 <div class="modal-body py-0" id="modal-body">
-                    <form id="process_pickup_form" class="form" method="POST"
-                        action="{{ route('nomv-sv-pickup.process-add') }}" enctype="multipart/form-data">
-                        @csrf
+                   
                         <div class="row">
                             {{-- <div class="col fv-row"> --}}
                             <label class=" fw-bold fs-6 required">{{ __('Keterangan') }}</label>
@@ -172,7 +210,6 @@
                     <button type="submit" class="btn btn-primary" id="process_pickup_submit">
                         @include('partials.general._button-indicator', ['label' => __('Simpan')])
                     </button>
-                    </form>
                 </div>
             </div>
         </div>
