@@ -637,7 +637,7 @@ class ApiController extends Controller
             ->where('credits_account_id', $credits_account_id)
             ->get();
 
-            $credits_payment_date   = Carbon::now();
+            $credits_payment_date   = date('Y-m-d');
             $date1                  = date_create($credits_payment_date);
             $date2                  = date_create($acctcreditsaccount['credits_account_payment_date']);
 
@@ -702,7 +702,7 @@ class ApiController extends Controller
                 'member_id'									=> $creditaccount->member_id,
 				'credits_id'								=> $creditaccount->credits_id,
 				'credits_account_id'						=> $creditaccount->credits_account_id,
-				'credits_payment_date'						=> date('Y-m-d'),
+				'credits_payment_date'						=> Carbon::now(),
 				'credits_payment_amount'					=> $request->angsuran_total,
 				'credits_payment_principal'					=> $request->angsuran_pokok,
 				'credits_payment_interest'					=> $request->angsuran_bunga,
