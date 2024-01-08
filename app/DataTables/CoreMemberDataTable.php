@@ -39,7 +39,8 @@ class CoreMemberDataTable extends DataTable
     {
         $model = $model->newQuery()->with('branch')
         ->where('member_status', 1)
-        ->where('data_state', 0);
+        ->where('data_state', 0)
+        ->where('pickup_state', 1);
         if(Auth::user()->branch_id!==0){
             $model->where('branch_id',Auth::user()->branch_id);
         }

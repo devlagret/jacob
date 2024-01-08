@@ -67,7 +67,8 @@ class AcctCreditsPaymentCashDataTable extends DataTable
         ->where('acct_credits_payment.credits_branch_status', 0)
         ->where('acct_credits_payment.credits_payment_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         ->where('acct_credits_payment.credits_payment_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', $sessiondata['branch_id']);
+        ->where('core_member.branch_id', $sessiondata['branch_id'])
+        ->where('acct_credits_payment.pickup_state', 1);
         if($sessiondata['credits_id'] != null || $sessiondata['credits_id'] != ''){
             $querydata = $querydata->where('acct_credits_payment.credits_id', $sessiondata['credits_id']);
         }

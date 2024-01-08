@@ -62,7 +62,8 @@ class AcctSavingsCashMutationDataTable extends DataTable
         ->join('acct_savings', 'acct_savings_cash_mutation.savings_id', '=', 'acct_savings.savings_id')
         ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
         ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
-        ->where('core_member.branch_id', auth()->user()->branch_id);
+        ->where('core_member.branch_id', auth()->user()->branch_id)
+        ->where('acct_savings_cash_mutation.pickup_state', 1);
 
         return $querydata;
     }

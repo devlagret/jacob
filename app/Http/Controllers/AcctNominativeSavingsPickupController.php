@@ -27,10 +27,12 @@ class AcctNominativeSavingsPickupController extends Controller
         Session::put('pickup-data', $filter);
         return redirect()->route('nomv-sv-pickup.index');
     }
+
     public function filterReset(){
         Session::forget('pickup-data');
         return redirect()->route('nomv-sv-pickup.index');
     }
+
     public function add($type,$id) {
 
 //------Angsuran
@@ -43,6 +45,10 @@ class AcctNominativeSavingsPickupController extends Controller
                 member_name As anggota,
                 credits_account_serial As no_transaksi,
                 credits_payment_amount As jumlah,
+                credits_payment_principal As jumlah_2,
+                credits_payment_interest As jumlah_3,
+                credits_others_income As jumlah_4,
+                credits_payment_fine As jumlah_5
                 CONCAT("Angsuran ",credits_name) As keterangan')
         
                 ->join('core_member','acct_credits_payment.member_id', '=', 'core_member.member_id')			
@@ -61,6 +67,10 @@ class AcctNominativeSavingsPickupController extends Controller
                 member_name As anggota,
                 savings_account_no As no_transaksi,
                 savings_cash_mutation_amount As jumlah,
+                savings_cash_mutation_amount_adm As jumlah_2,
+                0 As jumlah_3,
+                0 As jumlah_4,
+                0 As jumlah_5
                 CONCAT("Setoran Tunai ",savings_name) As keterangan'
             )
             ->withoutGlobalScopes()
@@ -81,6 +91,10 @@ class AcctNominativeSavingsPickupController extends Controller
                 member_name As anggota,
                 savings_account_no As no_transaksi,
                 savings_cash_mutation_amount As jumlah,
+                savings_cash_mutation_amount_adm As jumlah_2,
+                0 As jumlah_3,
+                0 As jumlah_4,
+                0 As jumlah_5,
                 CONCAT("Tarik Tunai ",savings_name) As keterangan'
             )
             ->withoutGlobalScopes()
@@ -101,6 +115,10 @@ class AcctNominativeSavingsPickupController extends Controller
                 member_name As anggota,
                 member_no As no_transaksi,
                 member_mandatory_savings As jumlah,
+                member_mandatory_savings_last_balance As jumlah_2,
+                0 As jumlah_3,
+                0 As jumlah_4,
+                0 As jumlah_5,
                 CONCAT("Setor Tunai Simpanan Wajib ") As keterangan'
             )
             ->withoutGlobalScopes()
@@ -114,6 +132,11 @@ class AcctNominativeSavingsPickupController extends Controller
 
 
     public function processAdd(Request $request) {
+
+
+
+
+
         $mutation = AcctSavingsCashMutation::find($request->savings_cash_mutation_id);
         $mutation->pickup_remark = $request->pickup_remark;
         $mutation->pickup_status = 1;
