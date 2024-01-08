@@ -71,8 +71,8 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->join('acct_credits_account','acct_credits_payment.credits_account_id', '=', 'acct_credits_account.credits_account_id')
         ->where('acct_credits_payment.credits_payment_type', 0)
         ->where('acct_credits_payment.credits_branch_status', 0)
-        // ->where('acct_credits_payment.credits_payment_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
-        // ->where('acct_credits_payment.credits_payment_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->where('acct_credits_payment.credits_payment_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+        ->where('acct_credits_payment.credits_payment_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('acct_credits_payment.branch_id', $sessiondata['branch_id'])
         ->where('acct_credits_payment.pickup_state', 0);
         ;
@@ -97,8 +97,8 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
         ->join('acct_savings', 'acct_savings_cash_mutation.savings_id', '=', 'acct_savings.savings_id')
         ->where('acct_savings_cash_mutation.mutation_id', 1)
-        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
-        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+        ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', auth()->user()->branch_id)
         ->where('acct_savings_cash_mutation.pickup_state', 0);
 
@@ -121,8 +121,8 @@ class NominativeSavingsPickupDataTable extends DataTable
         ->join('core_member', 'acct_savings_cash_mutation.member_id', '=', 'core_member.member_id')
         ->join('acct_savings', 'acct_savings_cash_mutation.savings_id', '=', 'acct_savings.savings_id')
         ->where('acct_savings_cash_mutation.mutation_id', 2)
-        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
-        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+        ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', auth()->user()->branch_id)
         ->where('acct_savings_cash_mutation.pickup_state', 0);
 
@@ -140,8 +140,8 @@ class NominativeSavingsPickupDataTable extends DataTable
             core_member.pickup_state AS pickup_state')
         ->withoutGlobalScopes()
         ->join('system_user','system_user.user_id', '=', 'core_member.created_id')
-        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
-        // ->where('acct_savings_cash_mutation.savings_cash_mutation_date', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
+        ->where('core_member.updated_at', '>=', date('Y-m-d', strtotime($sessiondata['start_date'])))
+        ->where('core_member.updated_at', '<=', date('Y-m-d', strtotime($sessiondata['end_date'])))
         ->where('core_member.branch_id', auth()->user()->branch_id)
         ->where('core_member.pickup_state', 0);
 
@@ -151,7 +151,7 @@ class NominativeSavingsPickupDataTable extends DataTable
 //------Combine the queries using UNION
         $querydata = $querydata1->union($querydata2)->union($querydata3)->union($querydata4);
         // Add ORDER BY clause to sort by the "keterangan" column
-        $querydata = $querydata->orderBy('tanggal','DESC');
+        $querydata = $querydata->orderBy('id','DESC');
         return $querydata;
     }
 
